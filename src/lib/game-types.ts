@@ -143,7 +143,7 @@ export const generateDefaultTributes = (): Tribute[] => {
     "https://api.dicebear.com/7.x/pixel-art/svg?seed=P3",
     "https://api.dicebear.com/7.x/pixel-art/svg?seed=P4",
     "https://api.dicebear.com/7.x/pixel-art/svg?seed=P5",
-    "/images/LaFoca.png"
+    "/images/foca.png"
   ];
 
   return Array.from({ length: 24 }, (_, i) => {
