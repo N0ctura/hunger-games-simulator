@@ -35,13 +35,18 @@ const CELL_H = 210;
 //  ROBUST IMAGE – 5 fallback CDN progressivi
 // ─────────────────────────────────────────────
 
-const CDN_FALLBACKS = (id: string) => [
-  `https://cdn.wolvesville.com/avatarItems/${id}.png`,
-  `https://cdn.wolvesville.com/avatarItems/${id}.store@3x.png`,
-  `https://cdn.wolvesville.com/avatarItems/${id}.store.png`,
-  `https://cdn.wolvesville.com/avatarItems/v2/${id}.png`,
-  `https://cdn.wolvesville.com/avatarItems/icon_${id}.png`,
-];
+const CDN_FALLBACKS = (id: string) => {
+  // Preserva caratteri speciali come '-' (es. Lt-...)
+  const safeId = id.trim();
+  
+  return [
+    `https://cdn.wolvesville.com/avatarItems/${safeId}.png`,
+    `https://cdn.wolvesville.com/avatarItems/v2/${safeId}.png`,
+    `https://cdn.wolvesville.com/inventoryItems/${safeId}.png`,
+    `https://cdn.wolvesville.com/items/${safeId}.png`,
+    `https://cdn.wolvesville.com/avatarItems/v2/${safeId}.store.png`,
+  ];
+};
 
 const RobustImage = memo(function RobustImage({
   itemId,

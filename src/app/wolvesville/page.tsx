@@ -101,7 +101,7 @@ function WolvesvilleContent() {
       case "wiki":
         return (
           <div className="flex flex-col items-center justify-center py-20 opacity-50">
-            <p className="font-mono text-xl font-bold">test 2.1.6 - ENV Connected</p>
+            <p className="font-mono text-xl font-bold">test 2.1.8 - Multi-Path CDN</p>
           </div>
         );
 
