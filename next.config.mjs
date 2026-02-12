@@ -12,6 +12,20 @@ const nextConfig = {
   assetPrefix: isProd ? '/hunger-games-simulator/' : '',
   images: {
     unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.wolvesville.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
 };
 
