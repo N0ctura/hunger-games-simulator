@@ -33,9 +33,9 @@ export function CopyPromptButton() {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button 
-            onClick={handleCopy} 
-            variant="outline" 
+          <Button
+            onClick={handleCopy}
+            variant="outline"
             className="gap-2 border-primary/20 bg-primary/5 hover:bg-primary/10"
           >
             {copied ? <CheckCircle size={16} className="text-green-500" /> : <Sparkles size={16} className="text-primary" />}
@@ -49,3 +49,4 @@ export function CopyPromptButton() {
     </TooltipProvider>
   );
 }
+// test editing

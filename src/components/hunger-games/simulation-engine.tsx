@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { Tribute, GameEvent, GameConfig, GameState, SimulationLog, SimulatedEvent } from "@/lib/game-types";
 import { DEFAULT_OBJECTS, DEFAULT_CONFIG } from "@/lib/game-types";
 import { TributeCard } from "./tribute-card";
@@ -412,12 +412,19 @@ export function SimulationEngine({
     }
 
     const lastPhase = gameState.logs[gameState.logs.length - 1]?.phase;
-    const nextPhaseType =
-      gameState.currentPhaseNumber % config.feastFrequency === config.feastFrequency - 1
-        ? "feast"
-        : lastPhase === "day"
-          ? "night"
-          : "day";
+    let nextPhaseType: "day" | "night" | "feast";
+
+    // Fix for feast loop bug: explicitly check lastPhase
+    if (lastPhase === "feast") {
+      nextPhaseType = "night";
+    } else if (lastPhase === "day") {
+      // Check if feast is due
+      const shouldFeast = (gameState.currentPhaseNumber % config.feastFrequency) === (config.feastFrequency - 1);
+      nextPhaseType = shouldFeast ? "feast" : "night";
+    } else {
+      // lastPhase is night or undefined (start of next day)
+      nextPhaseType = "day";
+    }
 
     preparePhase(nextPhaseType);
   };
@@ -520,28 +527,25 @@ export function SimulationEngine({
   const isSimulating = gameState.isRunning && gameState.currentPhase !== "summary" && gameState.currentPhase !== "finished";
   const showSummaryGrid = gameState.currentPhase === "summary" || gameState.currentPhase === "finished" || gameState.currentPhase === "setup";
 
-  const getPhaseBackgroundImage = () => {
+  const bgImage = useMemo(() => {
     const images = config.phaseImages || DEFAULT_CONFIG.phaseImages;
     if (!images) return null;
 
-    // Determine which phase image to show
-    let phaseType: "day" | "night" | "feast" | null = null;
+    // Priority: Feast > Night > Day
+    if (gameState.currentPhase === "feast") return images.feast;
+    if (gameState.currentPhase === "night") return images.night;
 
-    if (gameState.currentPhase === "day") phaseType = "day";
-    else if (gameState.currentPhase === "night") phaseType = "night";
-    else if (gameState.currentPhase === "feast") phaseType = "feast";
-    else if (gameState.currentPhase === "setup") phaseType = "day"; // Show day image during setup
-    else if (gameState.currentPhase === "summary" && gameState.logs.length > 0) {
-      // Show background of the phase that just finished
+    // For summary, use the phase of the last log
+    if (gameState.currentPhase === "summary" && gameState.logs.length > 0) {
       const lastLog = gameState.logs[gameState.logs.length - 1];
-      phaseType = lastLog.phase;
+      if (lastLog.phase === "feast") return images.feast;
+      if (lastLog.phase === "night") return images.night;
+      return images.day;
     }
 
-    if (!phaseType) return null;
-    return images[phaseType];
-  };
-
-  const bgImage = getPhaseBackgroundImage();
+    // Default to day (covers "day", "setup", and "finished")
+    return images.day;
+  }, [gameState.currentPhase, gameState.logs, config.phaseImages]);
 
   return (
     <Card className="card-game relative min-h-[80vh] flex flex-col overflow-hidden isolate">

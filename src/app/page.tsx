@@ -15,11 +15,11 @@ const games = [
     available: true,
   },
   {
-    title: "Wolvesville",
+    title: "Wolvesville Items",
     description: "Lupi mannari e villici in una battaglia notturna di astuzia.",
     icon: Gamepad2,
-    href: "#",
-    available: false,
+    href: "/wolvesville",
+    available: true,
   },
   {
     title: "Battle Royale",
@@ -32,8 +32,8 @@ const games = [
     title: "Arena Gladiatori",
     description: "Combattimenti 1v1 in stile romano con gladiatori leggendari.",
     icon: Gamepad2,
-    href: "/gladiators",
-    available: true,
+    href: "#",
+    available: false,
   },
 ];
 
@@ -71,23 +71,21 @@ export default function HomePage() {
               const content = (
                 <div
                   key={game.title}
-                  className={`group relative flex flex-col items-center rounded-xl border p-6 text-center transition-all duration-300 ${
-                    game.available
-                      ? "cursor-pointer border-primary/30 bg-card hover:border-primary hover:shadow-[0_0_30px_hsl(43_90%_55%/0.2)] hover:-translate-y-1"
-                      : "cursor-default border-border/50 bg-card/50 opacity-60"
-                  }`}
+                  className={`group relative flex flex-col items-center rounded-xl border p-6 text-center transition-all duration-300 ${game.available
+                    ? "cursor-pointer border-primary/30 bg-card hover:border-primary hover:shadow-[0_0_30px_hsl(43_90%_55%/0.2)] hover:-translate-y-1"
+                    : "cursor-not-allowed pointer-events-none border-border/50 bg-card/50 opacity-50 grayscale"
+                    }`}
                 >
                   <div
-                    className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${
-                      game.available
-                        ? "bg-primary/10 text-primary group-hover:bg-primary/20"
-                        : "bg-muted text-muted-foreground"
-                    } transition-colors`}
+                    className={`mb-4 flex h-16 w-16 items-center justify-center rounded-full ${game.available
+                      ? "bg-primary/10 text-primary group-hover:bg-primary/20"
+                      : "bg-muted text-muted-foreground"
+                      } transition-colors`}
                   >
                     <Icon size={28} />
                   </div>
-                  <h3 className="mb-2 font-serif text-lg font-semibold text-foreground">
-                    {game.title}
+                  <h3 className={`mb-2 font-serif text-lg font-semibold ${!game.available ? "text-muted-foreground" : "text-foreground"}`}>
+                    {game.title} {!game.available && "(Coming Soon)"}
                   </h3>
                   <p className="text-sm leading-relaxed text-muted-foreground">
                     {game.description}
