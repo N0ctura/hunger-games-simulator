@@ -83,17 +83,19 @@ export function extractAllItems(sets: WovAvatarSet[]): import("./wolvesville-typ
   const seenIds = new Set<string>();
 
   sets.forEach(set => {
-    set.items.forEach(item => {
-      if (!seenIds.has(item.id)) {
-        seenIds.add(item.id);
-        // Enrich item with set name if needed or ensure image URL is correct
-        allItems.push({
-          ...item,
-          imageUrl: resolveImageUrl(item.id, "avatar", item.imageUrl),
-          name: item.name || `${set.name} Item` // Fallback name if missing
-        });
-      }
-    });
+    if (set.items) {
+      set.items.forEach(item => {
+        if (!seenIds.has(item.id)) {
+          seenIds.add(item.id);
+          // Enrich item with set name if needed or ensure image URL is correct
+          allItems.push({
+            ...item,
+            imageUrl: resolveImageUrl(item.id, "avatar", item.imageUrl),
+            name: item.name || `${set.name} Item` // Fallback name if missing
+          });
+        }
+      });
+    }
   });
 
   return allItems;

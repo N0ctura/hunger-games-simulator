@@ -15,7 +15,7 @@ export function RoleGallery({ roles }: RoleGalleryProps) {
 
   const safeRoles = Array.isArray(roles) ? roles : Object.values(roles || {});
 
-  const filteredRoles = safeRoles.filter(role =>
+  const filteredRoles = (safeRoles as WovRole[]).filter((role: WovRole) =>
     (role.name || "").toLowerCase().includes(search.toLowerCase()) ||
     (role.team || "").toLowerCase().includes(search.toLowerCase())
   );

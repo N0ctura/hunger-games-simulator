@@ -41,7 +41,7 @@ export function enrichItem(item: WovAvatarItem): WovAvatarItem {
     }
 
     // If category is still unknown or generic, try to infer or keep it permissive
-    if (!category || category === "UNKNOWN") {
+    if (!category || (category as string) === "UNKNOWN") {
       category = "CLOTHES";
     }
 
