@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, SkipForward, RotateCcw, Trophy, Sun, Moon, Utensils, Copy, Skull, ArrowRight, FastForward, Eye } from "lucide-react";
 import { useAppearance } from "@/context/appearance-context";
+import { DM_Serif_Display } from "next/font/google";
 
 // Helper for color opacity
 const hexToRgba = (hex: string, alpha: number) => {
@@ -69,8 +70,8 @@ export function SimulationEngine({
   };
 
   const getWeightedEvent = (
-    pool: GameEvent[], 
-    phaseNumber: number, 
+    pool: GameEvent[],
+    phaseNumber: number,
     deathRateConfig: number = 0.5
   ): GameEvent | null => {
     if (pool.length === 0) return null;
@@ -79,7 +80,7 @@ export function SimulationEngine({
     // Day 1: 0.5x chance (relative to base)
     // Increases by 0.25 per day, capped at 2.5x
     const dayFactor = Math.min(0.5 + (phaseNumber - 1) * 0.25, 2.5);
-    
+
     // Config death rate slider (assumed 0-1, default 0.5)
     // 0.5 -> 1x, 1.0 -> 2x, 0.1 -> 0.2x
     const configFactor = (deathRateConfig || 0.5) * 2;
@@ -99,7 +100,7 @@ export function SimulationEngine({
       if (random < item.weight) return item.event;
       random -= item.weight;
     }
-    
+
     return weightedPool[weightedPool.length - 1].event;
   };
 
@@ -132,7 +133,7 @@ export function SimulationEngine({
       const validCandidates = candidates.filter(c => {
         // Narrative Variety
         if (c.usedEvents?.includes(event.id)) return false;
-        
+
         // Loyalty Logic: If fatal and not last 2, avoid same district
         if (event.isFatal && totalAliveCount > 2) {
           if (c.district !== undefined && c.district === p1.district) return false;
@@ -212,7 +213,7 @@ export function SimulationEngine({
   const preparePhase = useCallback(
     (phaseType: "day" | "night" | "feast") => {
       const phaseEvents = events.filter((e) => e.type === phaseType);
-      
+
       // Fallback Correction: ensure we have something
       const fallbackEvent: GameEvent = {
         id: "fallback-generic",
@@ -241,7 +242,7 @@ export function SimulationEngine({
       const shuffledAlive = shuffleArray(alive);
       const simulatedEvents: SimulatedEvent[] = [];
       const processedIds = new Set<string>();
-      
+
       let i = 0;
       while (i < shuffledAlive.length) {
         // Get currently available tributes (those still alive in simulation)
@@ -249,7 +250,7 @@ export function SimulationEngine({
         // We must check if they are still alive in simulationTributes AND not processed in this phase
         const currentTributeId = shuffledAlive[i].id;
         const currentTributeSim = simulationTributes.find(t => t.id === currentTributeId);
-        
+
         if (!currentTributeSim || !currentTributeSim.isAlive || processedIds.has(currentTributeId)) {
           i++;
           continue;
@@ -257,8 +258,8 @@ export function SimulationEngine({
 
         const available = [
           shuffledAlive[i],
-          ...shuffledAlive.slice(i + 1).filter(t => 
-            !processedIds.has(t.id) && 
+          ...shuffledAlive.slice(i + 1).filter(t =>
+            !processedIds.has(t.id) &&
             simulationTributes.find(st => st.id === t.id)?.isAlive
           )
         ];
@@ -269,11 +270,11 @@ export function SimulationEngine({
 
         while (!result && attempts < MAX_ATTEMPTS) {
           const randomEvent = getWeightedEvent(
-            phaseEvents, 
-            gameState.currentPhaseNumber || 1, 
+            phaseEvents,
+            gameState.currentPhaseNumber || 1,
             config.deathRate
           );
-          
+
           if (randomEvent) {
             result = processEvent(randomEvent, available, simulationTributes, alive.length);
           }
@@ -307,7 +308,7 @@ export function SimulationEngine({
     },
     [tributes, events, onWinner, gameState.logs, config.deathRate, gameState.currentPhaseNumber]
   );
-  
+
   // I'll implement the loop properly inside the replacement string.
 
   const handleNextEvent = () => {
@@ -318,12 +319,12 @@ export function SimulationEngine({
       let newT = { ...t };
       if (event.deaths.includes(t.id)) newT.isAlive = false;
       if (event.killerId && t.id === event.killerId) newT.kills += event.deaths.length;
-      
+
       // Update usedEvents persistence
       if (event.originalEventId && event.participants.includes(t.id)) {
         newT.usedEvents = [...(newT.usedEvents || []), event.originalEventId];
       }
-      
+
       return newT;
     });
 
@@ -337,7 +338,7 @@ export function SimulationEngine({
 
   const handleSkip = () => {
     let updatedTributes = [...gameState.tributes];
-    
+
     // Apply all remaining events
     for (let i = gameState.currentStep; i < gameState.pendingEvents.length; i++) {
       const event = gameState.pendingEvents[i];
@@ -371,7 +372,7 @@ export function SimulationEngine({
 
     const newPhaseNumber = gameState.currentPhase === "day" ? gameState.currentPhaseNumber + 1 : gameState.currentPhaseNumber;
     const newLogs = [...gameState.logs, newLog];
-    
+
     setGameState(prev => ({
       ...prev,
       logs: newLogs,
@@ -417,7 +418,7 @@ export function SimulationEngine({
         : lastPhase === "day"
           ? "night"
           : "day";
-    
+
     preparePhase(nextPhaseType);
   };
 
@@ -522,7 +523,7 @@ export function SimulationEngine({
   const getPhaseBackgroundImage = () => {
     const images = config.phaseImages || DEFAULT_CONFIG.phaseImages;
     if (!images) return null;
-    
+
     // Determine which phase image to show
     let phaseType: "day" | "night" | "feast" | null = null;
 
@@ -547,7 +548,7 @@ export function SimulationEngine({
       {/* Dynamic Background Layer */}
       {bgImage && (
         <>
-          <div 
+          <div
             className="absolute inset-0 z-0 transition-all duration-1000 ease-in-out"
             style={{
               backgroundImage: `url(${bgImage})`,
@@ -555,7 +556,7 @@ export function SimulationEngine({
               backgroundPosition: 'center',
             }}
           />
-          <div 
+          <div
             className="absolute inset-0 z-[1] bg-black transition-opacity duration-1000"
             style={{ opacity: config.overlayOpacity ?? 0.7 }}
           />
@@ -583,7 +584,7 @@ export function SimulationEngine({
             <div className={getPhaseBadgeClass()}>
               <PhaseIcon />
               <span className="ml-2">
-                {gameState.currentPhase === "day" && `Giorno ${gameState.currentPhaseNumber + 1}`}
+                {gameState.currentPhase === "day" && `Giorno ${gameState.currentPhaseNumber}`}
                 {gameState.currentPhase === "night" && `Notte ${gameState.currentPhaseNumber}`}
                 {gameState.currentPhase === "feast" && "Banchetto"}
                 {gameState.currentPhase === "summary" && "Riepilogo"}
@@ -592,21 +593,20 @@ export function SimulationEngine({
           )}
         </CardTitle>
       </CardHeader>
-      
+
       <CardContent className="flex-grow space-y-6 flex flex-col relative z-10">
-        
+
         {/* NARRATIVE AREA (Top Focus) */}
         {isSimulating && (
-          <div 
+          <div
             ref={eventListRef}
             className="flex-grow max-h-[60vh] overflow-y-auto space-y-3 p-2 rounded-lg bg-black/20"
           >
             {gameState.pendingEvents.slice(0, gameState.currentStep).map((event) => (
               <div
                 key={event.id}
-                className={`animate-fade-in rounded-lg p-4 shadow-md ${
-                  event.deaths.length > 0 ? "border-l-4 border-l-destructive animate-shake" : "border-l-4 border-l-primary/20"
-                }`}
+                className={`animate-fade-in rounded-lg p-4 shadow-md ${event.deaths.length > 0 ? "border-l-4 border-l-destructive animate-shake" : "border-l-4 border-l-primary/20"
+                  }`}
                 style={{
                   backgroundColor: hexToRgba(popupColor, popupOpacity),
                   color: textColor,
@@ -628,7 +628,7 @@ export function SimulationEngine({
                             title={tribute.name}
                           />
                         ) : (
-                          <div 
+                          <div
                             className="w-16 h-16 rounded-md border-2 border-primary/50 shadow-lg flex items-center justify-center bg-accent text-accent-foreground text-xl font-bold select-none"
                             title={tribute.name}
                           >
@@ -638,7 +638,7 @@ export function SimulationEngine({
                         <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity absolute -bottom-4 whitespace-nowrap bg-black/80 px-1 rounded">
                           {tribute.name}
                         </span>
-                        
+
                         {/* Death Indicator overlay */}
                         {event.deaths.includes(participantId) && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-md">
@@ -675,11 +675,11 @@ export function SimulationEngine({
               Caduti in questa fase
             </p>
             <p className="text-base text-muted-foreground">
-              {gameState.logs[gameState.logs.length - 1]?.deaths.length > 0 
+              {gameState.logs[gameState.logs.length - 1]?.deaths.length > 0
                 ? gameState.logs[gameState.logs.length - 1].deaths
-                    .map((id) => tributes.find((t) => t.id === id)?.name)
-                    .filter(Boolean)
-                    .join(", ")
+                  .map((id) => tributes.find((t) => t.id === id)?.name)
+                  .filter(Boolean)
+                  .join(", ")
                 : "Nessun morto in questa fase."}
             </p>
           </div>
@@ -754,9 +754,9 @@ export function SimulationEngine({
           )}
 
           {gameState.isRunning && (
-             <Button onClick={resetSimulation} variant="ghost" size="sm" className="absolute right-4 top-4 opacity-50 hover:opacity-100">
-               <RotateCcw size={16} />
-             </Button>
+            <Button onClick={resetSimulation} variant="ghost" size="sm" className="absolute right-4 top-4 opacity-50 hover:opacity-100">
+              <RotateCcw size={16} />
+            </Button>
           )}
         </div>
       </div>
