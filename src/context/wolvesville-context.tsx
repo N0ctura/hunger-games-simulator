@@ -8,7 +8,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar, WovRankedSeason, WovPlayerLeaderboardEntry } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
 import { enrichItem } from "@/lib/item-mapper";
 
@@ -24,6 +24,9 @@ interface WolvesvilleContextType {
   activeOffers: WovShopOffer[];
   calendars: WovCalendar[];
   roleIcons: any[];
+  rankedSeason: WovRankedSeason | null;
+  leaderboard: WovPlayerLeaderboardEntry[];
+  highscores: WovPlayerLeaderboardEntry[];
   loading: boolean;
   error: string | null;
 
@@ -135,6 +138,9 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [activeOffers, setActiveOffers] = useState<WovShopOffer[]>([]);
   const [calendars, setCalendars] = useState<WovCalendar[]>([]);
   const [roleIcons, setRoleIcons] = useState<any[]>([]);
+  const [rankedSeason, setRankedSeason] = useState<WovRankedSeason | null>(null);
+  const [leaderboard, setLeaderboard] = useState<WovPlayerLeaderboardEntry[]>([]);
+  const [highscores, setHighscores] = useState<WovPlayerLeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -149,7 +155,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         setLoading(true);
         setError(null);
 
-        const [rolesRaw, directItemsRaw, setsRaw, bundlesRaw, bgsRaw, offersRaw, calendarsRaw, roleIconsRaw] = await Promise.all([
+        const [rolesRaw, directItemsRaw, setsRaw, bundlesRaw, bgsRaw, offersRaw, calendarsRaw, roleIconsRaw, rankedSeasonRaw, leaderboardRaw, highscoresRaw] = await Promise.all([
           WovEngine.getRoles(),
           WovEngine.getAvatarItems(),
           WovEngine.getAvatarSets(),
@@ -158,6 +164,9 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
           WovEngine.getShopActiveOffers(),
           WovEngine.getCalendars(),
           WovEngine.getRoleIcons(),
+          WovEngine.getRankedSeason(),
+          WovEngine.getRankedLeaderboard(),
+          WovEngine.getHighscores(),
         ]);
 
         if (cancelled) return;
@@ -179,6 +188,15 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
 
         console.log(`[WovContext] Role Icons received: ${Array.isArray(roleIconsRaw) ? roleIconsRaw.length : 'Not Array'}`);
         setRoleIcons(Array.isArray(roleIconsRaw) ? roleIconsRaw : []);
+
+        // Ranked Data
+         console.log(`[WovContext] Season:`, rankedSeasonRaw ? 'Loaded' : 'Null');
+         console.log(`[WovContext] Leaderboard:`, Array.isArray(leaderboardRaw) ? leaderboardRaw.length : 'Invalid');
+         console.log(`[WovContext] Highscores:`, Array.isArray(highscoresRaw) ? highscoresRaw.length : 'Invalid');
+
+         setRankedSeason(rankedSeasonRaw);
+         setLeaderboard(Array.isArray(leaderboardRaw) ? leaderboardRaw : []);
+         setHighscores(Array.isArray(highscoresRaw) ? highscoresRaw : []);
 
         setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
 
@@ -368,6 +386,9 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         activeOffers,
         calendars,
         roleIcons,
+        rankedSeason,
+        leaderboard,
+        highscores,
         loading,
         error,
         equippedItems,

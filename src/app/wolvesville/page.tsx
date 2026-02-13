@@ -10,6 +10,8 @@ import { Wardrobe } from "@/components/wolvesville/wardrobe";
 import { ItemGrid } from "@/components/wolvesville/item-grid";
 import { RoleGallery } from "@/components/wolvesville/role-gallery";
 import { ClanManager } from "@/components/wolvesville/clan-manager";
+import { RankedDashboard } from "@/components/wolvesville/ranked-dashboard";
+import { PlayerSearch } from "@/components/wolvesville/player-search";
 import { WovEngine } from "@/lib/wov-engine";
 import { WovRole, WovAvatarItem, WovBackground } from "@/lib/wolvesville-types";
 import Image from "next/image";
@@ -19,6 +21,11 @@ import Image from "next/image";
 function WolvesvilleContent() {
   const { roles, items, roleIcons, activeOffers, loading } = useWolvesville();
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  // Allow sidebar to control activeTab
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+  };
 
   const renderContent = () => {
     // Universal Header for sub-sections
@@ -52,7 +59,7 @@ function WolvesvilleContent() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div
                 className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
                 onClick={() => setActiveTab("roles")}
@@ -73,6 +80,14 @@ function WolvesvilleContent() {
               >
                 <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roleIcons.length}</h3>
                 <p className="text-sm text-muted-foreground">Icone Ruoli</p>
+              </div>
+
+              <div
+                className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
+                onClick={() => setActiveTab("ranked")}
+              >
+                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">Ranked</h3>
+                <p className="text-sm text-muted-foreground">Classifiche</p>
               </div>
             </div>
 
@@ -210,6 +225,22 @@ function WolvesvilleContent() {
           </div>
         );
 
+      case "ranked":
+        return (
+          <div className="animate-in fade-in duration-500">
+            <SectionHeader title="Classifiche & Ranked" />
+            <RankedDashboard />
+          </div>
+        );
+
+      case "profiles":
+        return (
+          <div className="animate-in fade-in duration-500">
+            <SectionHeader title="Cerca Giocatore" />
+            <PlayerSearch />
+          </div>
+        );
+
       case "roleIcons":
         // Group icons by roleId
         const iconsByRole: Record<string, any[]> = {};
@@ -270,11 +301,12 @@ function WolvesvilleContent() {
                           />
                         </div>
                         <div className="absolute top-2 right-2">
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded border ${icon.rarity === 'COMMON' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
-                              icon.rarity === 'RARE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded border ${icon.rarity === 'MYTHICAL' || icon.rarity === 'MYTHIC' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' :
+                              icon.rarity === 'LEGENDARY' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
                                 icon.rarity === 'EPIC' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
-                                  icon.rarity === 'LEGENDARY' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
-                                    'bg-white/10 text-white/70 border-white/20'
+                                  icon.rarity === 'RARE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                                    icon.rarity === 'COMMON' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
+                                      'bg-white/10 text-white/70 border-white/20'
                             }`}>
                             {icon.rarity ? icon.rarity.substring(0, 1) : "?"}
                           </span>
@@ -325,38 +357,20 @@ function WolvesvilleContent() {
   };
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col md:flex-row">
-      <ParticleBackground />
+    <div className="flex min-h-screen">
+      {/* Sidebar Navigation */}
+      <WovSidebar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Mobile Header / Nav Toggle could go here */}
-      <div className="lg:hidden p-4 border-b border-border bg-background/80 backdrop-blur sticky top-0 z-50 flex items-center justify-between">
-        <Link href="/" className="p-2 -ml-2 text-muted-foreground hover:text-primary transition-colors">
-          <ArrowLeft size={24} />
-        </Link>
-        <span className="font-bold font-serif gold-text text-lg">Wolvesville DB</span>
-        <div className="w-8" /> {/* Spacer for optical centering */}
-      </div>
-
-      {/* Sidebar - FIXED LAYOUT */}
-      <div className={`hidden lg:block fixed top-0 left-0 h-screen w-72 border-r border-border/50 bg-background/95 backdrop-blur-md z-[100] overflow-y-auto shadow-2xl transition-transform duration-300 ${activeTab === "wardrobe" ? "-translate-x-full" : "translate-x-0"}`}>
-        <div className="p-6 h-full flex flex-col">
-          <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-primary mb-8 transition-colors text-sm font-medium">
-            <ArrowLeft size={16} />
-            <span>Torna all'Hub</span>
-          </Link>
-          <div className="mb-6 px-2">
-            <h1 className="font-serif font-bold text-xl gold-text tracking-wide">Wolvesville DB</h1>
-            <p className="text-xs text-muted-foreground mt-1">Unofficial Tool v2.3.0</p>
+      {/* Main Content Area */}
+      <main className="flex-1 p-8 ml-64 overflow-y-auto h-screen custom-scrollbar">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center h-full space-y-4 animate-pulse">
+            <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+            <p className="text-muted-foreground font-serif text-lg">Caricamento Wolvesville DB...</p>
           </div>
-          <WovSidebar activeTab={activeTab} onTabChange={setActiveTab} />
-        </div>
-      </div>
-
-      {/* Main Content - MARGIN LEFT FOR SIDEBAR */}
-      <main className={`flex-grow min-h-screen relative z-10 transition-all duration-300 ${activeTab === "wardrobe" ? "ml-0" : "lg:ml-72"}`}>
-        <div className="p-4 md:p-8 lg:p-12 max-w-[1600px] mx-auto">
-          {renderContent()}
-        </div>
+        ) : (
+          renderContent()
+        )}
       </main>
     </div>
   );

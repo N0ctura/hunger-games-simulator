@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Shirt, User, Users, BookOpen } from "lucide-react";
+import { LayoutDashboard, Shirt, User, Users, BookOpen, Trophy, Image as ImageIcon } from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
@@ -12,6 +12,9 @@ const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "wardrobe", label: "Guardaroba & Item", icon: Shirt },
   { id: "roles", label: "Ruoli", icon: User },
+  { id: "roleIcons", label: "Icone Ruolo", icon: ImageIcon },
+  { id: "profiles", label: "Cerca Giocatore", icon: User },
+  { id: "ranked", label: "Ranked & Classifiche", icon: Trophy },
   { id: "clans", label: "Clan & Quest", icon: Users },
   { id: "wiki", label: "Wiki", icon: BookOpen },
 ];

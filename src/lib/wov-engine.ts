@@ -5,7 +5,10 @@ import {
   WovLoadingScreen,
   WovClanQuest,
   WovAvatarItem,
-  WovClan
+  WovClan,
+  WovRankedSeason,
+  WovPlayerLeaderboardEntry,
+  WovPlayerProfile
 } from "./wolvesville-types";
 import {
   FALLBACK_ROLES,
@@ -39,7 +42,7 @@ export const WovEngine = {
   /**
    * Core Fetcher with Caching and Fallback Logic
    */
-  async fetch<T>(endpoint: string, fallbackData: T): Promise<T> {
+  async fetch<T>(endpoint: string, fallbackData: T, options?: { suppressErrors?: boolean, allowedStatuses?: number[] }): Promise<T> {
     const cacheKey = endpoint;
     const now = Date.now();
 
@@ -55,36 +58,67 @@ export const WovEngine = {
       return fallbackData;
     }
 
-    try {
-      // 3. Fetch Data
-      const response = await fetch(`${BASE_URL}${endpoint}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Accept-Language": "it",
-          "Authorization": `Bot ${API_KEY}`,
-          ...(BOT_ID ? { "X-Bot-ID": BOT_ID } : {})
-        },
-        next: { revalidate: 3600 }
-      });
+    const MAX_RETRIES = 3;
+    let attempt = 0;
 
-      if (!response.ok) {
-        console.error(`[WovEngine] API Error ${response.status} for ${endpoint}`);
-        return fallbackData;
+    while (attempt < MAX_RETRIES) {
+      try {
+        // 3. Fetch Data
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Accept-Language": "it",
+            "Authorization": `Bot ${API_KEY}`,
+            ...(BOT_ID ? { "X-Bot-ID": BOT_ID } : {})
+          },
+          next: { revalidate: 3600 }
+        });
+
+        if (response.status === 429) {
+          // Rate limited - wait and retry
+          const retryAfter = parseInt(response.headers.get("Retry-After") || "2");
+          await new Promise(r => setTimeout(r, (retryAfter * 1000) + 1000));
+          attempt++;
+          continue;
+        }
+
+        // Handle specific allowed statuses (e.g., 404 for search) without error logging
+        if (options?.allowedStatuses?.includes(response.status)) {
+          return fallbackData;
+        }
+
+        if (!response.ok) {
+          if (!options?.suppressErrors) {
+            console.error(`[WovEngine] API Error ${response.status} for ${endpoint}`);
+          }
+          return fallbackData;
+        }
+
+        const raw = await response.json();
+        const data = raw.items ? raw.items : raw; // Handle both wrapper and direct arrays if any
+
+        // 4. Update Cache
+        cache[cacheKey] = { data, timestamp: now };
+
+        return data as T;
+      } catch (error) {
+        if (!options?.suppressErrors) {
+          console.warn(`[WovEngine] Network attempt ${attempt + 1} failed for ${endpoint}`, error);
+        }
+        attempt++;
+        if (attempt >= MAX_RETRIES) {
+          if (!options?.suppressErrors) {
+            console.error(`[WovEngine] Final Network Exception for ${endpoint}`, error);
+          }
+          return fallbackData;
+        }
+        // Exponential backoff for network errors
+        await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
       }
-
-      const raw = await response.json();
-      const data = raw.items ? raw.items : raw; // Handle both wrapper and direct arrays if any
-
-      // 4. Update Cache
-      cache[cacheKey] = { data, timestamp: now };
-
-      return data as T;
-    } catch (error) {
-      console.error(`[WovEngine] Network Exception for ${endpoint}`, error);
-      return fallbackData;
     }
+    return fallbackData;
   },
 
   /**
@@ -154,6 +188,52 @@ export const WovEngine = {
 
   async getRoleIcons(): Promise<any[]> {
     return this.fetch<any[]>("/items/roleIcons", []);
+  },
+
+  async getRankedSeason(): Promise<WovRankedSeason | null> {
+    const response = await this.fetch<any>("/ranked/season", null);
+    if (!response) return null;
+    // API returns { season: { ... }, seasonAwards: [ ... ] }
+    // We map it to our WovRankedSeason interface
+    const seasonData = response.season || response;
+    return {
+      ...seasonData,
+      rewards: response.seasonAwards || [] // Map sibling rewards to interface
+    };
+  },
+
+  async getRankedLeaderboard(): Promise<WovPlayerLeaderboardEntry[]> {
+    const response = await this.fetch<any>("/ranked/leaderboard", []);
+    // Check for common wrappers
+    if (Array.isArray(response)) return response;
+    // API returns { ranksTop: [...] }
+    return response.ranksTop || response.players || response.leaderboard || [];
+  },
+
+  async getHighscores(): Promise<WovPlayerLeaderboardEntry[]> {
+    const response = await this.fetch<any>("/players/highscores", []);
+    // Check for common wrappers
+    if (Array.isArray(response)) return response;
+    // API returns { allTime: [...], monthly: [...], etc }
+    return response.allTime || response.players || [];
+  },
+
+  async getPlayerProfile(playerId: string): Promise<WovPlayerProfile | null> {
+    return this.fetch<WovPlayerProfile | null>(`/players/${playerId}`, null);
+  },
+
+  async searchPlayer(username: string): Promise<WovPlayerProfile | null> {
+    try {
+      // API usually returns a single object for this endpoint
+      return await this.fetch<WovPlayerProfile | null>(
+        `/players/search?username=${encodeURIComponent(username)}`,
+        null,
+        { allowedStatuses: [404] }
+      );
+    } catch (error) {
+      console.error("Search failed:", error);
+      return null;
+    }
   },
 
   async getClanQuests(): Promise<WovClanQuest[]> {

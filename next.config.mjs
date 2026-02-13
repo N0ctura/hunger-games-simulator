@@ -8,8 +8,10 @@ const nextConfig = {
   output: 'export',
   // In dev mode (isProd=false), we want no basePath so it runs at root /
   // In prod mode (isProd=true), we use the repo name
-  basePath: isProd ? '/hunger-games-simulator' : '',
-  assetPrefix: isProd ? '/hunger-games-simulator/' : '',
+  // basePath: isProd ? '/hunger-games-simulator' : '',
+  // assetPrefix: isProd ? '/hunger-games-simulator/' : '',
+  basePath: '',
+  assetPrefix: '',
   images: {
     unoptimized: true,
     remotePatterns: [

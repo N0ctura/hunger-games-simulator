@@ -17,7 +17,7 @@ const CATEGORIES: Array<WovCategory | "ALL"> = [
 ];
 
 const RARITIES: Array<WovRarity | "ALL"> = [
-  "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY",
+  "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY", "MYTHICAL", "MYTHIC"
 ];
 
 const RARITY_COLORS: Record<WovRarity, string> = {
@@ -25,6 +25,8 @@ const RARITY_COLORS: Record<WovRarity, string> = {
   RARE: "text-blue-400 border-blue-500/30 bg-blue-500/10",
   EPIC: "text-purple-400 border-purple-500/30 bg-purple-500/10",
   LEGENDARY: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
+  MYTHICAL: "text-pink-400 border-pink-500/30 bg-pink-500/10",
+  MYTHIC: "text-pink-400 border-pink-500/30 bg-pink-500/10",
 };
 
 // Dimensioni celle virtualizzazione
@@ -293,8 +295,8 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
           // 1. Try first item object
           // 2. Try first item ID (resolved to CDN)
           // 3. Try first nested set ID (resolved to CDN)
-          const firstItemUrl = 
-            (s.items && s.items.length > 0 && s.items[0].imageUrl) 
+          const firstItemUrl =
+            (s.items && s.items.length > 0 && s.items[0].imageUrl)
             || (s.avatarItemIds && s.avatarItemIds.length > 0 && getCdnUrl(s.avatarItemIds[0], "avatar"))
             || (s.avatarItemSets && s.avatarItemSets.length > 0 && getCdnUrl(s.avatarItemSets[0], "set"))
             || "";

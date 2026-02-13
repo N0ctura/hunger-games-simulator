@@ -1,4 +1,4 @@
-export type WovRarity = "COMMON" | "RARE" | "EPIC" | "LEGENDARY";
+export type WovRarity = "COMMON" | "RARE" | "EPIC" | "LEGENDARY" | "MYTHICAL" | "MYTHIC";
 
 export type WovCategory =
   | "HAIR"
@@ -141,6 +141,81 @@ export interface WovRoleIcon {
     height: number;
   };
   roleId?: string; // If linked to a specific role
+}
+
+export interface WovRankedSeason {
+  id: string;
+  number: number;
+  startTime: string;
+  endTime: string;
+  rewards: {
+    minSkill: number;
+    rewards: {
+      type: string;
+      amount?: number;
+      avatarItemId?: string;
+    }[];
+  }[];
+}
+
+export interface WovPlayerLeaderboardEntry {
+  playerId: string;
+  username: string;
+  skill?: number;
+  xp?: number;
+  rank?: number; // Added by us if not in API
+}
+
+export interface WovRoleCard {
+  roleIdBase: string;
+  roleIdsAdvanced: string[];
+  rarity: WovRarity;
+  abilityId1?: string;
+  abilityId2?: string;
+  abilityId3?: string;
+  abilityId4?: string;
+  abilityId5?: string;
+  roleId1?: string; // Legacy/Alt format
+  roleId2?: string; // Legacy/Alt format
+}
+
+export interface WovRoleAchievement {
+  roleId: string;
+  level: number;
+  points: number;
+  pointsNextLevel: number;
+  category: string;
+}
+
+export interface WovPlayerProfile {
+  id: string;
+  username: string;
+  level: number;
+  lastOnline: string;
+  creationTime?: string;
+  personalMessage?: string; // Bio
+  status?: string; // ONLINE | OFFLINE | PLAYING
+  profileIcon?: {
+    id: string;
+    url: string;
+  };
+  equippedAvatar?: {
+    url: string;
+    width: number;
+    height: number;
+  };
+  rankedSeasonSkill?: number;
+  rankedSeasonMaxSkill?: number;
+  rankedSeasonBestRank?: number;
+  badgeIds?: string[];
+  roleCards?: WovRoleCard[];
+  gameStats?: {
+    totalWinCount: number;
+    totalLoseCount: number;
+    totalPlayTimeInMinutes: number;
+    achievements?: WovRoleAchievement[]; // This is actually the Role Progression
+  };
+  clanId?: string;
 }
 
 export type WovItemType = "ROLE" | "AVATAR_SET" | "BACKGROUND" | "ITEM" | "LOADING_SCREEN" | "CLAN";
