@@ -180,7 +180,7 @@ function WolvesvilleContent() {
             <SectionHeader title="Guardaroba & Item" />
             <div className="flex flex-col xl:flex-row gap-8">
               {/* Left: Wardrobe (Sticky on desktop) */}
-              <div className="xl:w-80 shrink-0 xl:sticky xl:top-4 self-start">
+              <div className="xl:w-80 shrink-0 xl:sticky xl:top-4 self-start z-50">
                 <Wardrobe />
               </div>
 
