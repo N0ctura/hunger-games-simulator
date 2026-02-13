@@ -132,4 +132,15 @@ export interface WovCalendar {
   }[];
 }
 
+export interface WovRoleIcon {
+  id: string;
+  rarity: WovRarity;
+  image: {
+    url: string;
+    width: number;
+    height: number;
+  };
+  roleId?: string; // If linked to a specific role
+}
+
 export type WovItemType = "ROLE" | "AVATAR_SET" | "BACKGROUND" | "ITEM" | "LOADING_SCREEN" | "CLAN";

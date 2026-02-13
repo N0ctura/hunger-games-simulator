@@ -23,6 +23,7 @@ interface WolvesvilleContextType {
   backgrounds: WovBackground[];
   activeOffers: WovShopOffer[];
   calendars: WovCalendar[];
+  roleIcons: any[];
   loading: boolean;
   error: string | null;
 
@@ -133,6 +134,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [backgrounds, setBackgrounds] = useState<WovBackground[]>([]);
   const [activeOffers, setActiveOffers] = useState<WovShopOffer[]>([]);
   const [calendars, setCalendars] = useState<WovCalendar[]>([]);
+  const [roleIcons, setRoleIcons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -147,7 +149,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         setLoading(true);
         setError(null);
 
-        const [rolesRaw, directItemsRaw, setsRaw, bundlesRaw, bgsRaw, offersRaw, calendarsRaw] = await Promise.all([
+        const [rolesRaw, directItemsRaw, setsRaw, bundlesRaw, bgsRaw, offersRaw, calendarsRaw, roleIconsRaw] = await Promise.all([
           WovEngine.getRoles(),
           WovEngine.getAvatarItems(),
           WovEngine.getAvatarSets(),
@@ -155,6 +157,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
           WovEngine.getBackgrounds(),
           WovEngine.getShopActiveOffers(),
           WovEngine.getCalendars(),
+          WovEngine.getRoleIcons(),
         ]);
 
         if (cancelled) return;
@@ -174,22 +177,25 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         console.log(`[WovContext] Calendars received: ${Array.isArray(calendarsRaw) ? calendarsRaw.length : 'Not Array'}`);
         if (calendarsRaw && calendarsRaw.length > 0) console.log('[WovContext] 🔍 RAW CALENDAR (First):', calendarsRaw[0]);
 
+        console.log(`[WovContext] Role Icons received: ${Array.isArray(roleIconsRaw) ? roleIconsRaw.length : 'Not Array'}`);
+        setRoleIcons(Array.isArray(roleIconsRaw) ? roleIconsRaw : []);
+
         setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
-        
+
         // Deduplicate offers by ID to prevent "unique key prop" errors
-        const uniqueOffers = Array.isArray(offersRaw) 
+        const uniqueOffers = Array.isArray(offersRaw)
           ? Array.from(new Map(offersRaw.map((o, index) => {
-              // Ensure we have a valid ID. If missing, generate one based on index and random string
-              // AND include it in the object itself so it's available for key={offer.id}
-              const safeId = o.id || `generated-offer-${index}-${Math.random().toString(36).substr(2, 9)}`;
-              const safeOffer = { ...o, id: safeId };
-              return [safeId, safeOffer];
-            })).values())
+            // Ensure we have a valid ID. If missing, generate one based on index and random string
+            // AND include it in the object itself so it's available for key={offer.id}
+            const safeId = o.id || `generated-offer-${index}-${Math.random().toString(36).substr(2, 9)}`;
+            const safeOffer = { ...o, id: safeId };
+            return [safeId, safeOffer];
+          })).values())
           : [];
         setActiveOffers(uniqueOffers);
 
         setCalendars(Array.isArray(calendarsRaw) ? calendarsRaw : []);
-        
+
         // Extract Sets from Offers
         const offerSets: WovAvatarSet[] = [];
         if (Array.isArray(offersRaw)) {
@@ -361,6 +367,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         backgrounds,
         activeOffers,
         calendars,
+        roleIcons,
         loading,
         error,
         equippedItems,

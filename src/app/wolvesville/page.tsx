@@ -17,7 +17,7 @@ import Image from "next/image";
 // --- Main Page Component ---
 
 function WolvesvilleContent() {
-  const { roles, items, backgrounds, activeOffers, loading } = useWolvesville();
+  const { roles, items, roleIcons, activeOffers, loading } = useWolvesville();
   const [activeTab, setActiveTab] = useState("dashboard");
 
   const renderContent = () => {
@@ -69,10 +69,10 @@ function WolvesvilleContent() {
               </div>
               <div
                 className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
-                onClick={() => setActiveTab("backgrounds")}
+                onClick={() => setActiveTab("roleIcons")}
               >
-                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{backgrounds.length}</h3>
-                <p className="text-sm text-muted-foreground">Sfondi Disponibili</p>
+                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roleIcons.length}</h3>
+                <p className="text-sm text-muted-foreground">Icone Ruoli</p>
               </div>
             </div>
 
@@ -210,27 +210,101 @@ function WolvesvilleContent() {
           </div>
         );
 
-      case "backgrounds":
+      case "roleIcons":
+        // Group icons by roleId
+        const iconsByRole: Record<string, any[]> = {};
+        const unassignedIcons: any[] = [];
+
+        roleIcons.forEach(icon => {
+          if (icon.roleId) {
+            if (!iconsByRole[icon.roleId]) {
+              iconsByRole[icon.roleId] = [];
+            }
+            iconsByRole[icon.roleId].push(icon);
+          } else {
+            unassignedIcons.push(icon);
+          }
+        });
+
+        // Get sorted role keys
+        const sortedRoleIds = Object.keys(iconsByRole).sort((a, b) => {
+          const roleA = roles.find(r => r.id === a);
+          const roleB = roles.find(r => r.id === b);
+          const nameA = roleA ? roleA.name : a;
+          const nameB = roleB ? roleB.name : b;
+          return nameA.localeCompare(nameB);
+        });
+
         return (
-          <div className="animate-in fade-in duration-500">
-            <SectionHeader title="Sfondi" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {backgrounds.map((bg) => (
-                <div key={bg.id} className="group relative aspect-video rounded-xl overflow-hidden border border-border hover:border-primary transition-all shadow-lg hover:shadow-primary/20">
-                  <Image
-                    src={WovEngine.resolveImageUrl(bg.id, "background", bg.imageUrl)}
-                    alt={bg.name || bg.id}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-80" />
-                  <div className="absolute bottom-4 left-4">
-                    <h3 className="font-bold text-white text-lg">{bg.name || "Sfondo"}</h3>
-                    <span className="inline-block px-2 py-0.5 rounded-full bg-black/50 text-xs text-gray-300 border border-white/10 mt-1">{bg.rarity}</span>
+          <div className="animate-in fade-in duration-500 space-y-8 pb-20">
+            <SectionHeader title="Icone Ruoli" />
+
+            {sortedRoleIds.map(roleId => {
+              const role = roles.find(r => r.id === roleId);
+              const roleName = role ? role.name : roleId;
+              const roleIconsGroup = iconsByRole[roleId];
+
+              return (
+                <div key={roleId} className="bg-card/20 p-6 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-3 mb-4 border-b border-border/30 pb-2">
+                    {role && role.image && (
+                      <div className="w-8 h-8 relative">
+                        <Image src={role.image.url} alt={roleName} fill className="object-contain" />
+                      </div>
+                    )}
+                    <h3 className="text-xl font-bold font-serif capitalize">{roleName}</h3>
+                    <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full ml-auto">
+                      {roleIconsGroup.length} Varianti
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+                    {roleIconsGroup.map((icon) => (
+                      <div key={icon.id} className="group relative aspect-square bg-card/40 rounded-xl flex items-center justify-center border border-border hover:border-primary transition-all shadow-sm hover:shadow-primary/20">
+                        <div className="relative w-2/3 h-2/3">
+                          <Image
+                            src={icon.image.url}
+                            alt={icon.id}
+                            fill
+                            className="object-contain transition-transform duration-300 group-hover:scale-110"
+                          />
+                        </div>
+                        <div className="absolute top-2 right-2">
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded border ${icon.rarity === 'COMMON' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
+                              icon.rarity === 'RARE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                                icon.rarity === 'EPIC' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
+                                  icon.rarity === 'LEGENDARY' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                                    'bg-white/10 text-white/70 border-white/20'
+                            }`}>
+                            {icon.rarity ? icon.rarity.substring(0, 1) : "?"}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
+              );
+            })}
+
+            {unassignedIcons.length > 0 && (
+              <div className="bg-card/20 p-6 rounded-2xl border border-border/50">
+                <h3 className="text-xl font-bold font-serif mb-4">Altro</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+                  {unassignedIcons.map((icon) => (
+                    <div key={icon.id} className="group relative aspect-square bg-card/40 rounded-xl flex items-center justify-center border border-border hover:border-primary transition-all shadow-sm hover:shadow-primary/20">
+                      <div className="relative w-2/3 h-2/3">
+                        <Image
+                          src={icon.image.url}
+                          alt={icon.id}
+                          fill
+                          className="object-contain transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         );
 

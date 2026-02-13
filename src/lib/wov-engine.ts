@@ -152,6 +152,10 @@ export const WovEngine = {
     return this.fetch<WovLoadingScreen[]>("/items/loadingScreens", FALLBACK_LOADING_SCREENS);
   },
 
+  async getRoleIcons(): Promise<any[]> {
+    return this.fetch<any[]>("/items/roleIcons", []);
+  },
+
   async getClanQuests(): Promise<WovClanQuest[]> {
     return this.fetch<WovClanQuest[]>("/clans/quests/all", FALLBACK_CLAN_QUESTS);
   },
