@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Shirt, User, Users, BookOpen, Layers } from "lucide-react";
+import { LayoutDashboard, Shirt, User, Users, BookOpen } from "lucide-react";
 
 interface SidebarProps {
   activeTab: string;
@@ -13,7 +13,6 @@ const NAV_ITEMS = [
   { id: "wardrobe", label: "Guardaroba & Item", icon: Shirt },
   { id: "roles", label: "Ruoli", icon: User },
   { id: "clans", label: "Clan & Quest", icon: Users },
-  { id: "backgrounds", label: "Sfondi", icon: Layers },
   { id: "wiki", label: "Wiki", icon: BookOpen },
 ];
 
@@ -29,15 +28,15 @@ export function WovSidebar({ activeTab, onTabChange }: SidebarProps) {
         {NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.id;
           const Icon = item.icon;
-          
+
           return (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200",
-                isActive 
-                  ? "bg-primary/10 text-primary shadow-[0_0_15px_rgba(234,179,8,0.1)] border border-primary/20" 
+                isActive
+                  ? "bg-primary/10 text-primary shadow-[0_0_15px_rgba(234,179,8,0.1)] border border-primary/20"
                   : "text-muted-foreground hover:bg-card/50 hover:text-foreground"
               )}
             >

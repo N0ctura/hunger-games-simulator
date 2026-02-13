@@ -5,19 +5,16 @@ export type WovCategory =
   | "HAT"
   | "EYES"
   | "MOUTH"
-  | "CLOTHES"
   | "BACK"
-  | "HAND"
   | "MASK"
-  | "NECK"
   | "GLASSES"
   | "SHIRT"
-  | "PANTS"
-  | "SHOES"
   | "FRONT"
   | "BEARD"
-  | "GRAVESTONE"
-  | "EMOJI";
+  | "GRAVESTONE" // Special reward category - DO NOT REMOVE
+  | "EMOJI"      // Collectable item - DO NOT REMOVE
+  | "SKIN"
+  | "SET";       // Full outfit sets
 
 export interface WovRole {
   id: string;
@@ -25,6 +22,7 @@ export interface WovRole {
   description?: string;
   team?: string;
   aura?: string;
+  isAdvanced?: boolean;
   image: {
     url: string;
     width: number;
@@ -48,6 +46,7 @@ export interface WovAvatarSet {
   promoImageUrl?: string;
   items?: WovAvatarItem[];
   avatarItemIds?: string[];
+  avatarItemSets?: string[]; // IDs of sets included in this bundle
 }
 
 export interface WovBackground {
@@ -72,10 +71,24 @@ export interface WovClan {
   name: string;
   description?: string;
   language?: string;
-  creationTime?: string;
   memberCount: number;
   icon?: string;
   iconColor?: string;
+  xp?: number;
+  creationTime?: string;
+  questHistoryCount?: number;
+  joinType?: "PRIVATE" | "JOIN_BY_REQUEST" | "PUBLIC";
+  minLevel?: number;
+}
+
+export interface ClanSearchOptions {
+  name?: string;
+  minLevel?: number;
+  maxLevel?: number; // Not supported by API but useful for client-side filtering if needed
+  language?: string;
+  joinType?: "PRIVATE" | "JOIN_BY_REQUEST" | "PUBLIC";
+  notFull?: boolean;
+  sortBy?: "XP" | "CREATION_TIME" | "QUEST_HISTORY_COUNT" | "NAME" | "MIN_LEVEL";
 }
 
 export interface WovClanQuest {
@@ -87,6 +100,35 @@ export interface WovClanQuest {
     type: "GOLD" | "GEMS" | "ITEM" | "XP";
     amount?: number;
     itemId?: string;
+  }[];
+}
+
+export interface WovShopOffer {
+  id: string;
+  promoImageUrl?: string;
+  costInGems?: number;
+  costInGold?: number;
+  avatarItemSets?: WovAvatarSet[]; // Nested sets in the offer
+  items?: WovAvatarItem[];
+  rewards?: {
+    type: string;
+    amount?: number;
+    avatarItemId?: string;
+    avatarItemSetId?: string;
+  }[];
+}
+
+export interface WovCalendar {
+  id: string;
+  iconUrl?: string;
+  days: {
+    day: number;
+    reward: {
+      type: string;
+      amount?: number;
+      avatarItemId?: string;
+      avatarItemSetId?: string;
+    };
   }[];
 }
 

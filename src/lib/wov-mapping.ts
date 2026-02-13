@@ -30,7 +30,7 @@ export const WOV_MANUAL_MAPPING: Record<string, {
  * Helper to construct CDN URLs if API data is missing
  * Updated with correct paths and HD suffix support
  */
-export const getCdnUrl = (id: string, type: "role" | "background" | "avatar", highRes: boolean = true): string => {
+export const getCdnUrl = (id: string, type: "role" | "background" | "avatar" | "set", highRes: boolean = true): string => {
   const baseUrl = "https://cdn.wolvesville.com";
   const suffix = highRes ? "@2x.png" : ".png";
 
@@ -52,6 +52,10 @@ export const getCdnUrl = (id: string, type: "role" | "background" | "avatar", hi
       // Some items might be store items, but generally avatarItems/{id} works
       // If it fails, one might need to try .store.png but let's stick to standard first
       return `${baseUrl}/avatarItems/${id}${suffix}`;
+
+    case "set":
+      // Store sets usually reside in avatarItemSets
+      return `${baseUrl}/avatarItemSets/${id}${suffix}`;
 
     default:
       return "";

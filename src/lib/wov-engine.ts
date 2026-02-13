@@ -15,7 +15,7 @@ import {
   FALLBACK_CLAN_QUESTS
 } from "./wov-fallback-data";
 import { getCdnUrl, WOV_MANUAL_MAPPING } from "./wov-mapping";
-import { getCategoryFromId } from "./item-mapper";
+import { getCategoryFromId, enrichItem, DEFAULT_SKINS } from "./item-mapper";
 
 const BASE_URL = "https://api.wolvesville.com";
 const API_KEY = process.env.NEXT_PUBLIC_WOLVESVILLE_API_KEY;
@@ -62,6 +62,7 @@ export const WovEngine = {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          "Accept-Language": "it",
           "Authorization": `Bot ${API_KEY}`,
           ...(BOT_ID ? { "X-Bot-ID": BOT_ID } : {})
         },
@@ -91,16 +92,55 @@ export const WovEngine = {
    */
 
   async getRoles(): Promise<WovRole[]> {
-    return this.fetch<WovRole[]>("/roles", FALLBACK_ROLES);
+    const response = await this.fetch<any>("/roles", { roles: FALLBACK_ROLES });
+    const rolesRaw = response.roles ? response.roles : response;
+
+    if (!Array.isArray(rolesRaw) || rolesRaw.length === 0) {
+      console.warn("[WovEngine] Roles empty or invalid format, forcing fallback data");
+      return FALLBACK_ROLES;
+    }
+
+    // Process Advanced Roles Mapping
+    const mapping = response.advancedRolesMapping || {};
+    const advancedRoleIds = new Set<string>();
+
+    Object.values(mapping).forEach((ids: any) => {
+      if (Array.isArray(ids)) {
+        ids.forEach((id: string) => advancedRoleIds.add(id));
+      }
+    });
+
+    // Enrich roles with isAdvanced flag
+    const roles: WovRole[] = rolesRaw.map((role: WovRole) => ({
+      ...role,
+      isAdvanced: advancedRoleIds.has(role.id)
+    }));
+
+    return roles;
   },
 
   async getAvatarSets(): Promise<WovAvatarSet[]> {
     return this.fetch<WovAvatarSet[]>("/items/avatarItemSets", FALLBACK_AVATAR_SETS);
   },
 
+  async getBundles(): Promise<WovAvatarSet[]> {
+    return this.fetch<WovAvatarSet[]>("/items/bundles", []);
+  },
+
+  async getShopActiveOffers(): Promise<any[]> {
+    return this.fetch<any[]>("/shop/activeOffers", []);
+  },
+
+  async getCalendars(): Promise<any[]> {
+    return this.fetch<any[]>("/items/calendars", []);
+  },
+
   async getAvatarItems(): Promise<WovAvatarItem[]> {
     // Try to fetch individual items with metadata
-    return this.fetch<WovAvatarItem[]>("/items/avatarItems", []);
+    const items = await this.fetch<WovAvatarItem[]>("/items/avatarItems", []);
+    const enriched = items.map(enrichItem);
+    // Add default skins to the beginning of the list
+    return [...DEFAULT_SKINS, ...enriched];
   },
 
   async getBackgrounds(): Promise<WovBackground[]> {
@@ -116,8 +156,21 @@ export const WovEngine = {
     return this.fetch<WovClanQuest[]>("/clans/quests/all", FALLBACK_CLAN_QUESTS);
   },
 
-  async searchClans(query: string): Promise<WovClan[]> {
-    return this.fetch<WovClan[]>(`/clans/search?name=${encodeURIComponent(query)}`, []);
+  async searchClans(options: string | import("./wolvesville-types").ClanSearchOptions): Promise<WovClan[]> {
+    const params = new URLSearchParams();
+
+    if (typeof options === "string") {
+      params.append("name", options);
+    } else {
+      if (options.name) params.append("name", options.name);
+      if (options.minLevel) params.append("minLevel", options.minLevel.toString());
+      if (options.language) params.append("language", options.language);
+      if (options.joinType) params.append("joinType", options.joinType);
+      if (options.sortBy) params.append("sortBy", options.sortBy);
+      if (options.notFull) params.append("notFull", "true");
+    }
+
+    return this.fetch<WovClan[]>(`/clans/search?${params.toString()}`, []);
   },
 
   /**
@@ -145,11 +198,11 @@ export const WovEngine = {
         set.items.forEach(item => {
           if (!seenIds.has(item.id)) {
             seenIds.add(item.id);
-            allItems.push({
+            allItems.push(enrichItem({
               ...item,
               imageUrl: this.resolveImageUrl(item.id, "avatar", item.imageUrl),
               name: item.name || `${set.name || 'Unknown Set'} Item`
-            });
+            }));
           }
         });
       }
@@ -159,13 +212,13 @@ export const WovEngine = {
           if (!seenIds.has(id)) {
             seenIds.add(id);
             const category = getCategoryFromId(id);
-            allItems.push({
+            allItems.push(enrichItem({
               id: id,
               name: `Item ${id.substring(0, 5)}...`, // Placeholder name
-              type: (category as any) || "CLOTHES", // Use mapped category or default
+              type: (category as any) || "SHIRT", // Use mapped category or default
               rarity: "COMMON", // Placeholder rarity
               imageUrl: this.resolveImageUrl(id, "avatar", undefined, category || undefined)
-            });
+            }));
           }
         });
       }
@@ -179,14 +232,15 @@ export const WovEngine = {
    * Image Resolution Logic
    */
   resolveImageUrl(id: string, type: "role" | "background" | "avatar", apiValue?: string, category?: string): string {
-    // Force CDN for avatar items if ID is present
-    if (type === "avatar" && id) {
-      // New logic Test 2.1.0: prioritize basic format which works for short IDs
-      return `https://cdn.wolvesville.com/avatarItems/${id}.png`;
+    // 1. Trust the API provided URL first (User instruction: "usa l api")
+    if (apiValue && !apiValue.includes("dicebear")) {
+      return apiValue;
     }
 
-    if (apiValue && !apiValue.includes("dicebear")) return apiValue;
+    // 2. Fallback to manual mapping if available
     if (WOV_MANUAL_MAPPING[id]) return WOV_MANUAL_MAPPING[id].cdnUrl;
+
+    // 3. Last resort: Construct URL manually
     return getCdnUrl(id, type);
   },
 

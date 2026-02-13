@@ -5,20 +5,58 @@ import { WovRole, WovAvatarSet, WovBackground, WovLoadingScreen, WovClanQuest } 
 
 export const FALLBACK_ROLES: WovRole[] = [
   {
-    id: "aura-seer",
-    name: "Veggente (Offline)",
-    description: "Vedi l'aura dei giocatori. (Dati offline)",
+    id: "villager",
+    name: "Villico (Offline)",
+    description: "Trova i lupi mannari e linciali.",
     team: "VILLAGER",
     aura: "GOOD",
-    image: { url: "https://cdn.wolvesville.com/roleIcons/aura-seer.png", width: 128, height: 128 }
+    isAdvanced: false,
+    image: { url: "https://cdn.wolvesville.com/roleIcons/villager.png", width: 128, height: 128 }
+  },
+  {
+    id: "seer",
+    name: "Veggente (Offline)",
+    description: "Ogni notte puoi rivelare il ruolo di un giocatore.",
+    team: "VILLAGER",
+    aura: "GOOD",
+    isAdvanced: false,
+    image: { url: "https://cdn.wolvesville.com/roleIcons/seer.png", width: 128, height: 128 }
+  },
+  {
+    id: "medium",
+    name: "Medium (Offline)",
+    description: "Puoi parlare con i morti di notte. Rianimi un giocatore una volta per partita.",
+    team: "VILLAGER",
+    aura: "GOOD",
+    isAdvanced: false,
+    image: { url: "https://cdn.wolvesville.com/roleIcons/medium.png", width: 128, height: 128 }
   },
   {
     id: "werewolf",
     name: "Lupo Mannaro (Offline)",
-    description: "Uccidi i villici. (Dati offline)",
+    description: "Uccidi i villici ogni notte.",
     team: "WEREWOLF",
     aura: "EVIL",
+    isAdvanced: false,
     image: { url: "https://cdn.wolvesville.com/roleIcons/werewolf.png", width: 128, height: 128 }
+  },
+  {
+    id: "jester",
+    name: "Buffone (Offline)",
+    description: "Fatti linciare dal villaggio per vincere.",
+    team: "SOLO",
+    aura: "NEUTRAL",
+    isAdvanced: false,
+    image: { url: "https://cdn.wolvesville.com/roleIcons/jester.png", width: 128, height: 128 }
+  },
+  {
+    id: "analyst",
+    name: "Analista (Offline Avanzato)",
+    description: "Analizza i giocatori per scoprire il loro ruolo esatto.",
+    team: "VILLAGER",
+    aura: "GOOD",
+    isAdvanced: true,
+    image: { url: "https://cdn.wolvesville.com/roleIcons/analyst.png", width: 128, height: 128 }
   }
 ];
 

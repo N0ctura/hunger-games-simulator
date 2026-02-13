@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+/* @import "tw-animate-css"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -86,6 +86,21 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 3s linear infinite;
+  }
+  
+  @keyframes progress-loading {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+
+  .animate-progress {
+    animation: progress-loading 4s linear forwards;
   }
 }
 

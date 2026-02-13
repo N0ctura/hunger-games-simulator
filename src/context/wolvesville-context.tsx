@@ -8,7 +8,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { WovAvatarItem, WovRole, WovBackground } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
 import { enrichItem } from "@/lib/item-mapper";
 
@@ -19,13 +19,17 @@ import { enrichItem } from "@/lib/item-mapper";
 interface WolvesvilleContextType {
   roles: WovRole[];
   items: WovAvatarItem[];
+  sets: WovAvatarSet[];
   backgrounds: WovBackground[];
+  activeOffers: WovShopOffer[];
+  calendars: WovCalendar[];
   loading: boolean;
   error: string | null;
 
   // Wardrobe
   equippedItems: Record<string, WovAvatarItem>;
   equipItem: (item: WovAvatarItem) => void;
+  equipSet: (set: WovAvatarSet) => void;
   unequipItem: (type: string) => void;
   clearWardrobe: () => void;
   isEquipped: (itemId: string) => boolean;
@@ -95,7 +99,7 @@ function buildItemsFromSets(sets: unknown): WovAvatarItem[] {
       seen.set(id, {
         id,
         name: set.name ? `${set.name} – ${id.slice(0, 8)}` : id,
-        type: "CLOTHES",   // will be overridden by enrichItem if mapping exists
+        type: "SHIRT",   // will be overridden by enrichItem if mapping exists
         rarity: "COMMON",
         imageUrl: "",
       } as WovAvatarItem);
@@ -125,7 +129,10 @@ function enrichAndResolve(items: WovAvatarItem[]): WovAvatarItem[] {
 export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<WovRole[]>([]);
   const [items, setItems] = useState<WovAvatarItem[]>([]);
+  const [sets, setSets] = useState<WovAvatarSet[]>([]);
   const [backgrounds, setBackgrounds] = useState<WovBackground[]>([]);
+  const [activeOffers, setActiveOffers] = useState<WovShopOffer[]>([]);
+  const [calendars, setCalendars] = useState<WovCalendar[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -140,20 +147,85 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         setLoading(true);
         setError(null);
 
-        const [rolesRaw, directItemsRaw, setsRaw, bgsRaw] = await Promise.all([
+        const [rolesRaw, directItemsRaw, setsRaw, bundlesRaw, bgsRaw, offersRaw, calendarsRaw] = await Promise.all([
           WovEngine.getRoles(),
           WovEngine.getAvatarItems(),
           WovEngine.getAvatarSets(),
+          WovEngine.getBundles(),
           WovEngine.getBackgrounds(),
+          WovEngine.getShopActiveOffers(),
+          WovEngine.getCalendars(),
         ]);
 
         if (cancelled) return;
 
+        console.log(`[WovContext] Roles received: ${Array.isArray(rolesRaw) ? rolesRaw.length : 'Not Array'}`);
+
+        console.log(`[WovContext] Bundles received type: ${typeof bundlesRaw}, isArray: ${Array.isArray(bundlesRaw)}`);
+        if (bundlesRaw && Array.isArray(bundlesRaw) && bundlesRaw.length > 0) {
+          console.log('[WovContext] 🔍 RAW API BUNDLE (First):', bundlesRaw[0]);
+        } else if (bundlesRaw) {
+          console.log('[WovContext] 🔍 RAW API BUNDLE (Object?):', bundlesRaw);
+        }
+
+        console.log(`[WovContext] Offers received: ${Array.isArray(offersRaw) ? offersRaw.length : 'Not Array'}`);
+        if (offersRaw && offersRaw.length > 0) console.log('[WovContext] 🔍 RAW OFFER (First):', offersRaw[0]);
+
+        console.log(`[WovContext] Calendars received: ${Array.isArray(calendarsRaw) ? calendarsRaw.length : 'Not Array'}`);
+        if (calendarsRaw && calendarsRaw.length > 0) console.log('[WovContext] 🔍 RAW CALENDAR (First):', calendarsRaw[0]);
+
         setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
+        
+        // Deduplicate offers by ID to prevent "unique key prop" errors
+        const uniqueOffers = Array.isArray(offersRaw) 
+          ? Array.from(new Map(offersRaw.map((o, index) => {
+              // Ensure we have a valid ID. If missing, generate one based on index and random string
+              // AND include it in the object itself so it's available for key={offer.id}
+              const safeId = o.id || `generated-offer-${index}-${Math.random().toString(36).substr(2, 9)}`;
+              const safeOffer = { ...o, id: safeId };
+              return [safeId, safeOffer];
+            })).values())
+          : [];
+        setActiveOffers(uniqueOffers);
+
+        setCalendars(Array.isArray(calendarsRaw) ? calendarsRaw : []);
+        
+        // Extract Sets from Offers
+        const offerSets: WovAvatarSet[] = [];
+        if (Array.isArray(offersRaw)) {
+          offersRaw.forEach(offer => {
+            if (offer.avatarItemSets && Array.isArray(offer.avatarItemSets)) {
+              offerSets.push(...offer.avatarItemSets);
+            }
+            // Check for other potential set locations in offer structure if needed
+          });
+        }
+
+        // Extract Items/Sets from Calendars (if structure supports it, currently speculative)
+        // Calendars usually give items daily, might need more complex parsing if they contain full set objects.
+        // For now, let's assume they might contain references.
+
+        // Merge sets and bundles and offerSets
+        const combinedSets = [
+          ...(Array.isArray(setsRaw) ? setsRaw : []),
+          ...(Array.isArray(bundlesRaw) ? bundlesRaw : []),
+          ...offerSets
+        ];
+        // Deduplicate sets by ID just in case
+        const uniqueSets = Array.from(new Map(combinedSets.map(s => [s.id, s])).values());
+
+        setSets(uniqueSets);
         setBackgrounds(Array.isArray(bgsRaw) ? bgsRaw : []);
 
         // ── Build item list ────────────────────────────────
         const directItems = normaliseItems(directItemsRaw);
+
+        // DEBUG: Log Raw API Item Structure
+        if (directItems.length > 0) {
+          console.log('[WovContext] 🔍 RAW API ITEM (First):', directItems[0]);
+        } else if (uniqueSets.length > 0) {
+          console.log('[WovContext] 🔍 RAW API SET (First):', uniqueSets[0]);
+        }
 
         let finalItems: WovAvatarItem[];
 
@@ -162,7 +234,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
           finalItems = enrichAndResolve(directItems);
         } else {
           console.log(`[WovContext] ⚠️  Direct items empty – falling back to sets extraction`);
-          const fromSets = buildItemsFromSets(setsRaw);
+          const fromSets = buildItemsFromSets(uniqueSets);
           console.log(`[WovContext] ✅ Items from sets: ${fromSets.length}`);
           finalItems = enrichAndResolve(fromSets);
         }
@@ -210,6 +282,61 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
     setEquippedItems((prev) => ({ ...prev, [item.type]: item }));
   }, []);
 
+  const equipSet = useCallback((set: WovAvatarSet) => {
+    setEquippedItems((prev) => {
+      // Logic "O quel set o l'altro" (Exclusive Set Logic)
+      // 1. Start with a clean slate, BUT preserve essential body parts (Skin, Eyes, Mouth)
+      //    to avoid the avatar disappearing if the set is partial (e.g. just clothes).
+      //    Everything else (Mask, Hat, Shirt, etc.) is removed.
+      const next: Record<string, WovAvatarItem> = {};
+
+      if (prev["SKIN"]) next["SKIN"] = prev["SKIN"];
+      if (prev["EYES"]) next["EYES"] = prev["EYES"];
+      if (prev["MOUTH"]) next["MOUTH"] = prev["MOUTH"];
+
+      // Helper to find full item details
+      // We search in the already loaded 'items' array which contains enriched data
+      const findItem = (id: string) => items.find(i => i.id === id);
+
+      const processItem = (item: WovAvatarItem) => {
+        // Resolve full details if possible
+        let fullItem = findItem(item.id);
+
+        // If not found in global list, try to use the item data from the set itself
+        if (!fullItem) {
+          const enriched = enrichAndResolve([item])[0];
+          fullItem = enriched;
+        }
+
+        if (fullItem && fullItem.type && fullItem.type !== "SET") {
+          next[fullItem.type] = fullItem;
+        }
+      };
+
+      // Handle 'items' array (objects)
+      if (set.items && Array.isArray(set.items)) {
+        set.items.forEach(processItem);
+      }
+
+      // Handle 'avatarItemIds' array (strings)
+      if (set.avatarItemIds && Array.isArray(set.avatarItemIds)) {
+        set.avatarItemIds.forEach(id => {
+          const found = findItem(id);
+          if (found) {
+            next[found.type] = found;
+          } else {
+            // Fallback if we only have ID: we can't do much without fetching, 
+            // but we can try to enrich a stub
+            // However, 'items' should contain everything.
+            console.warn(`[WovContext] Item ID ${id} from set not found in global items.`);
+          }
+        });
+      }
+
+      return next;
+    });
+  }, [items]);
+
   const unequipItem = useCallback((type: string) => {
     setEquippedItems((prev) => {
       const next = { ...prev };
@@ -230,11 +357,15 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
       value={{
         roles,
         items,
+        sets,
         backgrounds,
+        activeOffers,
+        calendars,
         loading,
         error,
         equippedItems,
         equipItem,
+        equipSet,
         unequipItem,
         clearWardrobe,
         isEquipped,
