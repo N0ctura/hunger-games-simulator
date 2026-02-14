@@ -7,11 +7,12 @@ console.log('Is Production?', isProd);
 const nextConfig = {
   output: 'export',
   // In dev mode (isProd=false), we want no basePath so it runs at root /
-  // In prod mode (isProd=true), we use the repo name
-  // basePath: isProd ? '/hunger-games-simulator' : '',
-  // assetPrefix: isProd ? '/hunger-games-simulator/' : '',
-  basePath: '',
-  assetPrefix: '',
+  // In prod mode (isProd=true), we use the repo name for GitHub Pages
+  // IMPORTANT: This must match your GitHub repository name exactly!
+  basePath: isProd ? '/hunger-games-simulator' : '',
+  assetPrefix: isProd ? '/hunger-games-simulator/' : '',
+  // basePath: '',
+  // assetPrefix: '',
   images: {
     unoptimized: true,
     remotePatterns: [
