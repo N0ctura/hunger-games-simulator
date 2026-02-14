@@ -1,0 +1,27 @@
+{
+  "summonersoul-shirt": {
+    "offsetY": 0.4,
+    "originalHeight": 247,
+    "density": 2
+  },
+  "meovampire-back": {
+    "offsetY": 0.09,
+    "originalHeight": 1099,
+    "density": 2
+  },
+  "bp33-welcomestore-hair-male": {
+    "offsetY": 43.5,
+    "originalHeight": 862,
+    "density": 2
+  },
+  "luv-jetaime-hat-female": {
+    "offsetY": 75.44,
+    "originalHeight": 859,
+    "density": 2
+  },
+  "luv-jetaime-front-male": {
+    "offsetY": 1.97,
+    "originalHeight": 710,
+    "density": 2
+  }
+}

@@ -1,11 +1,12 @@
 "use client";
 
-import { WovAvatarItem, WovCategory, WovRarity } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovCategory, WovRarity, WovDensity } from "@/lib/wolvesville-types";
 import { useWardrobe } from "@/context/wolvesville-context";
 import { Check, Loader2, Search, X } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react";
 import { getCdnUrl } from "@/lib/wov-mapping";
+import { getDensity } from "@/lib/utils"; // Fixed ReferenceError
 
 // ─────────────────────────────────────────────
 //  CONSTANTS
@@ -19,6 +20,8 @@ const CATEGORIES: Array<WovCategory | "ALL"> = [
 const RARITIES: Array<WovRarity | "ALL"> = [
   "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY", "MYTHICAL", "MYTHIC"
 ];
+
+const DENSITIES: Array<WovDensity | "ALL"> = ["ALL", "@1", "@2", "@3", "@4"];
 
 const RARITY_COLORS: Record<WovRarity, string> = {
   COMMON: "text-gray-400 border-gray-500/30 bg-gray-500/10",
@@ -124,6 +127,12 @@ const RobustImage = memo(function RobustImage({
 const ItemCard = memo(function ItemCard({
   item, equipped, onEquip,
 }: { item: WovAvatarItem; equipped: boolean; onEquip: (i: WovAvatarItem) => void }) {
+  const density = getDensity(item.imageUrl);
+  const densityColor = density === "@1" ? "bg-gray-500/50 text-white" :
+    density === "@2" ? "bg-blue-500/50 text-white" :
+      density === "@3" ? "bg-purple-500/50 text-white" :
+        "bg-red-500/50 text-white";
+
   return (
     <div
       onClick={() => onEquip(item)}
@@ -137,6 +146,9 @@ const ItemCard = memo(function ItemCard({
     >
       <div className="relative w-full flex-1 mb-1">
         <RobustImage item={item} />
+        <div className={`absolute top-0 left-0 text-[9px] font-bold px-1 rounded ${densityColor}`}>
+          {density}
+        </div>
         {equipped && (
           <div className="absolute top-0 right-0 bg-primary rounded-full p-0.5">
             <Check size={9} className="text-primary-foreground" />
@@ -279,6 +291,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
   const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
+  const [selectedDensity, setSelectedDensity] = useState<WovDensity | "ALL">("ALL");
 
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -318,13 +331,14 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
     return items.filter(item => {
       if (selectedCategory !== "ALL" && item.type !== selectedCategory) return false;
       if (selectedRarity !== "ALL" && item.rarity !== selectedRarity) return false;
+      if (selectedDensity !== "ALL" && getDensity(item.imageUrl) !== selectedDensity) return false;
       if (term && !(
         item.id.toLowerCase().includes(term) ||
         (item.name ?? "").toLowerCase().includes(term)
       )) return false;
       return true;
     });
-  }, [items, sets, searchTerm, selectedCategory, selectedRarity]);
+  }, [items, sets, searchTerm, selectedCategory, selectedRarity, selectedDensity]);
 
   const handleEquip = useCallback((item: WovAvatarItem) => {
     if (item.type === "SET" && (item as any)._originalSet) {
@@ -378,6 +392,23 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
             >
               {RARITIES.map(r => (
                 <option key={r} value={r} className="bg-gray-900">{r === "ALL" ? "Tutte le rarità" : r}</option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </div>
+
+          <div className="relative min-w-[100px]">
+            <select
+              value={selectedDensity}
+              onChange={e => setSelectedDensity(e.target.value as WovDensity | "ALL")}
+              className="w-full appearance-none bg-black/20 border border-white/10 text-sm rounded-lg pl-3 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-black/30 transition-colors"
+            >
+              {DENSITIES.map(d => (
+                <option key={d} value={d} className="bg-gray-900">{d === "ALL" ? "Densità" : d}</option>
               ))}
             </select>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">

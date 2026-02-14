@@ -54,9 +54,11 @@ export function enrichItem(item: WovAvatarItem): WovAvatarItem {
     } else if (rawCategory === "EYE_WEAR") {
       category = "GLASSES";
     } else if (rawCategory === "NECK_WEAR") {
-      category = "SHIRT"; // Fallback as NECK is removed
+      category = "FRONT"; // Map to FRONT to avoid overwriting SHIRT
     } else if (rawCategory === "HAND_ITEM") {
-      category = "SHIRT"; // Fallback as HAND is removed
+      category = "FRONT"; // Map to FRONT (Wolvesville standard for held items)
+    } else if (rawCategory === "BACK_ITEM" || rawCategory === "BACK") {
+      category = "BACK";
     } else if (rawCategory === "PANTS" || rawCategory === "SHOES" || rawCategory === "CLOTHES") {
       category = "SHIRT"; // Fallback for removed categories
     }

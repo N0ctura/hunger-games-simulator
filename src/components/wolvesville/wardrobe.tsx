@@ -1,93 +1,46 @@
 "use client";
 
-import { useWardrobe } from "@/context/wolvesville-context";
-import { WovAvatarItem, WovCategory } from "@/lib/wolvesville-types";
+import { useWolvesville } from "@/context/wolvesville-context";
+import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
-import { Loader2, Trash2, Download, X, GripHorizontal, Wrench } from "lucide-react";
+import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2 } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useEffect } from "react";
+import { AvatarCanvas, SKIN_TONES } from "./avatar-canvas";
+import { getDensity } from "@/lib/utils";
+import { Slider } from "@/components/ui/slider";
+import { analyzeImageBoundingBox, calculateAutoOffset } from "@/lib/auto-calibration";
 
 // ─────────────────────────────────────────────
-//  CONSTANTS & CONFIG
+//  CONSTANTS
 // ─────────────────────────────────────────────
 
-const MANNEQUIN_LAYERS = {
-  BODY: "https://cdn.wolvesville.com/avatarItems/body.store.png",
-  HEAD: "https://cdn.wolvesville.com/avatarItems/head.store.png",
-};
-
-// Skin Tones with CSS Filters
-const SKIN_TONES = [
-  { id: "pale", color: "#F5D0B0", filter: "brightness(1.1) sepia(0.2) hue-rotate(-10deg)" },
-  { id: "tan", color: "#E0AC69", filter: "brightness(0.95) sepia(0.4) hue-rotate(-25deg)" },
-  { id: "brown", color: "#8D5524", filter: "brightness(0.7) sepia(0.6) hue-rotate(-35deg)" },
-  { id: "dark", color: "#3B2219", filter: "brightness(0.5) sepia(0.5) hue-rotate(-40deg)" },
-  { id: "zombie", color: "#7FA075", filter: "grayscale(1) sepia(0.5) hue-rotate(70deg) brightness(0.9) contrast(0.9)" },
-];
-
-const Z_INDEX_MAP: Record<string, number> = {
-  "BACK": 5,
-  "GRAVESTONE": 6,
-  "BASE_BODY": 10,
-  "SHIRT": 20,
-  "BASE_HEAD": 30,
-  "MOUTH": 31,
-  "EYES": 32,
-  "BEARD": 33,
-  "HAIR": 40,
-  "GLASSES": 45,
-  "MASK": 46,
-  "HAT": 50,
-  "FRONT": 70,
-  "EMOJI": 80,
-};
-
-const RENDER_ORDER: WovCategory[] = [
-  "BACK", "GRAVESTONE", "SHIRT",
-  "BEARD", "MOUTH", "EYES", "HAIR", "GLASSES", "MASK", "HAT", "FRONT", "EMOJI"
-];
-
-const CALIBRATION_CATEGORIES = [
+const CALIBRATION_CATEGORIES: WovCategory[] = [
   "HAT", "HAIR", "GLASSES", "EYES", "MOUTH", "MASK", "BEARD",
   "SHIRT",
-  "BACK", "FRONT", "GRAVESTONE", "EMOJI"
+  "BACK", "FRONT", "GRAVESTONE", "EMOJI",
+  "BODY", "HEAD"
 ];
 
 export function Wardrobe() {
-  const { equippedItems, unequipItem, clearWardrobe } = useWardrobe();
+  const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items } = useWolvesville();
   const [generating, setGenerating] = useState(false);
   const [activeSkinId, setActiveSkinId] = useState<string>("pale");
 
-  // DEV CONTROLS STATE
-  const [devBodyBottom, setDevBodyBottom] = useState(-4);
-  const [devHeadBottom, setDevHeadBottom] = useState(20);
-  const [devScale, setDevScale] = useState(40);
-  const [devContainerSize, setDevContainerSize] = useState(500);
-
-  // Category specific configuration (Y-offset, X-offset, Scale-multiplier)
-  const [selectedCategory, setSelectedCategory] = useState("HAT");
-  const [categoryConfigs, setCategoryConfigs] = useState<Record<string, { y: number, x: number, scale: number }>>({
-    "HAT": { "y": -10, "x": 0, "scale": 100 },
-    "HAIR": { "y": 18, "x": -1.5, "scale": 100 },
-    "GLASSES": { "y": 14, "x": 0, "scale": 77 },
-    "EYES": { "y": 17, "x": 0, "scale": 64 },
-    "MOUTH": { "y": 0, "x": 0, "scale": 77 },
-    "MASK": { "y": 0, "x": 0, "scale": 100 },
-    "BEARD": { "y": 0, "x": 0, "scale": 100 },
-    "SHIRT": { "y": -10.5, "x": 0, "scale": 75 },
-    "BACK": { "y": 0, "x": 0, "scale": 100 },
-    "FRONT": { "y": 0.5, "x": 18.5, "scale": 35 },
-    "GRAVESTONE": { "y": 0, "x": 0, "scale": 100 },
-    "EMOJI": { "y": 0, "x": 0, "scale": 100 }
-  });
-
-  // DRAGGABLE PANEL STATE
+  // ─────────────────────────────────────────────
+  //  ADMIN / CALIBRATION STATE
+  // ─────────────────────────────────────────────
+  const [isAdminMode, setIsAdminMode] = useState(false);
+  const [isAutoCalibrating, setIsAutoCalibrating] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<WovCategory>("HAT");
   const [showDevPanel, setShowDevPanel] = useState(false);
-  const [panelPos, setPanelPos] = useState({ x: 400, y: 100 });
+  const [panelPos, setPanelPos] = useState({ x: 20, y: 100 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
 
-  // Handle Dragging
+  // ─────────────────────────────────────────────
+  //  DRAGGABLE PANEL LOGIC
+  // ─────────────────────────────────────────────
   useEffect(() => {
     const handleMove = (e: MouseEvent) => {
       if (isDragging) {
@@ -117,9 +70,69 @@ export function Wardrobe() {
     });
   };
 
-  const activeSkin = useMemo(() =>
-    SKIN_TONES.find(s => s.id === activeSkinId) || SKIN_TONES[0],
-    [activeSkinId]);
+  // ─────────────────────────────────────────────
+  //  ACTIONS
+  // ─────────────────────────────────────────────
+
+  const handleAutoCalibration = async () => {
+    setIsAutoCalibrating(true);
+    try {
+      const targetItems = items.filter(i => i.type === selectedCategory);
+      if (targetItems.length === 0) {
+        console.warn("[AutoCalib] No items found for category:", selectedCategory);
+        return;
+      }
+
+      console.log(`[AutoCalib] Starting analysis for ${targetItems.length} items of type ${selectedCategory}`);
+      const updates: CalibrationMap = {};
+
+      // Process in serial to prevent UI freeze and rate limits
+      let count = 0;
+      for (const item of targetItems) {
+        if (!item.imageUrl) continue;
+
+        try {
+          const bbox = await analyzeImageBoundingBox(item.imageUrl);
+          if (bbox) {
+            const density = getDensity(item.imageUrl);
+            const offset = calculateAutoOffset(selectedCategory, bbox, bbox.originalWidth, bbox.originalHeight);
+
+            if (!updates[selectedCategory]) updates[selectedCategory] = {};
+            // Preserve existing scale if possible, otherwise default to 1
+            const currentScale = calibrationMap[selectedCategory]?.[density]?.scale ?? 1;
+
+            updates[selectedCategory]![density] = {
+              x: Number(offset.x.toFixed(1)),
+              y: Number(offset.y.toFixed(1)),
+              scale: currentScale,
+              // We do not set scale here to preserve existing/default scale
+            };
+            count++;
+          }
+        } catch (e) {
+          console.error(`[AutoCalib] Failed for item ${item.id}:`, e);
+        }
+
+        // Yield to main thread every 10 items
+        if (count % 10 === 0) await new Promise(r => setTimeout(r, 0));
+      }
+
+      console.log(`[AutoCalib] Processed ${count} items.`);
+      if (count > 0) {
+        batchUpdateCalibration(updates);
+        console.log("AUTO CALIBRATION RESULT JSON:", JSON.stringify(updates, null, 2));
+        alert(`Calibrazione automatica completata per ${count} item! Controlla la console per il JSON.`);
+      } else {
+        alert("Nessun item analizzato con successo.");
+      }
+
+    } catch (e) {
+      console.error("[AutoCalib] Error:", e);
+      alert("Errore durante la calibrazione automatica.");
+    } finally {
+      setIsAutoCalibrating(false);
+    }
+  };
 
   const handleGenerateUrl = async () => {
     setGenerating(true);
@@ -136,102 +149,12 @@ export function Wardrobe() {
 
   const isEmpty = Object.keys(equippedItems).length === 0;
 
-  // Determine styling for an item based on its category
-  const getItemStyle = (cat: string) => {
-    // ---------------------------------------------------------
-    //  MICRO-CALIBRATION SETTINGS (LINKED TO DEV CONTROLS)
-    // ---------------------------------------------------------
-    const BASE_SCALE = devScale; // Number, not string yet
+  // Active Calibration Data for Display
+  const activeItem = equippedItems[selectedCategory];
+  const activeDensity = activeItem ? getDensity(activeItem.imageUrl) : "@1";
+  const activeCalib = calibrationMap[selectedCategory]?.[activeDensity] || DEFAULT_CALIBRATION;
 
-    // Determine Base Bottom Position
-    let baseBottom = devBodyBottom;
-
-    // 1. HEAD ITEMS
-    if (["HAIR", "HAT", "GLASSES", "EYES", "MOUTH", "MASK", "BEARD", "BASE_HEAD"].includes(cat)) {
-      baseBottom = devHeadBottom;
-    }
-    // 2. CROPPED BODY ITEMS
-    else if (cat === "SHIRT") {
-      baseBottom = 10; // Default for cropped items (can be adjusted via offset)
-    }
-    // 3. GROUND/ENVIRONMENT ITEMS (GRAVESTONE, BACK, FRONT, EMOJI)
-    // These default to devBodyBottom (feet level) but can be adjusted via config.
-    // DO NOT REMOVE THESE CATEGORIES - They are valid in-game items.
-
-    // Apply Specific Category Config
-    const config = categoryConfigs[cat] || { y: 0, x: 0, scale: 100 };
-    const finalBottom = baseBottom + config.y;
-    const finalLeft = config.x; // Offset from center (0)
-    const finalScale = (BASE_SCALE * (config.scale / 100)); // Percentage calculation
-
-    return {
-      bottom: `${finalBottom}%`,
-      left: `calc(50% + ${finalLeft}%)`,
-      width: `${finalScale}%`,
-      height: "auto",
-      transform: "translateX(-50%)",
-      zIndex: Z_INDEX_MAP[cat] || 10,
-    };
-  };
-
-  // Helper to safely update category config
-  const updateCategoryConfig = (key: 'y' | 'x' | 'scale', val: number, mode: 'delta' | 'set' = 'delta') => {
-    setCategoryConfigs(prev => {
-      const current = prev[selectedCategory] || { y: 0, x: 0, scale: 100 };
-      const newValue = mode === 'delta' ? current[key] + val : val;
-      return {
-        ...prev,
-        [selectedCategory]: { ...current, [key]: newValue }
-      };
-    });
-  };
-
-  const [exportData, setExportData] = useState("");
-  const [importData, setImportData] = useState("");
-  const [showImport, setShowImport] = useState(false);
-
-  const handleExport = () => {
-    // Merge existing configs with defaults for all categories
-    const allCategoriesConfig: Record<string, { y: number, x: number, scale: number }> = {};
-
-    CALIBRATION_CATEGORIES.forEach(cat => {
-      allCategoriesConfig[cat] = categoryConfigs[cat] || { y: 0, x: 0, scale: 100 };
-    });
-
-    const config = {
-      global: {
-        bodyBottom: devBodyBottom,
-        headBottom: devHeadBottom,
-        scale: devScale,
-        containerSize: devContainerSize
-      },
-      categories: allCategoriesConfig
-    };
-    setExportData(JSON.stringify(config, null, 2));
-  };
-
-  const handleImport = () => {
-    try {
-      const trimmedData = importData.trim();
-      if (!trimmedData) return;
-
-      const config = JSON.parse(trimmedData);
-      if (config.global) {
-        setDevBodyBottom(config.global.bodyBottom ?? -4);
-        setDevHeadBottom(config.global.headBottom ?? 22);
-        setDevScale(config.global.scale ?? 64);
-        setDevContainerSize(config.global.containerSize ?? 320);
-      }
-      if (config.categories) {
-        setCategoryConfigs(config.categories);
-      }
-      setShowImport(false);
-      setImportData("");
-      alert("Configurazione caricata con successo!");
-    } catch (e) {
-      alert("Errore nel caricamento della configurazione: Assicurati di aver copiato tutto il JSON correttamente.");
-    }
-  };
+  const isVirtualCategory = selectedCategory === "BODY" || selectedCategory === "HEAD";
 
   return (
     <>
@@ -242,83 +165,17 @@ export function Wardrobe() {
         </div>
 
         {/* ─────────────────────────────────────────────
-          AVATAR PREVIEW CANVAS
-      ───────────────────────────────────────────── */}
-        <div
-          className="relative w-full bg-[#1a1a1a] rounded-xl border border-white/10 shadow-2xl overflow-hidden group transition-all duration-300"
-          style={{ aspectRatio: "1 / 1", maxWidth: `${devContainerSize}px` }}
-        >
-          {/* Grid Background Effect */}
-          <div className="absolute inset-0 opacity-5 pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(circle, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-          </div>
-
-          <div className="relative w-full h-full">
-
-            {/* 1. BASE MANNEQUIN LAYERS (with Filters) */}
-            <img
-              src={MANNEQUIN_LAYERS.BODY}
-              alt="Body Base"
-              className="absolute object-contain pointer-events-none"
-              style={{
-                zIndex: Z_INDEX_MAP.BASE_BODY,
-                filter: activeSkin.filter,
-                bottom: `${devBodyBottom}%`,
-                left: "50%",
-                width: `${devScale}%`,
-                height: "auto",
-                transform: "translateX(-50%)"
-              }}
-            />
-            <img
-              src={MANNEQUIN_LAYERS.HEAD}
-              alt="Head Base"
-              className="absolute object-contain pointer-events-none"
-              style={{
-                zIndex: Z_INDEX_MAP.BASE_HEAD,
-                filter: activeSkin.filter,
-                bottom: `${devHeadBottom}%`,
-                left: "50%",
-                width: `${devScale}%`,
-                height: "auto",
-                transform: "translateX(-50%)"
-              }}
-            />
-
-            {/* 2. EQUIPPED ITEMS */}
-            {RENDER_ORDER.map((cat) => {
-              const item = equippedItems[cat as string];
-              if (!item) return null;
-
-              // Skip SKIN category in the item loop as it's handled by the filter system
-              if (cat === "SKIN") return null;
-
-              const style = getItemStyle(cat as string);
-
-              return (
-                <div
-                  key={cat}
-                  className="absolute transition-all duration-300 animate-in fade-in zoom-in-95 pointer-events-none"
-                  style={{ ...style, position: 'absolute' }}
-                >
-                  <Image
-                    src={WovEngine.resolveImageUrl(item.id, "avatar", item.imageUrl)}
-                    alt={cat}
-                    width={500}
-                    height={500}
-                    className="w-full h-full object-contain drop-shadow-md"
-                    priority={true}
-                    unoptimized
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
+            AVATAR PREVIEW CANVAS
+        ───────────────────────────────────────────── */}
+        <AvatarCanvas
+          skinId={activeSkinId}
+          className="shadow-2xl bg-[#1a1a1a]"
+          showMannequin={true}
+        />
 
         {/* ─────────────────────────────────────────────
-          SKIN TONE SELECTOR
-      ───────────────────────────────────────────── */}
+            SKIN TONE SELECTOR
+        ───────────────────────────────────────────── */}
         <div className="flex gap-2 justify-center py-2 bg-black/20 px-4 rounded-full border border-white/5">
           {SKIN_TONES.map((tone) => (
             <button
@@ -333,24 +190,30 @@ export function Wardrobe() {
         </div>
 
         {/* ─────────────────────────────────────────────
-          EQUIPPED ITEMS (MINI LIST)
-      ───────────────────────────────────────────── */}
+            EQUIPPED ITEMS (MINI LIST)
+        ───────────────────────────────────────────── */}
         {!isEmpty && (
           <div className="w-full">
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Equipaggiati ({Object.keys(equippedItems).length})</h4>
             <div className="grid grid-cols-5 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
               {Object.entries(equippedItems).map(([type, item]) => {
-                // Don't show SKIN items in this list if they are just colors, 
-                // but usually items are real items. For now we hide SKIN category from here 
-                // to avoid confusion since we use the selector.
                 if (type === "SKIN") return null;
+
+                const isSelected = isAdminMode && selectedCategory === type;
 
                 return (
                   <div
                     key={type}
-                    className="relative aspect-square bg-black/40 rounded-lg border border-white/10 p-1 group cursor-pointer hover:border-primary/50 transition-all"
-                    onClick={() => unequipItem(type)}
-                    title={`Rimuovi ${item.name} (${type})`}
+                    className={`relative aspect-square bg-black/40 rounded-lg border p-1 group cursor-pointer transition-all ${isSelected ? "border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.3)]" : "border-white/10 hover:border-primary/50"
+                      }`}
+                    onClick={() => {
+                      if (isAdminMode) {
+                        setSelectedCategory(type as WovCategory);
+                      } else {
+                        unequipItem(type);
+                      }
+                    }}
+                    title={isAdminMode ? `Seleziona ${type} per calibrazione` : `Rimuovi ${item.name} (${type})`}
                   >
                     <Image
                       src={WovEngine.resolveImageUrl(item.id, "avatar", item.imageUrl)}
@@ -360,9 +223,11 @@ export function Wardrobe() {
                       unoptimized
                     />
 
-                    <div className="absolute inset-0 bg-red-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-lg backdrop-blur-sm">
-                      <Trash2 size={14} className="text-white" />
-                    </div>
+                    {!isAdminMode && (
+                      <div className="absolute inset-0 bg-red-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-lg backdrop-blur-sm">
+                        <Trash2 size={14} className="text-white" />
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -371,8 +236,8 @@ export function Wardrobe() {
         )}
 
         {/* ─────────────────────────────────────────────
-          ACTIONS
-      ───────────────────────────────────────────── */}
+            ACTIONS
+        ───────────────────────────────────────────── */}
         <div className="flex gap-3 w-full mt-auto pt-4 border-t border-white/5">
           <button
             onClick={clearWardrobe}
@@ -392,14 +257,15 @@ export function Wardrobe() {
           </button>
         </div>
       </div>
+
       {/* ─────────────────────────────────────────────
-          DEV CONTROLS (Draggable Panel)
+          ADMIN CALIBRATION PANEL (Draggable)
       ───────────────────────────────────────────── */}
       {!showDevPanel && (
         <button
           onClick={() => setShowDevPanel(true)}
           className="fixed bottom-4 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg hover:scale-110 transition-transform z-[9999]"
-          title="Open Dev Calibration"
+          title="Open Calibration Admin"
         >
           <Wrench size={24} />
         </button>
@@ -410,219 +276,223 @@ export function Wardrobe() {
           className="fixed bg-black/90 backdrop-blur-lg border border-yellow-500/50 rounded-xl shadow-2xl z-[9999] text-xs font-mono w-80 flex flex-col"
           style={{ left: panelPos.x, top: panelPos.y }}
         >
-          {/* HEADER (Draggable) */}
+          {/* HEADER */}
           <div
-            className="flex items-center justify-between p-2 border-b border-yellow-500/30 cursor-grab active:cursor-grabbing bg-yellow-500/10 rounded-t-xl"
+            className="flex items-center justify-between p-3 border-b border-yellow-500/30 cursor-grab active:cursor-grabbing bg-yellow-500/10 rounded-t-xl"
             onMouseDown={startDrag}
           >
             <div className="flex items-center gap-2 text-yellow-400 font-bold select-none">
               <GripHorizontal size={16} />
-              <span>CALIBRAZIONE DEV</span>
+              <span>CALIBRAZIONE V2</span>
             </div>
-            <button
-              onClick={() => setShowDevPanel(false)}
-              className="text-gray-400 hover:text-white"
-            >
+            <button onClick={() => setShowDevPanel(false)} className="text-gray-400 hover:text-white">
               <X size={16} />
             </button>
           </div>
 
-          {/* SCROLLABLE CONTENT */}
-          <div className="p-4 overflow-y-auto max-h-[70vh] custom-scrollbar">
-            <div className="grid grid-cols-2 gap-4">
-              {/* BODY CONTROLS */}
-              <div className="flex flex-col gap-1">
-                <span className="text-gray-400">Body Bottom: <span className="text-white">{devBodyBottom}%</span></span>
-                <div className="flex gap-1">
-                  <button onClick={() => setDevBodyBottom(p => p - 1)} className="bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded border border-red-500/30">-</button>
-                  <button onClick={() => setDevBodyBottom(p => p + 1)} className="bg-green-500/20 hover:bg-green-500/40 text-green-300 px-2 py-1 rounded border border-green-500/30">+</button>
+          {/* CONTROLS */}
+          <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+            {/* Mode Toggle */}
+            <div className="flex items-center justify-between bg-white/5 p-2 rounded-lg">
+              <span className="text-gray-300 font-bold">Modalità Admin</span>
+              <button
+                onClick={() => setIsAdminMode(!isAdminMode)}
+                className={`w-12 h-6 rounded-full transition-colors relative ${isAdminMode ? "bg-green-500" : "bg-gray-600"}`}
+              >
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${isAdminMode ? "left-7" : "left-1"}`} />
+              </button>
+            </div>
+
+            {/* Mannequin Selector (Special) */}
+            {isAdminMode && (
+              <div className="flex gap-2 p-2 bg-white/5 rounded-lg">
+                {["BODY", "HEAD"].map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat as WovCategory)}
+                    className={`flex-1 py-1.5 px-3 rounded text-[10px] font-bold transition-all ${selectedCategory === cat
+                      ? "bg-yellow-500 text-black shadow-lg shadow-yellow-500/20"
+                      : "bg-black/40 text-gray-400 hover:bg-black/60 hover:text-white"
+                      }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+                {/* Auto Calibration Button */}
+                <div className="pt-2 border-t border-white/10">
+                  <button
+                    onClick={handleAutoCalibration}
+                    disabled={isAutoCalibrating}
+                    className="w-full py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 rounded text-white font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isAutoCalibrating ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Wand2 size={14} />
+                    )}
+                    {isAutoCalibrating ? "Analisi in corso..." : `Auto-Calibra Visibili (${selectedCategory})`}
+                  </button>
+                  <p className="text-[9px] text-gray-500 mt-1 text-center leading-tight">
+                    Analizza i pixel di tutti gli item {selectedCategory} caricati e calcola l'offset ideale.
+                  </p>
                 </div>
               </div>
+            )}
 
-              {/* HEAD CONTROLS */}
-              <div className="flex flex-col gap-1">
-                <span className="text-gray-400">Head Bottom: <span className="text-white">{devHeadBottom}%</span></span>
-                <div className="flex gap-1">
-                  <button onClick={() => setDevHeadBottom(p => p - 1)} className="bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded border border-red-500/30">-</button>
-                  <button onClick={() => setDevHeadBottom(p => p + 1)} className="bg-green-500/20 hover:bg-green-500/40 text-green-300 px-2 py-1 rounded border border-green-500/30">+</button>
+            {isAdminMode && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                <div className="bg-yellow-500/10 p-3 rounded border border-yellow-500/20 text-yellow-200">
+                  <p className="flex items-center gap-2 mb-1"><Wrench size={14} /> Strumenti Calibrazione</p>
+                  <p className="text-[10px] opacity-80">Usa gli slider o i pulsanti +/- per calibrare posizione e dimensione. Precisione 0.1.</p>
                 </div>
-              </div>
-
-              {/* SCALE CONTROLS */}
-              <div className="flex flex-col gap-1 mt-2 border-t border-white/10 pt-2">
-                <span className="text-gray-400">Global Scale: <span className="text-white">{devScale}%</span></span>
-                <div className="flex gap-1">
-                  <button onClick={() => setDevScale(p => p - 1)} className="flex-1 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-2 py-1 rounded border border-blue-500/30">-</button>
-                  <button onClick={() => setDevScale(p => p + 1)} className="flex-1 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-2 py-1 rounded border border-blue-500/30">+</button>
-                </div>
-              </div>
-
-              {/* CONTAINER SIZE CONTROLS */}
-              <div className="flex flex-col gap-1 mt-2 border-t border-white/10 pt-2">
-                <span className="text-gray-400">Box Size: <span className="text-white">{devContainerSize}px</span></span>
-                <div className="flex gap-1">
-                  <button onClick={() => setDevContainerSize(p => p - 10)} className="flex-1 bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 px-2 py-1 rounded border border-purple-500/30">-10</button>
-                  <button onClick={() => setDevContainerSize(p => p + 10)} className="flex-1 bg-purple-500/20 hover:bg-purple-500/40 text-purple-300 px-2 py-1 rounded border border-purple-500/30">+10</button>
-                </div>
-              </div>
-
-              {/* CATEGORY CONFIG CONTROLS (X, Y, Scale) */}
-              <div className="col-span-2 flex flex-col gap-1 mt-2 border-t border-white/10 pt-2">
-                <span className="text-gray-400">Item Calibration</span>
 
                 {/* Category Selector */}
-                <div className="flex gap-2 mb-2">
+                <div className="space-y-1">
+                  <label className="text-gray-400">Categoria Selezionata</label>
                   <select
                     value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="bg-black/50 text-white text-xs border border-white/20 rounded px-2 py-1 flex-1"
+                    onChange={(e) => setSelectedCategory(e.target.value as WovCategory)}
+                    className="w-full bg-black border border-white/20 rounded p-1 text-white"
                   >
-                    {CALIBRATION_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    {CALIBRATION_CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
 
-                {/* Vertical Y Control */}
-                <div className="mb-2">
-                  <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
-                    <span>Vertical (Y)</span>
-                    <span className="text-white font-mono">{(categoryConfigs[selectedCategory]?.y || 0).toFixed(1)}%</span>
+                {/* Active Item Info */}
+                <div className="bg-white/5 p-3 rounded space-y-2">
+                  <div className="flex justify-between items-center border-b border-white/10 pb-2">
+                    <span className="font-bold text-white">{selectedCategory}</span>
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${activeDensity === "@1" ? "bg-gray-500 text-white" :
+                      activeDensity === "@2" ? "bg-green-500 text-black" :
+                        activeDensity === "@3" ? "bg-blue-500 text-white" :
+                          "bg-purple-500 text-white"
+                      }`}>
+                      {activeDensity}
+                    </span>
                   </div>
-                  <input
-                    type="range"
-                    min="-50"
-                    max="50"
-                    step="0.5"
-                    value={categoryConfigs[selectedCategory]?.y || 0}
-                    onChange={(e) => updateCategoryConfig('y', parseFloat(e.target.value), 'set')}
-                    className="w-full accent-orange-500 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer mb-1"
-                  />
-                  <div className="flex gap-1">
-                    <button onClick={() => updateCategoryConfig('y', -0.5)} className="flex-1 bg-orange-500/20 hover:bg-orange-500/40 text-orange-300 px-1 py-1 rounded border border-orange-500/30 text-[10px]">-0.5</button>
-                    <button onClick={() => updateCategoryConfig('y', 0.5)} className="flex-1 bg-orange-500/20 hover:bg-orange-500/40 text-orange-300 px-1 py-1 rounded border border-orange-500/30 text-[10px]">+0.5</button>
-                  </div>
-                </div>
 
-                {/* Horizontal X Control */}
-                <div className="mb-2">
-                  <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
-                    <span>Horizontal (X)</span>
-                    <span className="text-white font-mono">{(categoryConfigs[selectedCategory]?.x || 0).toFixed(1)}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="-50"
-                    max="50"
-                    step="0.5"
-                    value={categoryConfigs[selectedCategory]?.x || 0}
-                    onChange={(e) => updateCategoryConfig('x', parseFloat(e.target.value), 'set')}
-                    className="w-full accent-pink-500 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer mb-1"
-                  />
-                  <div className="flex gap-1">
-                    <button onClick={() => updateCategoryConfig('x', -0.5)} className="flex-1 bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 px-1 py-1 rounded border border-pink-500/30 text-[10px]">-0.5</button>
-                    <button onClick={() => updateCategoryConfig('x', 0.5)} className="flex-1 bg-pink-500/20 hover:bg-pink-500/40 text-pink-300 px-1 py-1 rounded border border-pink-500/30 text-[10px]">+0.5</button>
-                  </div>
-                </div>
-
-                {/* Scale Control */}
-                <div className="mb-2">
-                  <div className="flex items-center justify-between text-[10px] text-gray-500 mb-1">
-                    <span>Scale %</span>
-                    <span className="text-white font-mono">{(categoryConfigs[selectedCategory]?.scale || 100).toFixed(0)}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="10"
-                    max="200"
-                    step="1"
-                    value={categoryConfigs[selectedCategory]?.scale || 100}
-                    onChange={(e) => updateCategoryConfig('scale', parseFloat(e.target.value), 'set')}
-                    className="w-full accent-cyan-500 h-1 bg-white/10 rounded-lg appearance-none cursor-pointer mb-1"
-                  />
-                  <div className="flex gap-1">
-                    <button onClick={() => updateCategoryConfig('scale', -1)} className="flex-1 bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 px-1 py-1 rounded border border-cyan-500/30 text-[10px]">-1%</button>
-                    <button onClick={() => updateCategoryConfig('scale', 1)} className="flex-1 bg-cyan-500/20 hover:bg-cyan-500/40 text-cyan-300 px-1 py-1 rounded border border-cyan-500/30 text-[10px]">+1%</button>
-                  </div>
-                </div>
-
-                {/* IMPORT/EXPORT BUTTONS */}
-                <div className="mt-2 pt-2 border-t border-white/10 flex gap-2">
-                  {!showImport ? (
-                    <>
-                      <button
-                        onClick={handleExport}
-                        className="flex-1 bg-green-500/20 hover:bg-green-500/40 text-green-300 px-2 py-1 rounded border border-green-500/30 text-[10px] font-bold"
-                      >
-                        EXPORT
-                      </button>
-                      <button
-                        onClick={() => setShowImport(true)}
-                        className="flex-1 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 px-2 py-1 rounded border border-blue-500/30 text-[10px] font-bold"
-                      >
-                        IMPORT
-                      </button>
-                    </>
-                  ) : (
-                    <div className="w-full flex flex-col gap-1 animate-in fade-in slide-in-from-bottom-2">
-                      <textarea
-                        className="w-full h-24 bg-black/50 text-[10px] text-blue-400 p-1 rounded border border-blue-500/30 font-mono"
-                        placeholder="Paste JSON config here..."
-                        value={importData}
-                        onChange={(e) => setImportData(e.target.value)}
-                      />
-                      <div className="flex gap-1">
-                        <button
-                          onClick={handleImport}
-                          className="flex-1 bg-green-500/20 hover:bg-green-500/40 text-green-300 px-2 py-1 rounded border border-green-500/30 text-[10px]"
-                        >
-                          APPLY
-                        </button>
-                        <button
-                          onClick={() => setShowImport(false)}
-                          className="flex-1 bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded border border-red-500/30 text-[10px]"
-                        >
-                          CANCEL
-                        </button>
+                  {activeItem || isVirtualCategory ? (
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="bg-black/40 p-1 rounded">
+                        <div className="text-gray-500 text-[10px]">X</div>
+                        <div className="text-white font-mono">{activeCalib.x.toFixed(1)}</div>
+                      </div>
+                      <div className="bg-black/40 p-1 rounded">
+                        <div className="text-gray-500 text-[10px]">Y</div>
+                        <div className="text-white font-mono">{activeCalib.y.toFixed(1)}</div>
+                      </div>
+                      <div className="bg-black/40 p-1 rounded">
+                        <div className="text-gray-500 text-[10px]">Scale</div>
+                        <div className="text-white font-mono">{activeCalib.scale.toFixed(2)}</div>
                       </div>
                     </div>
+                  ) : (
+                    <p className="text-red-400 italic text-center">Nessun item equipaggiato</p>
                   )}
                 </div>
 
-                {/* EXPORT DISPLAY (Only if active) */}
-                {exportData && !showImport && (
-                  <div className="mt-2 flex flex-col gap-1 animate-in fade-in slide-in-from-bottom-2">
-                    <textarea
-                      className="w-full h-24 bg-black/50 text-[10px] text-green-400 p-1 rounded border border-green-500/30 font-mono"
-                      readOnly
-                      value={exportData}
-                      onClick={(e) => e.currentTarget.select()}
-                    />
-                    <button
-                      onClick={() => setExportData("")}
-                      className="w-full bg-red-500/20 hover:bg-red-500/40 text-red-300 px-2 py-1 rounded border border-red-500/30 text-[10px]"
-                    >
-                      CLOSE
-                    </button>
+                {/* Advanced Controls with Sliders */}
+                {(activeItem || isVirtualCategory) && (
+                  <div className="space-y-4 bg-white/5 p-3 rounded-lg">
+                    {/* X Control */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] text-gray-400">
+                        <span>X Position</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { x: Number((activeCalib.x - 0.1).toFixed(1)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Minus size={12} /></button>
+                        <Slider
+                          value={[activeCalib.x]}
+                          min={-1000}
+                          max={1000}
+                          step={0.1}
+                          onValueChange={(v) => updateCalibration(selectedCategory, activeDensity, { x: v[0] })}
+                          className="flex-1"
+                        />
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { x: Number((activeCalib.x + 0.1).toFixed(1)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Plus size={12} /></button>
+                      </div>
+                    </div>
+
+                    {/* Y Control */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] text-gray-400">
+                        <span>Y Position</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { y: Number((activeCalib.y - 0.1).toFixed(1)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Minus size={12} /></button>
+                        <Slider
+                          value={[activeCalib.y]}
+                          min={-10000}
+                          max={10000}
+                          step={0.1}
+                          onValueChange={(v) => updateCalibration(selectedCategory, activeDensity, { y: v[0] })}
+                          className="flex-1"
+                        />
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { y: Number((activeCalib.y + 0.1).toFixed(1)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Plus size={12} /></button>
+                      </div>
+                    </div>
+
+                    {/* Scale Control */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-[10px] text-gray-400">
+                        <span>Scale</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { scale: Number((activeCalib.scale - 0.01).toFixed(2)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Minus size={12} /></button>
+                        <Slider
+                          value={[activeCalib.scale]}
+                          min={0.1}
+                          max={5}
+                          step={0.01}
+                          onValueChange={(v) => updateCalibration(selectedCategory, activeDensity, { scale: v[0] })}
+                          className="flex-1"
+                        />
+                        <button
+                          onClick={() => updateCalibration(selectedCategory, activeDensity, { scale: Number((activeCalib.scale + 0.01).toFixed(2)) })}
+                          className="p-1.5 bg-white/10 hover:bg-white/20 rounded transition-colors"
+                        ><Plus size={12} /></button>
+                      </div>
+                    </div>
                   </div>
                 )}
-
-                {/* RESET CALIBRATION */}
-                <button
-                  onClick={() => {
-                    if (confirm("Reset all calibration settings to defaults?")) {
-                      setDevBodyBottom(-4);
-                      setDevHeadBottom(20);
-                      setDevScale(40);
-                      setDevContainerSize(500);
-                      // Reset category configs? Maybe not all of them, just the global ones for now
-                      // or we could reset everything if we had the initial state handy.
-                    }
-                  }}
-                  className="mt-4 w-full bg-red-500/10 text-red-400 py-2 rounded border border-red-500/20 hover:bg-red-500/30 text-[10px] uppercase font-bold tracking-wider transition-all"
-                >
-                  Reset Global Calibration
-                </button>
-
               </div>
+            )}
+
+            <div className="pt-4 border-t border-white/10 flex gap-2">
+              <button
+                onClick={resetCalibration}
+                className="flex-1 bg-red-500/20 hover:bg-red-500/40 text-red-300 py-2 rounded flex items-center justify-center gap-2"
+              >
+                <RotateCcw size={14} /> Reset
+              </button>
+              <button
+                className="flex-1 bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 py-2 rounded flex items-center justify-center gap-2"
+                onClick={() => {
+                  const data = JSON.stringify(calibrationMap, null, 2);
+                  navigator.clipboard.writeText(data);
+                  alert("Configurazione copiata negli appunti!");
+                }}
+              >
+                <Save size={14} /> Export
+              </button>
             </div>
           </div>
         </div>

@@ -8,9 +8,15 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar, WovRankedSeason, WovPlayerLeaderboardEntry } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar, WovRankedSeason, WovPlayerLeaderboardEntry, CalibrationMap, DEFAULT_CALIBRATION, CalibrationData, WovCategory, WovDensity } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
 import { enrichItem } from "@/lib/item-mapper";
+
+const DEFAULT_CALIBRATION_MAP: CalibrationMap = {
+  // Defaults are now handled in AvatarCanvas via "Pixels from Top" logic.
+  // We keep this empty to avoid legacy offsets interfering.
+  // User calibration will be additive to the base defaults.
+};
 
 // ─────────────────────────────────────────────
 //  TYPES
@@ -37,6 +43,12 @@ interface WolvesvilleContextType {
   unequipItem: (type: string) => void;
   clearWardrobe: () => void;
   isEquipped: (itemId: string) => boolean;
+
+  // Calibration
+  calibrationMap: CalibrationMap;
+  updateCalibration: (category: WovCategory, density: WovDensity, data: Partial<CalibrationData>) => void;
+  batchUpdateCalibration: (updates: CalibrationMap) => void;
+  resetCalibration: () => void;
 }
 
 const WolvesvilleContext = createContext<WolvesvilleContextType | undefined>(undefined);
@@ -145,6 +157,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
 
   const [equippedItems, setEquippedItems] = useState<Record<string, WovAvatarItem>>({});
+  const [calibrationMap, setCalibrationMap] = useState<CalibrationMap>(DEFAULT_CALIBRATION_MAP);
 
   // ── Data Fetch ────────────────────────────────────────────
   useEffect(() => {
@@ -190,13 +203,13 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         setRoleIcons(Array.isArray(roleIconsRaw) ? roleIconsRaw : []);
 
         // Ranked Data
-         console.log(`[WovContext] Season:`, rankedSeasonRaw ? 'Loaded' : 'Null');
-         console.log(`[WovContext] Leaderboard:`, Array.isArray(leaderboardRaw) ? leaderboardRaw.length : 'Invalid');
-         console.log(`[WovContext] Highscores:`, Array.isArray(highscoresRaw) ? highscoresRaw.length : 'Invalid');
+        console.log(`[WovContext] Season:`, rankedSeasonRaw ? 'Loaded' : 'Null');
+        console.log(`[WovContext] Leaderboard:`, Array.isArray(leaderboardRaw) ? leaderboardRaw.length : 'Invalid');
+        console.log(`[WovContext] Highscores:`, Array.isArray(highscoresRaw) ? highscoresRaw.length : 'Invalid');
 
-         setRankedSeason(rankedSeasonRaw);
-         setLeaderboard(Array.isArray(leaderboardRaw) ? leaderboardRaw : []);
-         setHighscores(Array.isArray(highscoresRaw) ? highscoresRaw : []);
+        setRankedSeason(rankedSeasonRaw);
+        setLeaderboard(Array.isArray(leaderboardRaw) ? leaderboardRaw : []);
+        setHighscores(Array.isArray(highscoresRaw) ? highscoresRaw : []);
 
         setRoles(Array.isArray(rolesRaw) ? rolesRaw : []);
 
@@ -301,7 +314,72 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
     }
   }, [equippedItems]);
 
-  // ── Wardrobe actions ───────────────────────────────────────
+  // ── Calibration Persistence ──────────────────────────────
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem("wov_calibration");
+      if (saved) setCalibrationMap(JSON.parse(saved));
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem("wov_calibration", JSON.stringify(calibrationMap));
+    } catch {
+      // ignore
+    }
+  }, [calibrationMap]);
+
+  const updateCalibration = useCallback((category: WovCategory, density: WovDensity, data: Partial<CalibrationData>) => {
+    setCalibrationMap(prev => {
+      const categoryMap = prev[category] || {};
+      const currentData = categoryMap[density] || { ...DEFAULT_CALIBRATION };
+
+      return {
+        ...prev,
+        [category]: {
+          ...categoryMap,
+          [density]: {
+            ...currentData,
+            ...data
+          }
+        }
+      };
+    });
+  }, []);
+
+  const batchUpdateCalibration = useCallback((updates: CalibrationMap) => {
+    setCalibrationMap((prev) => {
+      const next = { ...prev };
+      (Object.keys(updates) as WovCategory[]).forEach((category) => {
+        const catUpdates = updates[category];
+        if (catUpdates) {
+          next[category] = { ...(next[category] || {}) };
+          (Object.keys(catUpdates) as WovDensity[]).forEach((density) => {
+            const data = catUpdates[density];
+            if (data) {
+              next[category]![density] = {
+                ...(next[category]![density] || DEFAULT_CALIBRATION),
+                ...data,
+              };
+            }
+          });
+        }
+      });
+      return next;
+    });
+  }, []);
+
+  const resetCalibration = useCallback(() => {
+    setCalibrationMap(DEFAULT_CALIBRATION_MAP);
+    localStorage.removeItem("wov_calibration");
+  }, []);
+
+  // ── Wardrobe Actions ───────────────────────────────────────
   const equipItem = useCallback((item: WovAvatarItem) => {
     setEquippedItems((prev) => ({ ...prev, [item.type]: item }));
   }, []);
@@ -397,6 +475,10 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         unequipItem,
         clearWardrobe,
         isEquipped,
+        calibrationMap,
+        updateCalibration,
+        batchUpdateCalibration,
+        resetCalibration
       }}
     >
       {children}

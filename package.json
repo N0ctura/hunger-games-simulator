@@ -16,6 +16,8 @@
     "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.0",
+    "axios": "^1.13.5",
+    "canvas": "^3.2.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "git": "^0.1.5",
@@ -38,5 +40,19 @@
     "@types/react-window": "^1.8.8",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.0.0"
-  }
+  },
+  "description": "",
+  "main": "debug_bulk.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/N0ctura/hunger-games-simulator.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/N0ctura/hunger-games-simulator/issues"
+  },
+  "homepage": "https://github.com/N0ctura/hunger-games-simulator#readme"
 }

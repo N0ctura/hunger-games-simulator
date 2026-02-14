@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Timer, Gift, ShoppingBag, Sparkles } from "lucide-react";
@@ -26,6 +27,9 @@ function WolvesvilleContent() {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
+
+  // Sidebar visibility logic
+  const isSidebarVisible = activeTab !== "wardrobe";
 
   const renderContent = () => {
     // Universal Header for sub-sections
@@ -195,7 +199,7 @@ function WolvesvilleContent() {
             <SectionHeader title="Guardaroba & Item" />
             <div className="flex flex-col xl:flex-row gap-8">
               {/* Left: Wardrobe (Sticky on desktop) */}
-              <div className="xl:w-80 shrink-0 xl:sticky xl:top-4 self-start z-50">
+              <div className="xl:w-[450px] shrink-0 xl:sticky xl:top-4 self-start z-50">
                 <Wardrobe />
               </div>
 
@@ -302,11 +306,11 @@ function WolvesvilleContent() {
                         </div>
                         <div className="absolute top-2 right-2">
                           <span className={`text-[10px] px-1.5 py-0.5 rounded border ${icon.rarity === 'MYTHICAL' || icon.rarity === 'MYTHIC' ? 'bg-pink-500/20 text-pink-400 border-pink-500/30' :
-                              icon.rarity === 'LEGENDARY' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
-                                icon.rarity === 'EPIC' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
-                                  icon.rarity === 'RARE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
-                                    icon.rarity === 'COMMON' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
-                                      'bg-white/10 text-white/70 border-white/20'
+                            icon.rarity === 'LEGENDARY' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' :
+                              icon.rarity === 'EPIC' ? 'bg-purple-500/20 text-purple-400 border-purple-500/30' :
+                                icon.rarity === 'RARE' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' :
+                                  icon.rarity === 'COMMON' ? 'bg-gray-500/20 text-gray-400 border-gray-500/30' :
+                                    'bg-white/10 text-white/70 border-white/20'
                             }`}>
                             {icon.rarity ? icon.rarity.substring(0, 1) : "?"}
                           </span>
@@ -359,10 +363,15 @@ function WolvesvilleContent() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar Navigation */}
-      <WovSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+      {isSidebarVisible && (
+        <WovSidebar activeTab={activeTab} onTabChange={handleTabChange} />
+      )}
 
       {/* Main Content Area */}
-      <main className="flex-1 p-8 ml-64 overflow-y-auto h-screen custom-scrollbar">
+      <main className={cn(
+        "flex-1 p-8 overflow-y-auto h-screen custom-scrollbar transition-all duration-300",
+        isSidebarVisible ? "ml-64" : "ml-0"
+      )}>
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full space-y-4 animate-pulse">
             <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>

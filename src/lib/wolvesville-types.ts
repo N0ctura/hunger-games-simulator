@@ -14,7 +14,9 @@ export type WovCategory =
   | "GRAVESTONE" // Special reward category - DO NOT REMOVE
   | "EMOJI"      // Collectable item - DO NOT REMOVE
   | "SKIN"
-  | "SET";       // Full outfit sets
+  | "SET"       // Full outfit sets
+  | "BODY"      // Mannequin Body (Virtual)
+  | "HEAD";     // Mannequin Head (Virtual)
 
 export interface WovRole {
   id: string;
@@ -219,3 +221,28 @@ export interface WovPlayerProfile {
 }
 
 export type WovItemType = "ROLE" | "AVATAR_SET" | "BACKGROUND" | "ITEM" | "LOADING_SCREEN" | "CLAN";
+
+// ─────────────────────────────────────────────
+//  AVATAR CALIBRATION SYSTEM
+// ─────────────────────────────────────────────
+
+export type WovDensity = "@1" | "@2" | "@3" | "@4" | string;
+
+export interface CalibrationData {
+  x: number;
+  y: number;
+  scale: number;
+  offsetY?: number; // User Delta Y (pixels)
+  baseOffsetY?: number; // JSON Offset Y (%)
+  originalHeight?: number;
+  fallbackLift?: number; // Fallback Lift (pixels) if JSON missing
+}
+
+export type CalibrationMap = {
+  [Category in WovCategory]?: {
+    [Density in WovDensity]?: CalibrationData;
+  };
+};
+
+export const DEFAULT_CALIBRATION: CalibrationData = { x: 0, y: 0, scale: 1 };
+
