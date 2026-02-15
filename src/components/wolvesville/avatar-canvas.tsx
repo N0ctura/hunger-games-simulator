@@ -11,19 +11,43 @@ import { WovCategory } from "@/lib/wolvesville-types";
 const CANVAS_WIDTH = 209;
 const CANVAS_HEIGHT = 314;
 
-// Mannequin Assets
-const MANNEQUIN_LAYERS = {
-  BODY: "https://cdn2.wolvesville.com/bodyPaints/body-skin-1.avatar-large@3x.png",
-  HEAD: "https://cdn2.wolvesville.com/bodyPaints/head-skin-1.avatar-large@3x.png",
-};
-
-// Skin Tones with CSS Filters
 export const SKIN_TONES = [
-  { id: "pale", color: "#F5D0B0", filter: "brightness(1.1) sepia(0.2) hue-rotate(-10deg)" },
-  { id: "tan", color: "#E0AC69", filter: "brightness(0.95) sepia(0.4) hue-rotate(-25deg)" },
-  { id: "brown", color: "#8D5524", filter: "brightness(0.7) sepia(0.6) hue-rotate(-35deg)" },
-  { id: "dark", color: "#3B2219", filter: "brightness(0.5) sepia(0.5) hue-rotate(-40deg)" },
-  { id: "zombie", color: "#7FA075", filter: "grayscale(1) sepia(0.5) hue-rotate(70deg) brightness(0.9) contrast(0.9)" },
+  {
+    id: "skin-1",
+    color: "#F5D0B0",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-1.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-1.avatar-large@3x.png"
+  },
+  {
+    id: "skin-2",
+    color: "#E0AC69",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-2.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-2.avatar-large@3x.png"
+  },
+  {
+    id: "skin-3",
+    color: "#C68642",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-3.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-3.avatar-large@3x.png"
+  },
+  {
+    id: "skin-4",
+    color: "#8D5524",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-4.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-4.avatar-large@3x.png"
+  },
+  {
+    id: "skin-5",
+    color: "#5D3A1A",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-5.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-5.avatar-large@3x.png"
+  },
+  {
+    id: "skin-6",
+    color: "#2B1B12",
+    bodySrc: "https://cdn2.wolvesville.com/bodyPaints/body-skin-6.avatar-large@3x.png",
+    headSrc: "https://cdn2.wolvesville.com/bodyPaints/head-skin-6.avatar-large@3x.png"
+  }
 ];
 
 // 1. DOM Structure & Layering (Requested)
@@ -127,13 +151,13 @@ function getAvatarItemUrl(url: string): string {
 
 interface AvatarCanvasProps {
   className?: string;
-  skinId?: string; // Kept for compatibility, though styling is strict
+  skinId?: string;
   showMannequin?: boolean;
   exportMode?: boolean;
-  exportLayout?: 'raw' | 'scene'; // 'raw' = strict 209x314 transparent, 'scene' = card style with bg
+  exportLayout?: 'raw' | 'scene';
 }
 
-export function AvatarCanvas({ className, skinId = "pale", showMannequin = true, exportMode = false, exportLayout = 'raw' }: AvatarCanvasProps) {
+export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw' }: AvatarCanvasProps) {
   const { equippedItems } = useWolvesville();
 
   const activeSkin = SKIN_TONES.find(s => s.id === skinId) || SKIN_TONES[0];
@@ -186,18 +210,15 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
             // Logic to determine content and ID
             if (layer.isMannequin) {
               if (layer.isMannequin === "BODY") {
-                // If SKIN item equipped, use it. Else Mannequin Body.
                 if (equippedItems["SKIN"]) {
                   src = getAvatarItemUrl(equippedItems["SKIN"].imageUrl);
                   itemId = equippedItems["SKIN"].id;
                 } else if (showMannequin) {
-                  src = MANNEQUIN_LAYERS.BODY;
-                  // No specific ID for default mannequin
+                  src = (activeSkin as any).bodySrc || null;
                 }
               } else if (layer.isMannequin === "HEAD") {
-                // If showMannequin is true, show Head.
                 if (showMannequin) {
-                  src = MANNEQUIN_LAYERS.HEAD;
+                  src = (activeSkin as any).headSrc || null;
                 }
               }
             } else if (layer.category) {
@@ -207,10 +228,6 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
                 itemId = item.id;
               }
             }
-
-            const isBaseMannequin = layer.isMannequin && src && Object.values(MANNEQUIN_LAYERS).includes(src);
-            const filter = isBaseMannequin ? activeSkin.filter : undefined;
-
             // Get style from "Cheat" offsets.json
             const style = getItemStyle(itemId, src || undefined);
 
@@ -232,7 +249,6 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
                   height="auto"
                   style={{
                     ...style,
-                    filter: filter ? filter : undefined,
                     maxWidth: 'none',
                     maxHeight: 'none',
                     objectFit: 'none' // Prevent object-fit stretching

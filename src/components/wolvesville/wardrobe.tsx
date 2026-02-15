@@ -27,7 +27,7 @@ export function Wardrobe() {
   const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items } = useWolvesville();
   const [generating, setGenerating] = useState(false);
   const [downloading, setDownloading] = useState(false);
-  const [activeSkinId, setActiveSkinId] = useState<string>("pale");
+  const [activeSkinId, setActiveSkinId] = useState<string>(SKIN_TONES[0].id);
   const [exportScene, setExportScene] = useState(true); // Default to Scene (Card) export
   const hiddenAvatarRef = useRef<HTMLDivElement>(null);
 
