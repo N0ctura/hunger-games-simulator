@@ -24,12 +24,17 @@ const CALIBRATION_CATEGORIES: WovCategory[] = [
 ];
 
 export function Wardrobe() {
-  const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items } = useWolvesville();
-  const [generating, setGenerating] = useState(false);
+  const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items, equipItem } = useWolvesville();
   const [downloading, setDownloading] = useState(false);
   const [activeSkinId, setActiveSkinId] = useState<string>(SKIN_TONES[0].id);
   const [exportScene, setExportScene] = useState(true); // Default to Scene (Card) export
   const hiddenAvatarRef = useRef<HTMLDivElement>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [bgColor, setBgColor] = useState<string>("#1a1a1a");
+
+
+
+
 
   const handleDownloadAvatar = async () => {
     // We will use the visible canvas directly
@@ -225,18 +230,7 @@ export function Wardrobe() {
     }
   };
 
-  const handleGenerateUrl = async () => {
-    setGenerating(true);
-    const itemIds = Object.values(equippedItems).map(i => i.id);
-    const url = await WovEngine.generateSharedAvatarUrl(itemIds);
-    setGenerating(false);
 
-    if (url) {
-      window.open(url, "_blank");
-    } else {
-      alert("Impossibile generare l'avatar. Riprova più tardi.");
-    }
-  };
 
   const isEmpty = Object.keys(equippedItems).length === 0;
 
@@ -265,29 +259,60 @@ export function Wardrobe() {
             exportMode={exportScene}
             exportLayout={exportScene ? 'scene' : 'raw'}
             className={exportScene ? "bg-[#1a1a1a]" : undefined}
+            backgroundColor={bgColor}
+            showGradient={!bgColor}
           />
         </div>
 
-        {/* ─────────────────────────────────────────────
-            SKIN TONE SELECTOR
-        ───────────────────────────────────────────── */}
-        <div className="flex gap-2 justify-center py-2 bg-black/20 px-4 rounded-full border border-white/5">
-          {SKIN_TONES.map((tone) => (
-            <button
-              key={tone.id}
-              onClick={() => setActiveSkinId(tone.id)}
-              className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
-                }`}
-              style={{ backgroundColor: tone.color }}
-              title={tone.id}
-            />
-          ))}
+        <div className="w-full flex justify-center -mt-2">
+          <button
+            onClick={() => setShowDetails(v => !v)}
+            className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-all ${showDetails ? 'bg-black/30 border-white/15 text-white/80 hover:bg-black/40' : 'bg-primary/20 border-primary/40 text-primary hover:bg-primary/30'}`}
+            title={showDetails ? 'Nascondi' : 'Vedi tutto'}
+          >
+            {showDetails ? 'Nascondi' : 'Vedi tutto'}
+          </button>
         </div>
+
+        {showDetails && (
+          <div className="flex items-center gap-3 bg-black/20 border border-white/10 px-3 py-2 rounded-lg">
+            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Colore sfondo</span>
+            <input
+              type="color"
+              value={bgColor}
+              onChange={(e) => setBgColor(e.target.value)}
+              className="w-8 h-6 p-0 border border-white/20 rounded cursor-pointer bg-transparent"
+              title="Scegli colore di sfondo"
+            />
+            <button
+              onClick={() => setBgColor("#1a1a1a")}
+              className="text-[10px] px-2 py-1 rounded border border-white/10 hover:bg-white/10"
+              title="Reset"
+            >
+              Reset
+            </button>
+          </div>
+        )}
+
+        {showDetails && (
+          <div className="flex gap-2 justify-center py-2 bg-black/20 px-4 rounded-full border border-white/5">
+            {SKIN_TONES.map((tone) => (
+              <button
+                key={tone.id}
+                onClick={() => setActiveSkinId(tone.id)}
+                className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
+                  }`}
+                style={{ backgroundColor: tone.color }}
+                title={tone.id}
+              />
+            ))}
+          </div>
+        )}
 
         {/* ─────────────────────────────────────────────
             EQUIPPED ITEMS (MINI LIST)
         ───────────────────────────────────────────── */}
-        {!isEmpty && (
+        {showDetails && !isEmpty && (
           <div className="w-full">
             <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Equipaggiati ({Object.keys(equippedItems).length})</h4>
             <div className="grid grid-cols-5 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
@@ -333,34 +358,32 @@ export function Wardrobe() {
         {/* ─────────────────────────────────────────────
             ACTIONS
         ───────────────────────────────────────────── */}
-        <div className="flex gap-3 w-full mt-auto pt-4 border-t border-white/5">
-          <button
-            onClick={clearWardrobe}
-            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold border border-red-500/20"
-            title="Svuota guardaroba"
-          >
-            <Trash2 size={16} />
-          </button>
+        {showDetails && (
+          <div className="flex gap-3 w-full mt-auto pt-4 border-t border-white/5">
+            <button
+              onClick={clearWardrobe}
+              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold border border-red-500/20"
+              title="Svuota guardaroba"
+            >
+              <Trash2 size={16} />
+            </button>
 
-          <button
-            onClick={handleDownloadAvatar}
-            disabled={isEmpty || downloading}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
-            title="Scarica Card"
-          >
-            {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
-            <span>Card</span>
-          </button>
+            <button
+              onClick={handleDownloadAvatar}
+              disabled={isEmpty || downloading}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
+              title="Scarica Card"
+            >
+              {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
+              <span>Card</span>
+            </button>
 
-          <button
-            onClick={handleGenerateUrl}
-            disabled={isEmpty || generating}
-            className="flex-[2] flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-primary/20"
-          >
-            {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
-            <span>Genera Link</span>
-          </button>
-        </div>
+
+
+
+          </div>
+        )}
+
       </div>
 
       {/* Hidden Canvas for Export - NO LONGER USED */}

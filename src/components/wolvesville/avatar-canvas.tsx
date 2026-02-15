@@ -155,9 +155,11 @@ interface AvatarCanvasProps {
   showMannequin?: boolean;
   exportMode?: boolean;
   exportLayout?: 'raw' | 'scene';
+  backgroundColor?: string;
+  showGradient?: boolean;
 }
 
-export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw' }: AvatarCanvasProps) {
+export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw', backgroundColor, showGradient = true }: AvatarCanvasProps) {
   const { equippedItems } = useWolvesville();
 
   const activeSkin = SKIN_TONES.find(s => s.id === skinId) || SKIN_TONES[0];
@@ -167,13 +169,16 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
 
   const containerClass = exportMode && exportLayout === 'raw'
     ? `relative overflow-hidden flex items-center justify-center ${className}` // Center the inner canvas
-    : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-1 ${className}`;
+    : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-3.5 ${className}`;
 
   // For export 'raw', we use larger dimensions to capture full avatar including parts that extend beyond standard size
   // For 'scene' or interactive, we let parent/classes control size.
-  const containerStyle = exportMode && exportLayout === 'raw'
-    ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT * 1.5}px` } // 1.5x height to capture full avatar
+  const containerStyle: React.CSSProperties = exportMode && exportLayout === 'raw'
+    ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT * 1.5}px` }
     : {};
+  if (backgroundColor) {
+    containerStyle.backgroundColor = backgroundColor;
+  }
 
   return (
     // Outer Wrapper
@@ -181,8 +186,9 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
       className={containerClass}
       style={containerStyle}
     >
-      {/* Background Placeholder - Show in Scene mode (export or interactive) */}
-      {isScene && <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b] opacity-50" />}
+      {isScene && showGradient !== false && !backgroundColor && (
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b] opacity-50" />
+      )}
 
       {/* Inner Anchor - "The Mannequin Grid" (209x314) */}
       <div

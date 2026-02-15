@@ -159,16 +159,17 @@ const RobustImage = memo(function RobustImage({
 // ─────────────────────────────────────────────
 
 const ItemCard = memo(function ItemCard({
-  item, equipped, onEquip
+  item, equipped, onEquip, cellW
 }: {
   item: WovAvatarItem;
   equipped: boolean;
   onEquip: (i: WovAvatarItem) => void;
+  cellW: number;
 }) {
   return (
     <div
       onClick={() => onEquip(item)}
-      style={{ width: CELL_W - 8, height: CELL_H - 8 }}
+      style={{ width: cellW - 8, height: CELL_H - 8 }}
       className={[
         "relative flex flex-col items-center rounded-lg p-2 border transition-all cursor-pointer select-none group",
         equipped
@@ -208,11 +209,12 @@ const ItemCard = memo(function ItemCard({
 const OVERSCAN = 3; // righe extra sopra/sotto il viewport
 
 function VirtualGrid({
-  items, isEquipped, equipItem
+  items, isEquipped, equipItem, columns
 }: {
   items: WovAvatarItem[];
   isEquipped: (id: string) => boolean;
   equipItem: (item: WovAvatarItem) => void;
+  columns?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -234,7 +236,9 @@ function VirtualGrid({
     return () => ro.disconnect();
   }, []);
 
-  const colCount = Math.max(1, Math.floor(containerW / CELL_W));
+  const manualCols = typeof columns === 'number' ? Math.max(2, Math.min(columns, 10)) : undefined;
+  const colCount = manualCols ?? Math.max(1, Math.floor(containerW / CELL_W));
+  const cellW = Math.floor(containerW / colCount);
   const rowCount = Math.ceil(items.length / colCount);
   const totalH = rowCount * CELL_H;
 
@@ -278,7 +282,7 @@ function VirtualGrid({
               {Array.from({ length: colCount }).map((_, colIdx) => {
                 const idx = rowIdx * colCount + colIdx;
                 if (idx >= items.length) return (
-                  <div key={colIdx} style={{ width: CELL_W - 8 }} />
+                  <div key={colIdx} style={{ width: cellW - 8 }} />
                 );
                 const item = items[idx];
                 return (
@@ -287,6 +291,7 @@ function VirtualGrid({
                     item={item}
                     equipped={isEquipped(item.id)}
                     onEquip={equipItem}
+                    cellW={cellW}
                   />
                 );
               })}
@@ -313,6 +318,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
   const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
+  const [columns, setColumns] = useState<number>(4);
 
   // Advanced Filters
   const [showFilters, setShowFilters] = useState(false);
@@ -497,6 +503,21 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
           </button>
         </div>
 
+        {/* Colonne: controllo 2–10 */}
+        <div className="flex items-center gap-3 px-1">
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Colonne</span>
+          <input
+            type="range"
+            min={2}
+            max={10}
+            step={1}
+            value={columns}
+            onChange={(e) => setColumns(Number(e.target.value))}
+            className="flex-1 accent-yellow-500"
+          />
+          <span className="text-xs font-mono bg-black/20 px-2 py-0.5 rounded">{columns}</span>
+        </div>
+
         {/* Advanced Filters Panel */}
         {showFilters && (
           <div className="flex flex-col gap-4 p-4 bg-black/40 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-2">
@@ -551,6 +572,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
             items={filtered}
             isEquipped={selectedCategory === "SET" ? () => false : isEquipped}
             equipItem={handleEquip}
+            columns={columns}
           />
         </div>
       )}
