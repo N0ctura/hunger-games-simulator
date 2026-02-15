@@ -32,43 +32,88 @@ export function Wardrobe() {
   const hiddenAvatarRef = useRef<HTMLDivElement>(null);
 
   const handleDownloadAvatar = async () => {
-    if (!hiddenAvatarRef.current) return;
+    // We will use the visible canvas directly
+    const targetElement = document.querySelector('.avatar-canvas-container') as HTMLElement;
+
+    if (!targetElement) {
+      alert("Impossibile trovare l'elemento da catturare");
+      return;
+    }
+
     setDownloading(true);
+
+    // Store original srcs to restore later
+    const originalSrcs: Map<HTMLImageElement, string> = new Map();
+
     try {
-      // Wait for all images to load before capturing
-      const images = hiddenAvatarRef.current.querySelectorAll('img');
-      await Promise.all(
-        Array.from(images).map(img => {
-          if (img.complete) return Promise.resolve();
-          return new Promise((resolve, reject) => {
-            img.onload = resolve;
-            img.onerror = reject;
-            // Timeout after 15 seconds
-            setTimeout(() => reject(new Error('Image load timeout')), 15000);
+      // 1. PRE-PROCESS: Use a CORS-friendly proxy (wsrv.nl) for all images
+      // This service (images.weserv.nl) is very reliable and adds CORS headers
+      const images = targetElement.querySelectorAll('img');
+      console.log(`[Download] Processing ${images.length} images...`);
+
+      // Create a promise for each image to load via proxy
+      const loadPromises = Array.from(images).map(async (img) => {
+        const originalSrc = img.src;
+        // Skip if already data uri or local
+        if (originalSrc.startsWith('data:') || originalSrc.startsWith('blob:') || originalSrc.startsWith('/')) return;
+
+        try {
+          // Use wsrv.nl as proxy to fetch the image data
+          // We fetch it manually to convert to Base64, avoiding any crossOrigin issues in the DOM
+          const proxyUrl = `https://wsrv.nl/?url=${encodeURIComponent(originalSrc)}&output=png`;
+
+          const response = await fetch(proxyUrl);
+          if (!response.ok) throw new Error('Proxy fetch failed');
+
+          const blob = await response.blob();
+          const base64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
           });
-        })
-      );
 
-      // Wait more time to ensure all images are fully rendered
-      await new Promise(resolve => setTimeout(resolve, 1000));
+          // Store original to restore later
+          originalSrcs.set(img, originalSrc);
 
-      // toPng handles image loading internally.
-      // Increase pixel ratio for better quality
-      const dataUrl = await toPng(hiddenAvatarRef.current, {
-        cacheBust: true,
-        pixelRatio: exportScene ? 2 : 2, // 2x quality
-        skipFonts: true, // Skip font loading to avoid delays
+          // Set Base64 source - no crossOrigin needed for Data URIs
+          img.removeAttribute('crossorigin'); // Ensure no lingering attribute
+          img.src = base64;
+
+        } catch (e) {
+          console.warn(`[Download] Failed to load image via proxy: ${originalSrc}`, e);
+          // If fail, do nothing (keep original). toPng might fail to render this specific item or render it blank.
+        }
       });
 
+      await Promise.all(loadPromises);
+
+      // Wait a tiny bit more for rendering
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      // 2. CAPTURE
+      const dataUrl = await toPng(targetElement, {
+        cacheBust: true,
+        pixelRatio: 2,
+        skipFonts: true,
+        backgroundColor: exportScene ? undefined : undefined,
+      });
+
+      // 3. DOWNLOAD
       const link = document.createElement('a');
       const suffix = exportScene ? 'card' : 'avatar';
       link.download = `wolvesville-${suffix}-${Date.now()}.png`;
       link.href = dataUrl;
       link.click();
+
     } catch (err) {
-      console.error('Failed to download avatar:', err);
-      alert("Errore durante il download dell'avatar. Dettagli: " + (err instanceof Error ? err.message : 'Unknown error'));
+      console.error('Failed to capture screenshot:', err);
+      alert("Errore durante la creazione dello screenshot. Dettagli: " + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
+      // 4. CLEANUP: Restore original sources
+      originalSrcs.forEach((src, img) => {
+        img.src = src;
+      });
       setDownloading(false);
     }
   };
@@ -213,11 +258,15 @@ export function Wardrobe() {
         {/* ─────────────────────────────────────────────
             AVATAR PREVIEW CANVAS
         ───────────────────────────────────────────── */}
-        <AvatarCanvas
-          skinId={activeSkinId}
-          className="shadow-2xl bg-[#1a1a1a]"
-          showMannequin={true}
-        />
+        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[370px] h-[370px]">
+          <AvatarCanvas
+            skinId={activeSkinId}
+            showMannequin={true}
+            exportMode={exportScene}
+            exportLayout={exportScene ? 'scene' : 'raw'}
+            className={exportScene ? "bg-[#1a1a1a]" : undefined}
+          />
+        </div>
 
         {/* ─────────────────────────────────────────────
             SKIN TONE SELECTOR
@@ -287,32 +336,22 @@ export function Wardrobe() {
         <div className="flex gap-3 w-full mt-auto pt-4 border-t border-white/5">
           <button
             onClick={clearWardrobe}
-            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold border border-red-500/20"
+            className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold border border-red-500/20"
+            title="Svuota guardaroba"
           >
             <Trash2 size={16} />
-            <span>Svuota</span>
           </button>
 
-          <div className="flex-1 flex gap-1">
-            {/* Toggle Button for Export Mode */}
-            <button
-              onClick={() => setExportScene(!exportScene)}
-              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${exportScene ? "bg-purple-500/20 border-purple-500 text-purple-300" : "bg-card border-border text-muted-foreground"}`}
-              title={exportScene ? "Modalità Scena (Sfondo)" : "Modalità Avatar (Trasparente)"}
-            >
-              <Wand2 size={16} />
-            </button>
+          <button
+            onClick={handleDownloadAvatar}
+            disabled={isEmpty || downloading}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
+            title="Scarica Card"
+          >
+            {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
+            <span>Card</span>
+          </button>
 
-            <button
-              onClick={handleDownloadAvatar}
-              disabled={isEmpty || downloading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
-              title={exportScene ? "Scarica Card (Con Sfondo)" : "Scarica Avatar (Trasparente)"}
-            >
-              {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
-              <span>{exportScene ? "Card" : "PNG"}</span>
-            </button>
-          </div>
           <button
             onClick={handleGenerateUrl}
             disabled={isEmpty || generating}
@@ -324,22 +363,7 @@ export function Wardrobe() {
         </div>
       </div>
 
-      {/* Hidden Canvas for Export */}
-      <div style={{ position: "absolute", left: -9999, top: -9999, opacity: 0, pointerEvents: "none" }}>
-        {/* Always use same size and scene mode - only difference is background */}
-        <div
-          ref={hiddenAvatarRef}
-          style={{ width: 500, height: 625 }}
-        >
-          <AvatarCanvas
-            skinId={activeSkinId}
-            showMannequin={true}
-            exportMode={true}
-            exportLayout='scene'
-            className={exportScene ? "bg-[#1a1a1a]" : undefined} // Background only for CARD mode
-          />
-        </div>
-      </div>
+      {/* Hidden Canvas for Export - NO LONGER USED */}
 
       {/* ─────────────────────────────────────────────
           ADMIN CALIBRATION PANEL (Draggable)

@@ -142,12 +142,13 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
   const isScene = !exportMode || exportLayout === 'scene';
 
   const containerClass = exportMode && exportLayout === 'raw'
-    ? `relative overflow-hidden ${className}`
+    ? `relative overflow-hidden flex items-center justify-center ${className}` // Center the inner canvas
     : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-1 ${className}`;
 
-  // For export 'raw', we force 209x314. For 'scene' or interactive, we let parent/classes control size.
+  // For export 'raw', we use larger dimensions to capture full avatar including parts that extend beyond standard size
+  // For 'scene' or interactive, we let parent/classes control size.
   const containerStyle = exportMode && exportLayout === 'raw'
-    ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px` }
+    ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT * 1.5}px` } // 1.5x height to capture full avatar
     : {};
 
   return (
@@ -213,11 +214,11 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
             // Get style from "Cheat" offsets.json
             const style = getItemStyle(itemId, src || undefined);
 
-            // Proxy ALL external images in export mode to avoid CORS issues
-            // Use public CORS proxy since this is a static site
-            if (exportMode && src && src.startsWith('http')) {
-              src = `https://corsproxy.io/?${encodeURIComponent(src)}`;
-            }
+            // Proxy logic REMOVED - direct loading for visualization
+            // No more /api/proxy-image or CORS proxies that break loading
+            // if (exportMode && src && src.startsWith('http')) {
+            //   src = `/api/proxy-image?url=${encodeURIComponent(src)}`;
+            // }
 
             // Render Image
             const renderImage = () => {
@@ -236,7 +237,7 @@ export function AvatarCanvas({ className, skinId = "pale", showMannequin = true,
                     maxHeight: 'none',
                     objectFit: 'none' // Prevent object-fit stretching
                   }}
-                // CORS proxy handles cross-origin, no need for crossOrigin attribute
+                // crossOrigin="anonymous" removed because Wolvesville CDN blocks it
                 />
               );
             };
