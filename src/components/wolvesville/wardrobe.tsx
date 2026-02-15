@@ -35,11 +35,29 @@ export function Wardrobe() {
     if (!hiddenAvatarRef.current) return;
     setDownloading(true);
     try {
+      // Wait for all images to load before capturing
+      const images = hiddenAvatarRef.current.querySelectorAll('img');
+      await Promise.all(
+        Array.from(images).map(img => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            // Timeout after 15 seconds
+            setTimeout(() => reject(new Error('Image load timeout')), 15000);
+          });
+        })
+      );
+
+      // Wait more time to ensure all images are fully rendered
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
       // toPng handles image loading internally.
       // Increase pixel ratio for better quality
       const dataUrl = await toPng(hiddenAvatarRef.current, {
         cacheBust: true,
         pixelRatio: exportScene ? 2 : 2, // 2x quality
+        skipFonts: true, // Skip font loading to avoid delays
       });
 
       const link = document.createElement('a');
@@ -49,7 +67,7 @@ export function Wardrobe() {
       link.click();
     } catch (err) {
       console.error('Failed to download avatar:', err);
-      alert("Errore durante il download dell'avatar. Potrebbe essere dovuto a restrizioni del browser sulle immagini (CORS).");
+      alert("Errore durante il download dell'avatar. Dettagli: " + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setDownloading(false);
     }
@@ -308,20 +326,17 @@ export function Wardrobe() {
 
       {/* Hidden Canvas for Export */}
       <div style={{ position: "absolute", left: -9999, top: -9999, opacity: 0, pointerEvents: "none" }}>
-        {/* Dynamic size based on export mode */}
+        {/* Always use same size and scene mode - only difference is background */}
         <div
           ref={hiddenAvatarRef}
-          style={exportScene
-            ? { width: 500, height: 625 }
-            : { width: 209, height: 314 }
-          }
+          style={{ width: 500, height: 625 }}
         >
           <AvatarCanvas
             skinId={activeSkinId}
             showMannequin={true}
             exportMode={true}
-            exportLayout={exportScene ? 'scene' : 'raw'}
-            className={exportScene ? "bg-[#1a1a1a]" : undefined}
+            exportLayout='scene'
+            className={exportScene ? "bg-[#1a1a1a]" : undefined} // Background only for CARD mode
           />
         </div>
       </div>
