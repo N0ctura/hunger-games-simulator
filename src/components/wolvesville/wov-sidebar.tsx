@@ -54,7 +54,7 @@ export function WovSidebar({ activeTab, onTabChange }: SidebarProps) {
       </nav>
 
       <div className="mt-auto p-4 opacity-50 text-[10px] text-center">
-        v2.4.0 • Powered by Trae
+        v3.4.1 Dev by R0ck
       </div>
     </div>
   );

@@ -197,7 +197,7 @@ function WolvesvilleContent() {
         return (
           <div className="animate-in fade-in duration-500">
             <SectionHeader title="Guardaroba & Item" />
-            <div className="flex flex-col xl:flex-row gap-8">
+            <div className="flex flex-col xl:flex-row items-start gap-8">
               {/* Left: Wardrobe (Sticky on desktop) */}
               <div className="xl:w-[450px] shrink-0 xl:sticky xl:top-4 self-start z-50">
                 <Wardrobe />

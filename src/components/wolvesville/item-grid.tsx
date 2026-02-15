@@ -1,12 +1,12 @@
 "use client";
 
-import { WovAvatarItem, WovCategory, WovRarity, WovDensity } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovCategory, WovRarity, WovDensity, WovAvatarSet } from "@/lib/wolvesville-types";
 import { useWardrobe } from "@/context/wolvesville-context";
-import { Check, Loader2, Search, X } from "lucide-react";
+import { Check, Loader2, Search, X, Filter } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react";
 import { getCdnUrl } from "@/lib/wov-mapping";
-import { getDensity } from "@/lib/utils"; // Fixed ReferenceError
+import { getDensity } from "@/lib/utils";
 
 // ─────────────────────────────────────────────
 //  CONSTANTS
@@ -18,10 +18,27 @@ const CATEGORIES: Array<WovCategory | "ALL"> = [
 ];
 
 const RARITIES: Array<WovRarity | "ALL"> = [
-  "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY", "MYTHICAL", "MYTHIC"
+  "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY"
 ];
 
-const DENSITIES: Array<WovDensity | "ALL"> = ["ALL", "@1", "@2", "@3", "@4"];
+const COLORS = [
+  "Red", "Blue", "Green", "Pink", "Purple", "Yellow", "Orange",
+  "Black", "White", "Brown", "Grey", "Cyan", "Magenta", "Lime",
+  "Teal", "Indigo", "Violet", "Gold", "Silver", "Bronze"
+];
+
+const ORIGINS = [
+  { label: "Gold Shop", value: "SHOP_GOLD" },
+  { label: "Gem Shop", value: "SHOP_GEM" },
+  { label: "Battle Pass", value: "BATTLE_PASS" },
+  { label: "Bundle", value: "BUNDLE" },
+  { label: "Rose Wheel", value: "ROSE_WHEEL" },
+  { label: "Loot Box", value: "LOOT_BOX" },
+  { label: "Ranked", value: "RANKED" },
+  { label: "Clan Quest", value: "CLAN_QUEST" },
+  { label: "Daily Reward", value: "DAILY_REWARD" },
+  { label: "Unknown / Other", value: "UNKNOWN" }
+];
 
 const RARITY_COLORS: Record<WovRarity, string> = {
   COMMON: "text-gray-400 border-gray-500/30 bg-gray-500/10",
@@ -30,6 +47,23 @@ const RARITY_COLORS: Record<WovRarity, string> = {
   LEGENDARY: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
   MYTHICAL: "text-pink-400 border-pink-500/30 bg-pink-500/10",
   MYTHIC: "text-pink-400 border-pink-500/30 bg-pink-500/10",
+};
+
+const PREVIEW_PRIORITY: Record<string, number> = {
+  "FRONT": 1,
+  "SHIRT": 2,
+  "HAT": 3,
+  "BACK": 4,
+  "MASK": 5,
+  "HAIR": 6,
+  "GLASSES": 7,
+  "MOUTH": 8,
+  "EYES": 9,
+  "GRAVESTONE": 10,
+  "EMOJI": 11,
+  "SKIN": 99,
+  "BODY": 99,
+  "HEAD": 99
 };
 
 // Dimensioni celle virtualizzazione
@@ -125,20 +159,18 @@ const RobustImage = memo(function RobustImage({
 // ─────────────────────────────────────────────
 
 const ItemCard = memo(function ItemCard({
-  item, equipped, onEquip,
-}: { item: WovAvatarItem; equipped: boolean; onEquip: (i: WovAvatarItem) => void }) {
-  const density = getDensity(item.imageUrl);
-  const densityColor = density === "@1" ? "bg-gray-500/50 text-white" :
-    density === "@2" ? "bg-blue-500/50 text-white" :
-      density === "@3" ? "bg-purple-500/50 text-white" :
-        "bg-red-500/50 text-white";
-
+  item, equipped, onEquip
+}: {
+  item: WovAvatarItem;
+  equipped: boolean;
+  onEquip: (i: WovAvatarItem) => void;
+}) {
   return (
     <div
       onClick={() => onEquip(item)}
       style={{ width: CELL_W - 8, height: CELL_H - 8 }}
       className={[
-        "flex flex-col items-center rounded-lg p-2 border transition-all cursor-pointer select-none",
+        "relative flex flex-col items-center rounded-lg p-2 border transition-all cursor-pointer select-none group",
         equipped
           ? "border-primary/70 bg-primary/10 shadow-[0_0_12px_hsl(43_90%_55%/0.3)]"
           : "border-white/10 bg-black/20 hover:border-primary/40 hover:bg-black/30",
@@ -146,11 +178,8 @@ const ItemCard = memo(function ItemCard({
     >
       <div className="relative w-full flex-1 mb-1">
         <RobustImage item={item} />
-        <div className={`absolute top-0 left-0 text-[9px] font-bold px-1 rounded ${densityColor}`}>
-          {density}
-        </div>
         {equipped && (
-          <div className="absolute top-0 right-0 bg-primary rounded-full p-0.5">
+          <div className="absolute top-0 right-0 bg-primary rounded-full p-0.5 z-10">
             <Check size={9} className="text-primary-foreground" />
           </div>
         )}
@@ -179,7 +208,7 @@ const ItemCard = memo(function ItemCard({
 const OVERSCAN = 3; // righe extra sopra/sotto il viewport
 
 function VirtualGrid({
-  items, isEquipped, equipItem,
+  items, isEquipped, equipItem
 }: {
   items: WovAvatarItem[];
   isEquipped: (id: string) => boolean;
@@ -281,38 +310,62 @@ interface ItemGridProps {
 export function ItemGrid({ items, loading }: ItemGridProps) {
   const { equipItem, equipSet, isEquipped, sets } = useWardrobe();
 
-  // Debug: Print sample item structure
-  useEffect(() => {
-    if (items.length > 0) {
-      console.log('Sample Item Structure:', items[0]);
-    }
-  }, [items]);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
   const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
-  const [selectedDensity, setSelectedDensity] = useState<WovDensity | "ALL">("ALL");
+
+  // Advanced Filters
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
+
+  // Create a lookup map for items to efficiently find set contents
+  const itemMap = useMemo(() => {
+    const map = new Map<string, WovAvatarItem>();
+    items.forEach(i => map.set(i.id, i));
+    return map;
+  }, [items]);
 
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
+    let result: WovAvatarItem[] = [];
 
-    // SPECIAL HANDLING FOR SETS
+    // 1. BASE FILTERING (Category + Search)
     if (selectedCategory === "SET") {
-      return sets
+      result = sets
         .filter(s => {
           if (term && !s.name.toLowerCase().includes(term)) return false;
           return true;
         })
         .map(s => {
           // Determine the best fallback image from the set's contents
-          // 1. Try first item object
-          // 2. Try first item ID (resolved to CDN)
-          // 3. Try first nested set ID (resolved to CDN)
-          const firstItemUrl =
-            (s.items && s.items.length > 0 && s.items[0].imageUrl)
-            || (s.avatarItemIds && s.avatarItemIds.length > 0 && getCdnUrl(s.avatarItemIds[0], "avatar"))
-            || (s.avatarItemSets && s.avatarItemSets.length > 0 && getCdnUrl(s.avatarItemSets[0], "set"))
-            || "";
+          let firstItemUrl = "";
+
+          // Strategy 1: Look for a "Representative Item" in the set (e.g. Shirt/Hat)
+          // instead of just taking the first one (which might be a skin color without image)
+          if (s.avatarItemIds && s.avatarItemIds.length > 0) {
+            const candidates = s.avatarItemIds
+              .map(id => itemMap.get(id))
+              .filter((i): i is WovAvatarItem => !!i && !!i.imageUrl);
+
+            if (candidates.length > 0) {
+              // Sort by visual priority (Shirt > Hat > ... > Skin)
+              candidates.sort((a, b) => {
+                const pA = PREVIEW_PRIORITY[a.type] || 50;
+                const pB = PREVIEW_PRIORITY[b.type] || 50;
+                return pA - pB;
+              });
+              firstItemUrl = candidates[0].imageUrl;
+            }
+          }
+
+          // Strategy 2: Fallback to original logic if Strategy 1 failed
+          if (!firstItemUrl) {
+            firstItemUrl =
+              (s.items && s.items.length > 0 && s.items[0].imageUrl)
+              || (s.avatarItemIds && s.avatarItemIds.length > 0 && getCdnUrl(s.avatarItemIds[0], "avatar"))
+              || (s.avatarItemSets && s.avatarItemSets.length > 0 && getCdnUrl(s.avatarItemSets[0], "set"))
+              || "";
+          }
 
           return {
             id: s.id,
@@ -321,32 +374,64 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
             rarity: "COMMON",
             // Primary Image: Promo > Store Set Image
             imageUrl: s.promoImageUrl || getCdnUrl(s.id, "set"),
-            // Fallback Image: First item in the set (if set image fails)
+            // Fallback Image: Representative item from the set
             _fallbackImage: firstItemUrl,
             _originalSet: s
           } as unknown as WovAvatarItem;
         });
+    } else {
+      result = items.filter(item => {
+        if (selectedCategory !== "ALL" && item.type !== selectedCategory) return false;
+        if (selectedRarity !== "ALL" && item.rarity !== selectedRarity) return false;
+        if (term && !(
+          item.id.toLowerCase().includes(term) ||
+          (item.name ?? "").toLowerCase().includes(term)
+        )) return false;
+        return true;
+      });
     }
 
-    return items.filter(item => {
-      if (selectedCategory !== "ALL" && item.type !== selectedCategory) return false;
-      if (selectedRarity !== "ALL" && item.rarity !== selectedRarity) return false;
-      if (selectedDensity !== "ALL" && getDensity(item.imageUrl) !== selectedDensity) return false;
-      if (term && !(
-        item.id.toLowerCase().includes(term) ||
-        (item.name ?? "").toLowerCase().includes(term)
-      )) return false;
-      return true;
-    });
-  }, [items, sets, searchTerm, selectedCategory, selectedRarity, selectedDensity]);
+    // 2. SORTING
+    if (sortBy === "LEGENDARY") {
+      const rarityRank: Record<string, number> = { MYTHICAL: 6, MYTHIC: 5, LEGENDARY: 4, EPIC: 3, RARE: 2, COMMON: 1 };
+      result.sort((a, b) => (rarityRank[b.rarity] || 0) - (rarityRank[a.rarity] || 0));
+    }
+
+    return result;
+  }, [items, sets, searchTerm, selectedCategory, selectedRarity, sortBy, itemMap]);
 
   const handleEquip = useCallback((item: WovAvatarItem) => {
     if (item.type === "SET" && (item as any)._originalSet) {
-      equipSet((item as any)._originalSet);
+      const originalSet = (item as any)._originalSet as WovAvatarSet;
+
+      // Resolve all items from the set (items + avatarItemIds)
+      // This is crucial because some sets only have IDs or partial item lists
+      const resolvedItems: WovAvatarItem[] = [];
+
+      // 1. From .items
+      if (originalSet.items) {
+        resolvedItems.push(...originalSet.items);
+      }
+
+      // 2. From .avatarItemIds
+      if (originalSet.avatarItemIds) {
+        originalSet.avatarItemIds.forEach(id => {
+          const found = itemMap.get(id);
+          if (found) resolvedItems.push(found);
+        });
+      }
+
+      // Equip the resolved set directly (No gender filtering)
+      equipSet({
+        ...originalSet,
+        items: resolvedItems,
+        avatarItemIds: [], // Clear IDs since we resolved them
+      });
+
     } else {
       equipItem(item);
     }
-  }, [equipItem, equipSet]);
+  }, [equipItem, equipSet, itemMap]);
 
   if (loading) {
     return (
@@ -401,23 +486,33 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
             </div>
           </div>
 
-          <div className="relative min-w-[100px]">
-            <select
-              value={selectedDensity}
-              onChange={e => setSelectedDensity(e.target.value as WovDensity | "ALL")}
-              className="w-full appearance-none bg-black/20 border border-white/10 text-sm rounded-lg pl-3 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-black/30 transition-colors"
-            >
-              {DENSITIES.map(d => (
-                <option key={d} value={d} className="bg-gray-900">{d === "ALL" ? "Densità" : d}</option>
-              ))}
-            </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={`p-2.5 rounded-lg border transition-all ${showFilters || sortBy === "LEGENDARY"
+              ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
+              : "bg-black/20 border-white/10 text-muted-foreground hover:bg-black/30 hover:text-foreground"
+              }`}
+          >
+            <Filter size={18} />
+          </button>
+        </div>
+
+        {/* Advanced Filters Panel */}
+        {showFilters && (
+          <div className="flex flex-col gap-4 p-4 bg-black/40 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-2">
+            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Show, filter and sort items</h4>
+
+            <div className="flex flex-col gap-3">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 group-hover:border-white/50"}`}>
+                  {sortBy === "LEGENDARY" && <Check size={12} className="text-primary-foreground" />}
+                </div>
+                <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(s => s === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
+                <span className="text-sm text-white/80">Show legendary items first</span>
+              </label>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Bottom Row: Category Pills */}
         <div className="flex flex-col gap-2">

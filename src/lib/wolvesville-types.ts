@@ -40,6 +40,8 @@ export interface WovAvatarItem {
   type: WovCategory;
   imageUrl: string;
   name?: string; // Sometimes inferred from ID or Set
+  source?: "SHOP_GOLD" | "SHOP_GEM" | "BATTLE_PASS" | "BUNDLE" | "ROSE_WHEEL" | "LOOT_BOX" | "RANKED" | "CLAN_QUEST" | "DAILY_REWARD" | "UNKNOWN";
+  tags?: string[]; // Colors, themes, etc.
 }
 
 export interface WovAvatarSet {

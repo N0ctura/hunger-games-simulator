@@ -3,13 +3,14 @@
 import { useWolvesville } from "@/context/wolvesville-context";
 import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
-import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2 } from "lucide-react";
+import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown } from "lucide-react";
 import Image from "next/image";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { AvatarCanvas, SKIN_TONES } from "./avatar-canvas";
 import { getDensity } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import { analyzeImageBoundingBox, calculateAutoOffset } from "@/lib/auto-calibration";
+import { toPng } from 'html-to-image';
 
 // ─────────────────────────────────────────────
 //  CONSTANTS
@@ -25,7 +26,34 @@ const CALIBRATION_CATEGORIES: WovCategory[] = [
 export function Wardrobe() {
   const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items } = useWolvesville();
   const [generating, setGenerating] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [activeSkinId, setActiveSkinId] = useState<string>("pale");
+  const [exportScene, setExportScene] = useState(true); // Default to Scene (Card) export
+  const hiddenAvatarRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadAvatar = async () => {
+    if (!hiddenAvatarRef.current) return;
+    setDownloading(true);
+    try {
+      // toPng handles image loading internally.
+      // Increase pixel ratio for better quality
+      const dataUrl = await toPng(hiddenAvatarRef.current, {
+        cacheBust: true,
+        pixelRatio: exportScene ? 2 : 2, // 2x quality
+      });
+
+      const link = document.createElement('a');
+      const suffix = exportScene ? 'card' : 'avatar';
+      link.download = `wolvesville-${suffix}-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Failed to download avatar:', err);
+      alert("Errore durante il download dell'avatar. Potrebbe essere dovuto a restrizioni del browser sulle immagini (CORS).");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   // ─────────────────────────────────────────────
   //  ADMIN / CALIBRATION STATE
@@ -247,6 +275,26 @@ export function Wardrobe() {
             <span>Svuota</span>
           </button>
 
+          <div className="flex-1 flex gap-1">
+            {/* Toggle Button for Export Mode */}
+            <button
+              onClick={() => setExportScene(!exportScene)}
+              className={`flex items-center justify-center p-3 rounded-xl border transition-all ${exportScene ? "bg-purple-500/20 border-purple-500 text-purple-300" : "bg-card border-border text-muted-foreground"}`}
+              title={exportScene ? "Modalità Scena (Sfondo)" : "Modalità Avatar (Trasparente)"}
+            >
+              <Wand2 size={16} />
+            </button>
+
+            <button
+              onClick={handleDownloadAvatar}
+              disabled={isEmpty || downloading}
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
+              title={exportScene ? "Scarica Card (Con Sfondo)" : "Scarica Avatar (Trasparente)"}
+            >
+              {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
+              <span>{exportScene ? "Card" : "PNG"}</span>
+            </button>
+          </div>
           <button
             onClick={handleGenerateUrl}
             disabled={isEmpty || generating}
@@ -255,6 +303,26 @@ export function Wardrobe() {
             {generating ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
             <span>Genera Link</span>
           </button>
+        </div>
+      </div>
+
+      {/* Hidden Canvas for Export */}
+      <div style={{ position: "absolute", left: -9999, top: -9999, opacity: 0, pointerEvents: "none" }}>
+        {/* Dynamic size based on export mode */}
+        <div
+          ref={hiddenAvatarRef}
+          style={exportScene
+            ? { width: 500, height: 625 }
+            : { width: 209, height: 314 }
+          }
+        >
+          <AvatarCanvas
+            skinId={activeSkinId}
+            showMannequin={true}
+            exportMode={true}
+            exportLayout={exportScene ? 'scene' : 'raw'}
+            className={exportScene ? "bg-[#1a1a1a]" : undefined}
+          />
         </div>
       </div>
 

@@ -5,7 +5,7 @@ console.log('Current NODE_ENV:', process.env.NODE_ENV);
 console.log('Is Production?', isProd);
 
 const nextConfig = {
-  output: 'export',
+  output: isProd ? 'export' : undefined,
   // In dev mode (isProd=false), we want no basePath so it runs at root /
   // In prod mode (isProd=true), we use the repo name for GitHub Pages
   // IMPORTANT: This must match your GitHub repository name exactly!

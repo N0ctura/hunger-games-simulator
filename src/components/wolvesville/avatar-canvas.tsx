@@ -129,92 +129,140 @@ interface AvatarCanvasProps {
   className?: string;
   skinId?: string; // Kept for compatibility, though styling is strict
   showMannequin?: boolean;
+  exportMode?: boolean;
+  exportLayout?: 'raw' | 'scene'; // 'raw' = strict 209x314 transparent, 'scene' = card style with bg
 }
 
-export function AvatarCanvas({ className, skinId = "pale", showMannequin = true }: AvatarCanvasProps) {
+export function AvatarCanvas({ className, skinId = "pale", showMannequin = true, exportMode = false, exportLayout = 'raw' }: AvatarCanvasProps) {
   const { equippedItems } = useWolvesville();
 
   const activeSkin = SKIN_TONES.find(s => s.id === skinId) || SKIN_TONES[0];
 
+  // Determine container styles based on layout
+  const isScene = !exportMode || exportLayout === 'scene';
+
+  const containerClass = exportMode && exportLayout === 'raw'
+    ? `relative overflow-hidden ${className}`
+    : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-1 ${className}`;
+
+  // For export 'raw', we force 209x314. For 'scene' or interactive, we let parent/classes control size.
+  const containerStyle = exportMode && exportLayout === 'raw'
+    ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT}px` }
+    : {};
+
   return (
+    // Outer Wrapper
     <div
-      className={`relative mx-auto ${className}`}
-      style={{
-        width: `${CANVAS_WIDTH}px`,
-        height: `${CANVAS_HEIGHT}px`,
-      }}
+      className={containerClass}
+      style={containerStyle}
     >
-      {LAYER_HIERARCHY.map((layer) => {
-        let src: string | null = null;
-        let itemId: string | undefined = undefined;
+      {/* Background Placeholder - Show in Scene mode (export or interactive) */}
+      {isScene && <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b] opacity-50" />}
 
-        // Logic to determine content and ID
-        if (layer.isMannequin) {
-          if (layer.isMannequin === "BODY") {
-            // If SKIN item equipped, use it. Else Mannequin Body.
-            if (equippedItems["SKIN"]) {
-              src = getAvatarItemUrl(equippedItems["SKIN"].imageUrl);
-              itemId = equippedItems["SKIN"].id;
-            } else if (showMannequin) {
-              src = MANNEQUIN_LAYERS.BODY;
-              // No specific ID for default mannequin
+      {/* Inner Anchor - "The Mannequin Grid" (209x314) */}
+      <div
+        style={{
+          width: `${CANVAS_WIDTH}px`,
+          height: `${CANVAS_HEIGHT}px`,
+          position: 'relative',
+          flexShrink: 0,
+          // Scale: 0.45 for Scene (interactive or export), None for Raw Export
+          transform: isScene ? 'scale(0.45)' : 'none',
+          transformOrigin: 'bottom center',
+        }}
+      >
+        {/* Global Transform Wrapper */}
+        <div
+          className="w-full h-full absolute top-0 left-0"
+          style={{
+            transform: isScene ? 'translateY(25px)' : 'none'
+          }}
+        >
+          {LAYER_HIERARCHY.map((layer) => {
+            let src: string | null = null;
+            let itemId: string | undefined = undefined;
+
+            // Logic to determine content and ID
+            if (layer.isMannequin) {
+              if (layer.isMannequin === "BODY") {
+                // If SKIN item equipped, use it. Else Mannequin Body.
+                if (equippedItems["SKIN"]) {
+                  src = getAvatarItemUrl(equippedItems["SKIN"].imageUrl);
+                  itemId = equippedItems["SKIN"].id;
+                } else if (showMannequin) {
+                  src = MANNEQUIN_LAYERS.BODY;
+                  // No specific ID for default mannequin
+                }
+              } else if (layer.isMannequin === "HEAD") {
+                // If showMannequin is true, show Head.
+                if (showMannequin) {
+                  src = MANNEQUIN_LAYERS.HEAD;
+                }
+              }
+            } else if (layer.category) {
+              const item = equippedItems[layer.category];
+              if (item) {
+                src = getAvatarItemUrl(item.imageUrl);
+                itemId = item.id;
+              }
             }
-          } else if (layer.isMannequin === "HEAD") {
-            // If showMannequin is true, show Head.
-            if (showMannequin) {
-              src = MANNEQUIN_LAYERS.HEAD;
+
+            const isBaseMannequin = layer.isMannequin && src && Object.values(MANNEQUIN_LAYERS).includes(src);
+            const filter = isBaseMannequin ? activeSkin.filter : undefined;
+
+            // Get style from "Cheat" offsets.json
+            const style = getItemStyle(itemId, src || undefined);
+
+            // Proxy image logic:
+            // - cdn.wolvesville.com returns 403 on CORS -> Needs Proxy
+            // - cdn2.wolvesville.com returns 200 on CORS -> Direct load OK
+            if (exportMode && src && !src.includes("cdn2.wolvesville.com")) {
+              const cleanUrl = src.replace(/^https?:\/\//, '');
+              src = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&output=png&n=-1`;
             }
-          }
-        } else if (layer.category) {
-          const item = equippedItems[layer.category];
-          if (item) {
-            src = getAvatarItemUrl(item.imageUrl);
-            itemId = item.id;
-          }
-        }
 
-        const isBaseMannequin = layer.isMannequin && src && Object.values(MANNEQUIN_LAYERS).includes(src);
-        const filter = isBaseMannequin ? activeSkin.filter : undefined;
+            // Render Image
+            const renderImage = () => {
+              if (!src) return null;
 
-        // Get style from "Cheat" offsets.json
-        const style = getItemStyle(itemId, src || undefined);
+              return (
+                <img
+                  src={src}
+                  alt={layer.category || layer.id}
+                  width="auto"
+                  height="auto"
+                  style={{
+                    ...style,
+                    filter: filter ? filter : undefined,
+                    maxWidth: 'none',
+                    maxHeight: 'none',
+                    objectFit: 'none' // Prevent object-fit stretching
+                  }}
+                  crossOrigin={exportMode ? "anonymous" : undefined}
+                />
+              );
+            };
 
-        // Render Image
-        const renderImage = () => {
-          if (!src) return null;
-
-          return (
-            <img
-              src={src}
-              alt={layer.category || layer.id}
-              style={{
-                ...style,
-                filter: filter ? filter : undefined,
-              }}
-            // Removed crossOrigin="anonymous" to fix ERR_BLOCKED_BY_ORB / ERR_FAILED
-            // The CDN might not support CORS headers for direct browser fetching in this context
-            />
-          );
-        };
-
-        return (
-          <div
-            key={layer.id}
-            id={layer.id}
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              zIndex: layer.zIndex,
-              pointerEvents: 'none'
-            }}
-          >
-            {renderImage()}
-          </div>
-        );
-      })}
+            return (
+              <div
+                key={layer.id}
+                id={layer.id}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: layer.zIndex,
+                  pointerEvents: 'none'
+                }}
+              >
+                {renderImage()}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
