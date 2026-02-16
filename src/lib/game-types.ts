@@ -104,17 +104,17 @@ export const DEFAULT_OBJECTS = [
 export const generateDefaultTributes = (): Tribute[] => {
   // Lista opzionale di nomi personalizzati (D1 M, D1 F, D2 M, D2 F, ecc...)
   const customNames = [
-    "R0ck", "Glimmer",    // Distretto 1
+    "R0ck", "vincy",    // Distretto 1
     "Cato", "Clove",        // Distretto 2
-    "Beetee", "Wiress",     // Distretto 3
+    "Beetee", "Volpona",     // Distretto 3
     "Finnick", "Mags",      // Distretto 4
-    "Lil Bro", "Foxface", // Distretto 5
+    "Lil Bro", "Conte edw", // Distretto 5
     "Saetta", "Storto",
     "Nabbo", "Johanna", // Distretto 7
-    "Il 3", "Checco",
+    "Il 3", "xxkingxx",
     "S3bo", "Brock",
     "Noctura", "Ginettone",
-    "ambrogio", "Rue",        // Distretto 11
+    "ambrogio", "scimmietta 05",        // Distretto 11
     "Peeta", "La Foca"      // Distretto 12
   ];
 
@@ -149,7 +149,7 @@ export const generateDefaultTributes = (): Tribute[] => {
   return Array.from({ length: 24 }, (_, i) => {
     const district = Math.floor(i / 2) + 1;
     const gender = i % 2 === 0 ? "M" : "F";
-    
+
     // Usa il nome personalizzato se esiste, altrimenti quello standard
     const name = customNames[i] || `Tributo D${district}${gender}`;
 
