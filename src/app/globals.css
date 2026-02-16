@@ -102,6 +102,74 @@
   .animate-progress {
     animation: progress-loading 4s linear forwards;
   }
+
+  /* Mobile & Tablet Responsive Utilities */
+  .mobile-padding {
+    @apply px-4 md:px-8;
+  }
+
+  .mobile-text-lg {
+    @apply text-2xl md:text-3xl lg:text-4xl;
+  }
+
+  .mobile-text-xl {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  .mobile-grid-1 {
+    @apply grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4;
+  }
+
+  .mobile-grid-2 {
+    @apply grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5;
+  }
+
+  /* Custom Scrollbar - Hide on mobile for better UX */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+  }
+
+  @media (max-width: 768px) {
+    .custom-scrollbar {
+      scrollbar-width: none;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
+  }
+
+  /* Touch-friendly tap areas */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Mobile-specific hiding */
+  .hide-on-mobile {
+    @apply hidden md:block;
+  }
+
+  .show-on-mobile {
+    @apply block md:hidden;
+  }
 }
 
 /* Celestial Theme Utilities */

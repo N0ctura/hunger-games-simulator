@@ -49,49 +49,49 @@ function WolvesvilleContent() {
     switch (activeTab) {
       case "dashboard":
         return (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="p-8 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border border-primary/20 relative overflow-hidden shadow-xl">
+          <div className="space-y-4 md:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="p-6 md:p-8 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border border-primary/20 relative overflow-hidden shadow-xl">
               <div className="relative z-10">
-                <h1 className="text-4xl font-serif font-bold mb-2">Benvenuto su Wolvesville DB</h1>
-                <p className="text-lg text-muted-foreground max-w-xl">
+                <h1 className="text-2xl md:text-4xl font-serif font-bold mb-2">Benvenuto su Wolvesville DB</h1>
+                <p className="text-sm md:text-lg text-muted-foreground max-w-xl">
                   Il tuo hub definitivo per esplorare ruoli, creare outfit e gestire le attività del clan.
                   Sincronizzato in tempo reale con i server ufficiali.
                 </p>
               </div>
-              <div className="absolute -right-10 -bottom-20 opacity-20 rotate-12 pointer-events-none">
+              <div className="absolute -right-10 -bottom-20 opacity-20 rotate-12 pointer-events-none hidden md:block">
                 <Image src="https://cdn.wolvesville.com/roleIcons/werewolf.png" width={300} height={300} alt="Werewolf" />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
               <div
-                className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
+                className="bg-card/40 p-4 md:p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
                 onClick={() => setActiveTab("roles")}
               >
-                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roles.length}</h3>
-                <p className="text-sm text-muted-foreground">Ruoli Indicizzati</p>
+                <h3 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roles.length}</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Ruoli Indicizzati</p>
               </div>
               <div
-                className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
+                className="bg-card/40 p-4 md:p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
                 onClick={() => setActiveTab("wardrobe")}
               >
-                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{items.length}</h3>
-                <p className="text-sm text-muted-foreground">Oggetti Cosmetici</p>
+                <h3 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{items.length}</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Oggetti Cosmetici</p>
               </div>
               <div
-                className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
+                className="bg-card/40 p-4 md:p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
                 onClick={() => setActiveTab("roleIcons")}
               >
-                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roleIcons.length}</h3>
-                <p className="text-sm text-muted-foreground">Icone Ruoli</p>
+                <h3 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors">{roleIcons.length}</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Icone Ruoli</p>
               </div>
 
               <div
-                className="bg-card/40 p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
+                className="bg-card/40 p-4 md:p-6 rounded-xl border border-border hover:border-primary/50 transition-all cursor-pointer group"
                 onClick={() => setActiveTab("ranked")}
               >
-                <h3 className="text-2xl font-bold mb-1 group-hover:text-primary transition-colors">Ranked</h3>
-                <p className="text-sm text-muted-foreground">Classifiche</p>
+                <h3 className="text-xl md:text-2xl font-bold mb-1 group-hover:text-primary transition-colors">Ranked</h3>
+                <p className="text-xs md:text-sm text-muted-foreground">Classifiche</p>
               </div>
             </div>
 
@@ -99,11 +99,11 @@ function WolvesvilleContent() {
             <div className="space-y-4">
               <div className="flex items-center gap-3 pb-2 border-b border-border/40">
                 <div className="p-2 rounded-lg bg-yellow-500/10 text-yellow-500">
-                  <ShoppingBag size={24} />
+                  <ShoppingBag size={20} className="md:w-6 md:h-6" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-serif font-bold text-foreground">Offerte del Giorno</h2>
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <h2 className="text-xl md:text-2xl font-serif font-bold text-foreground">Offerte del Giorno</h2>
+                  <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                     Live dal Negozio
                   </p>
@@ -111,11 +111,11 @@ function WolvesvilleContent() {
               </div>
 
               {activeOffers.length === 0 ? (
-                <div className="p-8 text-center border border-dashed border-border rounded-xl bg-card/20">
-                  <p className="text-muted-foreground">Nessuna offerta attiva al momento o caricamento in corso...</p>
+                <div className="p-6 md:p-8 text-center border border-dashed border-border rounded-xl bg-card/20">
+                  <p className="text-sm md:text-base text-muted-foreground">Nessuna offerta attiva al momento o caricamento in corso...</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                   {activeOffers.map((offer) => (
                     <div
                       key={offer.id}
@@ -197,14 +197,14 @@ function WolvesvilleContent() {
         return (
           <div className="animate-in fade-in duration-500">
             <SectionHeader title="Guardaroba & Item" />
-            <div className="flex flex-col xl:flex-row items-start gap-8">
-              {/* Left: Wardrobe (Sticky on desktop) */}
-              <div className="xl:w-[450px] shrink-0 xl:sticky xl:top-4 self-start z-50">
+            <div className="flex flex-col xl:flex-row items-start gap-4 md:gap-8">
+              {/* Left: Wardrobe (Sticky on desktop, scrollable on mobile) */}
+              <div className="w-full xl:w-[450px] shrink-0 xl:sticky xl:top-4 self-start z-50">
                 <Wardrobe />
               </div>
 
               {/* Right: Item Grid */}
-              <div className="flex-grow">
+              <div className="flex-grow w-full">
                 <div className="bg-card/20 rounded-xl border border-border/50 p-1">
                   <ItemGrid items={items} loading={loading} />
                 </div>
@@ -293,7 +293,7 @@ function WolvesvilleContent() {
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2 md:gap-4">
                     {roleIconsGroup.map((icon) => (
                       <div key={icon.id} className="group relative aspect-square bg-card/40 rounded-xl flex items-center justify-center border border-border hover:border-primary transition-all shadow-sm hover:shadow-primary/20">
                         <div className="relative w-2/3 h-2/3">
@@ -325,7 +325,7 @@ function WolvesvilleContent() {
             {unassignedIcons.length > 0 && (
               <div className="bg-card/20 p-6 rounded-2xl border border-border/50">
                 <h3 className="text-xl font-bold font-serif mb-4">Altro</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 gap-4">
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-2 md:gap-4">
                   {unassignedIcons.map((icon) => (
                     <div key={icon.id} className="group relative aspect-square bg-card/40 rounded-xl flex items-center justify-center border border-border hover:border-primary transition-all shadow-sm hover:shadow-primary/20">
                       <div className="relative w-2/3 h-2/3">
@@ -369,13 +369,13 @@ function WolvesvilleContent() {
 
       {/* Main Content Area */}
       <main className={cn(
-        "flex-1 p-8 overflow-y-auto h-screen custom-scrollbar transition-all duration-300",
-        isSidebarVisible ? "ml-64" : "ml-0"
+        "flex-1 p-4 md:p-8 overflow-y-auto h-screen custom-scrollbar transition-all duration-300",
+        isSidebarVisible ? "md:ml-0" : "ml-0"
       )}>
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full space-y-4 animate-pulse">
             <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-            <p className="text-muted-foreground font-serif text-lg">Caricamento Wolvesville DB...</p>
+            <p className="text-muted-foreground font-serif text-base md:text-lg">Caricamento Wolvesville DB...</p>
           </div>
         ) : (
           renderContent()

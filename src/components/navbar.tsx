@@ -29,11 +29,11 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
 
   return (
     <header className="relative z-20 border-b border-border/50 bg-background/80 backdrop-blur-md">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <div className="flex items-center gap-4">
+      <nav className="mx-auto flex h-14 md:h-16 max-w-6xl items-center justify-between px-3 md:px-4">
+        <div className="flex items-center gap-2 md:gap-4">
           {showHome && (
-            <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
-              <Home size={20} />
+            <Link href="/" className="text-muted-foreground hover:text-primary transition-colors tap-target flex items-center justify-center">
+              <Home size={18} className="md:w-5 md:h-5" />
               <span className="sr-only">Home</span>
             </Link>
           )}
@@ -43,7 +43,7 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
               <img
                 src={logo || "/placeholder.svg"}
                 alt="Logo personalizzato"
-                className="max-h-10 max-w-[140px] object-contain"
+                className="max-h-8 md:max-h-10 max-w-[100px] md:max-w-[140px] object-contain"
               />
               <button
                 onClick={() => onLogoChange(null)}
@@ -54,11 +54,11 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
               </button>
             </div>
           ) : (
-            <span className="gold-text font-serif text-lg font-bold">CEH</span>
+            <span className="gold-text font-serif text-base md:text-lg font-bold">CEH</span>
           )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <input
             ref={fileInputRef}
             type="file"
@@ -70,7 +70,7 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
             variant="ghost"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
-            className="text-muted-foreground hover:text-primary"
+            className="text-muted-foreground hover:text-primary tap-target h-9 w-9 md:h-auto md:w-auto p-0 md:px-3"
           >
             <ImageIcon size={16} />
             <span className="ml-1.5 hidden sm:inline text-xs">Logo</span>

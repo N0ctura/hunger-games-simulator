@@ -452,40 +452,40 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
     <div className="flex flex-col" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
 
       {/* ── Filtri ─────────────────────────────── */}
-      <div className="shrink-0 flex flex-col gap-4 mb-4 bg-card/40 backdrop-blur-sm border border-border/60 rounded-xl p-4 shadow-sm">
+      <div className="shrink-0 flex flex-col gap-3 md:gap-4 mb-3 md:mb-4 bg-card/40 backdrop-blur-sm border border-border/60 rounded-xl p-3 md:p-4 shadow-sm">
 
         {/* Top Row: Search & Rarity */}
-        <div className="flex gap-3 items-center">
-          <div className="relative flex-1">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        <div className="flex gap-2 md:gap-3 items-center flex-wrap md:flex-nowrap">
+          <div className="relative flex-1 w-full md:w-auto">
+            <Search size={14} className="md:w-4 md:h-4 absolute left-2 md:left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
             <input
               type="text"
               placeholder="Cerca oggetto..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-9 py-2.5 text-sm bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/70"
+              className="w-full pl-8 md:pl-9 pr-8 md:pr-9 py-2 md:py-2.5 text-xs md:text-sm bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/70"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-white/10 transition-colors"
+                className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-white/10 transition-colors tap-target"
               >
-                <X size={14} />
+                <X size={12} className="md:w-3.5 md:h-3.5" />
               </button>
             )}
           </div>
 
-          <div className="relative min-w-[140px]">
+          <div className="relative min-w-[120px] md:min-w-[140px] w-full md:w-auto">
             <select
               value={selectedRarity}
               onChange={e => setSelectedRarity(e.target.value as WovRarity | "ALL")}
-              className="w-full appearance-none bg-black/20 border border-white/10 text-sm rounded-lg pl-3 pr-8 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-black/30 transition-colors"
+              className="w-full appearance-none bg-black/20 border border-white/10 text-xs md:text-sm rounded-lg pl-2 md:pl-3 pr-7 md:pr-8 py-2 md:py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-black/30 transition-colors"
             >
               {RARITIES.map(r => (
                 <option key={r} value={r} className="bg-gray-900">{r === "ALL" ? "Tutte le rarità" : r}</option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+            <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
               <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -494,18 +494,18 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
 
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className={`p-2.5 rounded-lg border transition-all ${showFilters || sortBy === "LEGENDARY"
+            className={`p-2 md:p-2.5 rounded-lg border transition-all tap-target ${showFilters || sortBy === "LEGENDARY"
               ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
               : "bg-black/20 border-white/10 text-muted-foreground hover:bg-black/30 hover:text-foreground"
               }`}
           >
-            <Filter size={18} />
+            <Filter size={16} className="md:w-[18px] md:h-[18px]" />
           </button>
         </div>
 
         {/* Colonne: controllo 2–10 */}
-        <div className="flex items-center gap-3 px-1">
-          <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Colonne</span>
+        <div className="flex items-center gap-2 md:gap-3 px-1">
+          <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider">Colonne</span>
           <input
             type="range"
             min={2}
@@ -515,21 +515,21 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
             onChange={(e) => setColumns(Number(e.target.value))}
             className="flex-1 accent-yellow-500"
           />
-          <span className="text-xs font-mono bg-black/20 px-2 py-0.5 rounded">{columns}</span>
+          <span className="text-[10px] md:text-xs font-mono bg-black/20 px-1.5 md:px-2 py-0.5 rounded">{columns}</span>
         </div>
 
         {/* Advanced Filters Panel */}
         {showFilters && (
-          <div className="flex flex-col gap-4 p-4 bg-black/40 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-2">
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">Show, filter and sort items</h4>
+          <div className="flex flex-col gap-3 md:gap-4 p-3 md:p-4 bg-black/40 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-2">
+            <h4 className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1 md:mb-2">Show, filter and sort items</h4>
 
-            <div className="flex flex-col gap-3">
-              <label className="flex items-center gap-2 cursor-pointer group">
+            <div className="flex flex-col gap-2 md:gap-3">
+              <label className="flex items-center gap-2 cursor-pointer group tap-target">
                 <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 group-hover:border-white/50"}`}>
                   {sortBy === "LEGENDARY" && <Check size={12} className="text-primary-foreground" />}
                 </div>
                 <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(s => s === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
-                <span className="text-sm text-white/80">Show legendary items first</span>
+                <span className="text-xs md:text-sm text-white/80">Show legendary items first</span>
               </label>
             </div>
           </div>
@@ -538,18 +538,18 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
         {/* Bottom Row: Category Pills */}
         <div className="flex flex-col gap-2">
           <div className="flex justify-between items-center px-1">
-            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">Categorie</span>
-            <span className="text-xs text-muted-foreground font-mono bg-black/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider">Categorie</span>
+            <span className="text-[10px] md:text-xs text-muted-foreground font-mono bg-black/20 px-1.5 md:px-2 py-0.5 rounded">
               {filtered.length.toLocaleString()} items
             </span>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar scrollbar-hide select-none">
+          <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar scrollbar-hide select-none">
             {CATEGORIES.map(c => (
               <button
                 key={c}
                 onClick={() => setSelectedCategory(c)}
-                className={`whitespace-nowrap px-4 py-1.5 rounded-lg text-xs font-bold transition-all border shrink-0 ${selectedCategory === c
+                className={`whitespace-nowrap px-3 md:px-4 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all border shrink-0 tap-target ${selectedCategory === c
                   ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
                   : "bg-black/20 text-muted-foreground border-white/5 hover:bg-black/40 hover:text-foreground hover:border-white/20"
                   }`}

@@ -243,16 +243,16 @@ export function Wardrobe() {
 
   return (
     <>
-      <div className="sticky top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-6 w-full">
+      <div className="sticky top-4 md:top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col items-center gap-4 md:gap-6 w-full">
         <div className="text-center">
-          <h3 className="text-2xl font-bold font-serif gold-text mb-1">Avatar Builder</h3>
-          <p className="text-xs text-muted-foreground">Crea il tuo stile unico</p>
+          <h3 className="text-xl md:text-2xl font-bold font-serif gold-text mb-1">Avatar Builder</h3>
+          <p className="text-[10px] md:text-xs text-muted-foreground">Crea il tuo stile unico</p>
         </div>
 
         {/* ─────────────────────────────────────────────
             AVATAR PREVIEW CANVAS
         ───────────────────────────────────────────── */}
-        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[370px] h-[370px]">
+        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[280px] h-[280px] md:w-[370px] md:h-[370px]">
           <AvatarCanvas
             skinId={activeSkinId}
             showMannequin={true}
@@ -267,7 +267,7 @@ export function Wardrobe() {
         <div className="w-full flex justify-center -mt-2">
           <button
             onClick={() => setShowDetails(v => !v)}
-            className={`px-3 py-1.5 text-xs font-bold rounded-full border transition-all ${showDetails ? 'bg-black/30 border-white/15 text-white/80 hover:bg-black/40' : 'bg-primary/20 border-primary/40 text-primary hover:bg-primary/30'}`}
+            className={`px-3 py-1.5 text-[10px] md:text-xs font-bold rounded-full border transition-all tap-target ${showDetails ? 'bg-black/30 border-white/15 text-white/80 hover:bg-black/40' : 'bg-primary/20 border-primary/40 text-primary hover:bg-primary/30'}`}
             title={showDetails ? 'Nascondi' : 'Vedi tutto'}
           >
             {showDetails ? 'Nascondi' : 'Vedi tutto'}
@@ -275,18 +275,18 @@ export function Wardrobe() {
         </div>
 
         {showDetails && (
-          <div className="flex items-center gap-3 bg-black/20 border border-white/10 px-3 py-2 rounded-lg">
-            <span className="text-xs text-muted-foreground font-bold uppercase tracking-wider">Colore sfondo</span>
+          <div className="flex items-center gap-2 md:gap-3 bg-black/20 border border-white/10 px-2 md:px-3 py-1.5 md:py-2 rounded-lg">
+            <span className="text-[10px] md:text-xs text-muted-foreground font-bold uppercase tracking-wider">Colore sfondo</span>
             <input
               type="color"
               value={bgColor}
               onChange={(e) => setBgColor(e.target.value)}
-              className="w-8 h-6 p-0 border border-white/20 rounded cursor-pointer bg-transparent"
+              className="w-7 h-5 md:w-8 md:h-6 p-0 border border-white/20 rounded cursor-pointer bg-transparent"
               title="Scegli colore di sfondo"
             />
             <button
               onClick={() => setBgColor("#1a1a1a")}
-              className="text-[10px] px-2 py-1 rounded border border-white/10 hover:bg-white/10"
+              className="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 md:py-1 rounded border border-white/10 hover:bg-white/10 tap-target"
               title="Reset"
             >
               Reset
@@ -295,12 +295,12 @@ export function Wardrobe() {
         )}
 
         {showDetails && (
-          <div className="flex gap-2 justify-center py-2 bg-black/20 px-4 rounded-full border border-white/5">
+          <div className="flex gap-1.5 md:gap-2 justify-center py-1.5 md:py-2 bg-black/20 px-3 md:px-4 rounded-full border border-white/5">
             {SKIN_TONES.map((tone) => (
               <button
                 key={tone.id}
                 onClick={() => setActiveSkinId(tone.id)}
-                className={`w-6 h-6 rounded-full border-2 transition-all hover:scale-110 ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
+                className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 transition-all hover:scale-110 tap-target ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
                   }`}
                 style={{ backgroundColor: tone.color }}
                 title={tone.id}
@@ -314,8 +314,8 @@ export function Wardrobe() {
         ───────────────────────────────────────────── */}
         {showDetails && !isEmpty && (
           <div className="w-full">
-            <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">Equipaggiati ({Object.keys(equippedItems).length})</h4>
-            <div className="grid grid-cols-5 gap-2 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+            <h4 className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 md:mb-3">Equipaggiati ({Object.keys(equippedItems).length})</h4>
+            <div className="grid grid-cols-4 md:grid-cols-5 gap-1.5 md:gap-2 max-h-32 md:max-h-40 overflow-y-auto pr-1 custom-scrollbar">
               {Object.entries(equippedItems).map(([type, item]) => {
                 if (type === "SKIN") return null;
 
@@ -324,7 +324,7 @@ export function Wardrobe() {
                 return (
                   <div
                     key={type}
-                    className={`relative aspect-square bg-black/40 rounded-lg border p-1 group cursor-pointer transition-all ${isSelected ? "border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.3)]" : "border-white/10 hover:border-primary/50"
+                    className={`relative aspect-square bg-black/40 rounded-lg border p-1 group cursor-pointer transition-all tap-target ${isSelected ? "border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.3)]" : "border-white/10 hover:border-primary/50"
                       }`}
                     onClick={() => {
                       if (isAdminMode) {
@@ -339,13 +339,13 @@ export function Wardrobe() {
                       src={WovEngine.resolveImageUrl(item.id, "avatar", item.imageUrl)}
                       alt={type}
                       fill
-                      className="object-contain p-1"
+                      className="object-contain p-0.5 md:p-1"
                       unoptimized
                     />
 
                     {!isAdminMode && (
                       <div className="absolute inset-0 bg-red-500/80 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all rounded-lg backdrop-blur-sm">
-                        <Trash2 size={14} className="text-white" />
+                        <Trash2 size={12} className="md:w-3.5 md:h-3.5 text-white" />
                       </div>
                     )}
                   </div>
@@ -359,22 +359,22 @@ export function Wardrobe() {
             ACTIONS
         ───────────────────────────────────────────── */}
         {showDetails && (
-          <div className="flex gap-3 w-full mt-auto pt-4 border-t border-white/5">
+          <div className="flex gap-2 md:gap-3 w-full mt-auto pt-3 md:pt-4 border-t border-white/5">
             <button
               onClick={clearWardrobe}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold border border-red-500/20"
+              className="flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs md:text-sm font-bold border border-red-500/20 tap-target"
               title="Svuota guardaroba"
             >
-              <Trash2 size={16} />
+              <Trash2 size={14} className="md:w-4 md:h-4" />
             </button>
 
             <button
               onClick={handleDownloadAvatar}
               disabled={isEmpty || downloading}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-sm font-bold shadow-lg shadow-blue-500/20"
+              className="flex-1 flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2.5 md:py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-500 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs md:text-sm font-bold shadow-lg shadow-blue-500/20 tap-target"
               title="Scarica Card"
             >
-              {downloading ? <Loader2 size={16} className="animate-spin" /> : <ImageDown size={16} />}
+              {downloading ? <Loader2 size={14} className="md:w-4 md:h-4 animate-spin" /> : <ImageDown size={14} className="md:w-4 md:h-4" />}
               <span>Card</span>
             </button>
 
@@ -389,12 +389,12 @@ export function Wardrobe() {
       {/* Hidden Canvas for Export - NO LONGER USED */}
 
       {/* ─────────────────────────────────────────────
-          ADMIN CALIBRATION PANEL (Draggable)
+          ADMIN CALIBRATION PANEL (Draggable) - Hidden on Mobile
       ───────────────────────────────────────────── */}
       {!showDevPanel && (
         <button
           onClick={() => setShowDevPanel(true)}
-          className="fixed bottom-4 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg hover:scale-110 transition-transform z-[9999]"
+          className="hidden md:block fixed bottom-4 right-4 bg-yellow-500 text-black p-3 rounded-full shadow-lg hover:scale-110 transition-transform z-[9999]"
           title="Open Calibration Admin"
         >
           <Wrench size={24} />
@@ -403,7 +403,7 @@ export function Wardrobe() {
 
       {showDevPanel && (
         <div
-          className="fixed bg-black/90 backdrop-blur-lg border border-yellow-500/50 rounded-xl shadow-2xl z-[9999] text-xs font-mono w-80 flex flex-col"
+          className="hidden md:block fixed bg-black/90 backdrop-blur-lg border border-yellow-500/50 rounded-xl shadow-2xl z-[9999] text-xs font-mono w-80 flex flex-col"
           style={{ left: panelPos.x, top: panelPos.y }}
         >
           {/* HEADER */}
