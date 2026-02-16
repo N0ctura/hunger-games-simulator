@@ -111,7 +111,7 @@ export const generateDefaultTributes = (): Tribute[] => {
     "Lil Bro", "Conte edw", // Distretto 5
     "Saetta", "Storto",
     "Nabbo", "Johanna", // Distretto 7
-    "Il 3", "xxkingxx",
+    "Il 3", "xXkingXx",
     "S3bo", "Brock",
     "Noctura", "Ginettone",
     "ambrogio", "scimmietta 05",        // Distretto 11
@@ -125,7 +125,7 @@ export const generateDefaultTributes = (): Tribute[] => {
     "https://api.dicebear.com/7.x/avataaars/svg?seed=T3",
     "https://api.dicebear.com/7.x/avataaars/svg?seed=T4",
     "https://api.dicebear.com/7.x/avataaars/svg?seed=T5",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=T6",
+    "images/volpe.png",
     "https://api.dicebear.com/7.x/bottts/svg?seed=B1",
     "https://api.dicebear.com/7.x/bottts/svg?seed=B2",
     "https://api.dicebear.com/7.x/bottts/svg?seed=B3",
