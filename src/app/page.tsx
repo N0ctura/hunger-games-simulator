@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Swords, Lock, Sparkles, Gamepad2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Swords, Lock, Sparkles, Gamepad2, X } from "lucide-react";
 import { ParticleBackground } from "@/components/particle-background";
 import { Navbar } from "@/components/navbar";
 
@@ -39,11 +40,62 @@ const games = [
 
 export default function HomePage() {
   const [logo, setLogo] = useState<string | null>(null);
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const router = useRouter();
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput === "discord") {
+      router.push("/hunger-games");
+    } else {
+      alert("Password errata!");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <ParticleBackground />
       <Navbar logo={logo} onLogoChange={setLogo} />
+
+      {/* Password Prompt Modal */}
+      {showPasswordPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-card border border-primary/30 p-6 rounded-xl shadow-2xl w-full max-w-sm relative mx-4">
+            <button
+              onClick={() => setShowPasswordPrompt(false)}
+              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="flex flex-col items-center gap-4">
+              <Lock className="w-10 h-10 text-primary mb-2" />
+              <h3 className="text-xl font-bold font-serif gold-text">Accesso Riservato</h3>
+              <p className="text-sm text-muted-foreground text-center mb-2">
+                Ehi tu! Questa sezione è finita, ma non pensare di ricevere spoiler!Daje Roma! 💛❤️
+              </p>
+
+              <form onSubmit={handlePasswordSubmit} className="w-full flex flex-col gap-3">
+                <input
+                  type="password"
+                  placeholder="Inserisci password..."
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full bg-background/50 border border-white/10 rounded-lg px-4 py-2 text-center focus:outline-none focus:border-primary/50 transition-colors"
+                  autoFocus
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 hover:border-primary/50 font-bold py-2 rounded-lg transition-all"
+                >
+                  Accedi
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       <main className="relative z-10">
         {/* Hero */}
@@ -106,9 +158,15 @@ export default function HomePage() {
               );
 
               return game.available ? (
-                <Link key={game.title} href={game.href}>
-                  {content}
-                </Link>
+                game.title === "Hunger Games Simulator" ? (
+                  <div key={game.title} onClick={() => setShowPasswordPrompt(true)} className="cursor-pointer">
+                    {content}
+                  </div>
+                ) : (
+                  <Link key={game.title} href={game.href}>
+                    {content}
+                  </Link>
+                )
               ) : (
                 <div key={game.title}>{content}</div>
               );
