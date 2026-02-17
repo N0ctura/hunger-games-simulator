@@ -277,7 +277,8 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         }
 
         console.log(`[WovContext] 🎯 Total items ready for grid: ${finalItems.length}`);
-        setItems(finalItems);
+        const withoutSkin = finalItems.filter(i => i.type !== "SKIN");
+        setItems(withoutSkin);
       } catch (e) {
         if (!cancelled) {
           const msg = e instanceof Error ? e.message : String(e);

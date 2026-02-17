@@ -2,7 +2,7 @@
 
 import { WovAvatarItem, WovCategory, WovRarity, WovDensity, WovAvatarSet } from "@/lib/wolvesville-types";
 import { useWardrobe } from "@/context/wolvesville-context";
-import { Check, Loader2, Search, X, Filter } from "lucide-react";
+import { Check, Loader2, Search, X, Filter, Settings, SlidersHorizontal, ChevronRight, Menu } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react";
 import { getCdnUrl } from "@/lib/wov-mapping";
@@ -14,8 +14,23 @@ import { getDensity } from "@/lib/utils";
 
 const CATEGORIES: Array<WovCategory | "ALL"> = [
   "ALL", "SET", "HAIR", "HAT", "EYES", "MOUTH", "GLASSES",
-  "SHIRT", "MASK", "BACK", "FRONT", "GRAVESTONE", "SKIN"
+  "SHIRT", "MASK", "BACK", "FRONT", "GRAVESTONE"
 ];
+
+const CATEGORY_LABELS: Record<string, string> = {
+  ALL: "🗺",
+  SET: "🎁",
+  HAIR: "👩‍🦰",
+  HAT: "🧢",
+  EYES: "👀",
+  MOUTH: "👄",
+  GLASSES: "👓",
+  SHIRT: "👕",
+  MASK: "🎭",
+  BACK: "🌇",
+  FRONT: "🌆",
+  GRAVESTONE: "☠"
+};
 
 const RARITIES: Array<WovRarity | "ALL"> = [
   "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY"
@@ -47,6 +62,15 @@ const RARITY_COLORS: Record<WovRarity, string> = {
   LEGENDARY: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
   MYTHICAL: "text-pink-400 border-pink-500/30 bg-pink-500/10",
   MYTHIC: "text-pink-400 border-pink-500/30 bg-pink-500/10",
+};
+
+const RARITY_BORDER_COLORS: Record<WovRarity, string> = {
+  COMMON: "border-gray-500/50 hover:border-gray-400",
+  RARE: "border-blue-500/50 hover:border-blue-400",
+  EPIC: "border-purple-500/50 hover:border-purple-400",
+  LEGENDARY: "border-yellow-500/50 hover:border-yellow-400",
+  MYTHICAL: "border-pink-500/50 hover:border-pink-400",
+  MYTHIC: "border-pink-500/50 hover:border-pink-400",
 };
 
 const PREVIEW_PRIORITY: Record<string, number> = {
@@ -171,10 +195,10 @@ const ItemCard = memo(function ItemCard({
       onClick={() => onEquip(item)}
       style={{ width: cellW - 8, height: CELL_H - 8 }}
       className={[
-        "relative flex flex-col items-center rounded-lg p-2 border transition-all cursor-pointer select-none group",
+        "relative flex flex-col items-center rounded-lg p-2 transition-all cursor-pointer select-none group",
         equipped
-          ? "border-primary/70 bg-primary/10 shadow-[0_0_12px_hsl(43_90%_55%/0.3)]"
-          : "border-white/10 bg-black/20 hover:border-primary/40 hover:bg-black/30",
+          ? `border-2 bg-primary/10 shadow-[0_0_12px_rgba(255,255,255,0.3)] ${RARITY_BORDER_COLORS[item.rarity] || "border-white/50"}`
+          : `border bg-black/20 hover:bg-black/30 ${RARITY_BORDER_COLORS[item.rarity] || "border-white/10"}`,
       ].join(" ")}
     >
       <div className="relative w-full flex-1 mb-1">
@@ -185,12 +209,12 @@ const ItemCard = memo(function ItemCard({
           </div>
         )}
       </div>
-      <span className={`text-[9px] uppercase font-bold px-1 py-0.5 rounded border mb-0.5 ${RARITY_COLORS[item.rarity] ?? "text-gray-400"}`}>
+      {/* <span className={`text-[9px] uppercase font-bold px-1 py-0.5 rounded border mb-0.5 ${RARITY_COLORS[item.rarity] ?? "text-gray-400"}`}>
         {item.rarity}
       </span>
       <div className="text-[10px] text-center text-white/60 truncate w-full leading-tight">
         {item.name ?? item.id}
-      </div>
+      </div> */}
     </div>
   );
 });
@@ -322,6 +346,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
 
   // Advanced Filters
   const [showFilters, setShowFilters] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
 
   // Create a lookup map for items to efficiently find set contents
@@ -451,131 +476,146 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   return (
     <div className="flex flex-col" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
 
-      {/* ── Filtri ─────────────────────────────── */}
-      <div className="shrink-0 flex flex-col gap-3 md:gap-4 mb-3 md:mb-4 bg-card/40 backdrop-blur-sm border border-border/60 rounded-xl p-3 md:p-4 shadow-sm">
+      {/* ── Filtri & Categorie ─────────────────────────────── */}
+      <div className="shrink-0 flex items-center gap-2 mb-2 relative z-30">
 
-        {/* Top Row: Search & Rarity */}
-        <div className="flex gap-2 md:gap-3 items-center flex-wrap md:flex-nowrap">
-          <div className="relative flex-1 w-full md:w-auto">
-            <Search size={14} className="md:w-4 md:h-4 absolute left-2 md:left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        {/* Categories List (Scrollable) */}
+        <div className="flex-1 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar scrollbar-hide select-none flex gap-1.5 md:gap-2">
+          {CATEGORIES.map(c => (
+            <button
+              key={c}
+              onClick={() => setSelectedCategory(c)}
+              className={`whitespace-nowrap px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold transition-all border shrink-0 tap-target ${selectedCategory === c
+                ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
+                : "bg-black/20 text-muted-foreground border-white/5 hover:bg-black/40 hover:text-foreground hover:border-white/20"
+                }`}
+            >
+              {CATEGORY_LABELS[c] || c}
+            </button>
+          ))}
+        </div>
+
+        {/* Options Toggle */}
+        <button
+          onClick={() => setShowOptions(!showOptions)}
+className = {`p-2 rounded-lg border transition-all tap-target shrink-0 ${showOptions
+  ? "bg-primary text-primary-foreground border-primary shadow-lg"
+  : "bg-card/40 border-white/10 text-muted-foreground hover:bg-card/60 hover:text-foreground"
+  }`}
+title = "Opzioni Filtri"
+  >
+  <Settings size={20} />
+        </button >
+
+  {/* Options Dropdown Panel */ }
+{
+  showOptions && (
+    <>
+      {/* Mobile Backdrop */}
+      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] md:bg-transparent md:backdrop-blur-none" onClick={() => setShowOptions(false)} />
+
+      <div className="absolute top-12 right-0 w-[280px] md:w-[320px] bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 flex flex-col gap-4 animate-in fade-in zoom-in-95 origin-top-right z-50">
+
+        <div className="flex justify-between items-center border-b border-white/10 pb-2 mb-1">
+          <span className="text-sm font-bold text-white flex items-center gap-2">
+            <SlidersHorizontal size={14} className="text-primary" />
+            Filtri & Opzioni
+          </span>
+          <button onClick={() => setShowOptions(false)}><X size={16} className="text-muted-foreground hover:text-white" /></button>
+        </div>
+
+        {/* 1. Search */}
+        <div className="space-y-1.5">
+          <label className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
+            Cerca
+            {searchTerm && <span className="text-primary text-[9px] cursor-pointer" onClick={() => setSearchTerm("")}>RESET</span>}
+          </label>
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
-              type="text"
-              placeholder="Cerca oggetto..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-8 md:pl-9 pr-8 md:pr-9 py-2 md:py-2.5 text-xs md:text-sm bg-black/20 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all placeholder:text-muted-foreground/70"
+              placeholder="Nome oggetto..."
+              className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/50 text-white"
+              autoFocus
             />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-white/10 transition-colors tap-target"
-              >
-                <X size={12} className="md:w-3.5 md:h-3.5" />
-              </button>
-            )}
+            {searchTerm && <button onClick={() => setSearchTerm("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"><X size={14} /></button>}
           </div>
+        </div>
 
-          <div className="relative min-w-[120px] md:min-w-[140px] w-full md:w-auto">
+        {/* 2. Rarity */}
+        <div className="space-y-1.5">
+          <label className="text-[10px] text-muted-foreground uppercase font-bold">Rarità</label>
+          <div className="relative">
             <select
               value={selectedRarity}
-              onChange={e => setSelectedRarity(e.target.value as WovRarity | "ALL")}
-              className="w-full appearance-none bg-black/20 border border-white/10 text-xs md:text-sm rounded-lg pl-2 md:pl-3 pr-7 md:pr-8 py-2 md:py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-black/30 transition-colors"
+              onChange={e => setSelectedRarity(e.target.value as any)}
+              className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 appearance-none text-white cursor-pointer"
             >
-              {RARITIES.map(r => (
-                <option key={r} value={r} className="bg-gray-900">{r === "ALL" ? "Tutte le rarità" : r}</option>
-              ))}
+              {RARITIES.map(r => <option key={r} value={r} className="bg-zinc-900 text-white">{r === "ALL" ? "Tutte le rarità" : r}</option>)}
             </select>
-            <div className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
-              <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
+            <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none" size={14} />
           </div>
-
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className={`p-2 md:p-2.5 rounded-lg border transition-all tap-target ${showFilters || sortBy === "LEGENDARY"
-              ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
-              : "bg-black/20 border-white/10 text-muted-foreground hover:bg-black/30 hover:text-foreground"
-              }`}
-          >
-            <Filter size={16} className="md:w-[18px] md:h-[18px]" />
-          </button>
         </div>
 
-        {/* Colonne: controllo 2–10 */}
-        <div className="flex items-center gap-2 md:gap-3 px-1">
-          <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider">Colonne</span>
+        {/* 3. Columns */}
+        <div className="space-y-1.5">
+          <div className="flex justify-between items-center">
+            <label className="text-[10px] text-muted-foreground uppercase font-bold">Dimensione Griglia</label>
+            <span className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-white">{columns} col</span>
+          </div>
           <input
-            type="range"
-            min={2}
-            max={10}
-            step={1}
+            type="range" min={2} max={10} step={1}
             value={columns}
-            onChange={(e) => setColumns(Number(e.target.value))}
-            className="flex-1 accent-yellow-500"
+            onChange={e => setColumns(Number(e.target.value))}
+            className="w-full accent-primary h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
           />
-          <span className="text-[10px] md:text-xs font-mono bg-black/20 px-1.5 md:px-2 py-0.5 rounded">{columns}</span>
+          <div className="flex justify-between text-[9px] text-muted-foreground px-1">
+            <span>Grande</span>
+            <span>Piccola</span>
+          </div>
         </div>
 
-        {/* Advanced Filters Panel */}
-        {showFilters && (
-          <div className="flex flex-col gap-3 md:gap-4 p-3 md:p-4 bg-black/40 rounded-lg border border-white/10 animate-in fade-in slide-in-from-top-2">
-            <h4 className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1 md:mb-2">Show, filter and sort items</h4>
-
-            <div className="flex flex-col gap-2 md:gap-3">
-              <label className="flex items-center gap-2 cursor-pointer group tap-target">
-                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 group-hover:border-white/50"}`}>
-                  {sortBy === "LEGENDARY" && <Check size={12} className="text-primary-foreground" />}
-                </div>
-                <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(s => s === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
-                <span className="text-xs md:text-sm text-white/80">Show legendary items first</span>
-              </label>
+        {/* 4. Sort */}
+        <div className="pt-2 border-t border-white/10">
+          <label className="flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-white/5 transition-colors">
+            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 bg-black/40"}`}>
+              {sortBy === "LEGENDARY" && <Check size={10} className="text-black font-bold" />}
             </div>
-          </div>
-        )}
-
-        {/* Bottom Row: Category Pills */}
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center px-1">
-            <span className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider">Categorie</span>
-            <span className="text-[10px] md:text-xs text-muted-foreground font-mono bg-black/20 px-1.5 md:px-2 py-0.5 rounded">
-              {filtered.length.toLocaleString()} items
-            </span>
-          </div>
-
-          <div className="flex gap-1.5 md:gap-2 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar scrollbar-hide select-none">
-            {CATEGORIES.map(c => (
-              <button
-                key={c}
-                onClick={() => setSelectedCategory(c)}
-                className={`whitespace-nowrap px-3 md:px-4 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all border shrink-0 tap-target ${selectedCategory === c
-                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105"
-                  : "bg-black/20 text-muted-foreground border-white/5 hover:bg-black/40 hover:text-foreground hover:border-white/20"
-                  }`}
-              >
-                {c === "ALL" ? "TUTTI" : c === "SET" ? "🎁 SET" : c}
-              </button>
-            ))}
-          </div>
+            <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(s => s === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
+            <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Mostra Leggendari prima</span>
+          </label>
         </div>
+
+        {/* Summary */}
+        <div className="text-center text-[10px] text-muted-foreground pt-2 border-t border-white/5">
+          {filtered.length} oggetti trovati
+        </div>
+
       </div>
+    </>
+  )
+}
 
-      {/* ── Griglia virtualizzata ───────────────── */}
-      {filtered.length === 0 ? (
-        <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-          Nessun oggetto corrisponde ai filtri
-        </div>
-      ) : (
-        <div className="flex-1 overflow-hidden rounded-xl border border-white/5">
-          <VirtualGrid
-            items={filtered}
-            isEquipped={selectedCategory === "SET" ? () => false : isEquipped}
-            equipItem={handleEquip}
-            columns={columns}
-          />
-        </div>
-      )}
+      </div >
+
+  {/* ── Griglia virtualizzata ───────────────── */ }
+{
+  filtered.length === 0 ? (
+    <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+      Nessun oggetto corrisponde ai filtri
     </div>
+  ) : (
+  <div className="flex-1 overflow-hidden rounded-xl border border-white/5">
+    <VirtualGrid
+      items={filtered}
+      isEquipped={selectedCategory === "SET" ? () => false : isEquipped}
+      equipItem={handleEquip}
+      columns={columns}
+    />
+  </div>
+)
+}
+    </div >
   );
 }
