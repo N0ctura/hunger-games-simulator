@@ -156,10 +156,12 @@ interface AvatarCanvasProps {
   exportMode?: boolean;
   exportLayout?: 'raw' | 'scene';
   backgroundColor?: string;
+  backgroundImage?: string;
   showGradient?: boolean;
+  scale?: number; // Custom scale prop
 }
 
-export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw', backgroundColor, showGradient = true }: AvatarCanvasProps) {
+export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw', backgroundColor, backgroundImage, showGradient = true, scale }: AvatarCanvasProps) {
   const { equippedItems } = useWolvesville();
 
   const activeSkin = SKIN_TONES.find(s => s.id === skinId) || SKIN_TONES[0];
@@ -167,16 +169,21 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
   // Determine container styles based on layout
   const isScene = !exportMode || exportLayout === 'scene';
 
+  // Use provided scale or default to 0.45 for Scene
+  const currentScale = scale !== undefined ? scale : (isScene ? 0.45 : 1);
+
   const containerClass = exportMode && exportLayout === 'raw'
     ? `relative overflow-hidden flex items-center justify-center ${className}` // Center the inner canvas
-    : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-3.5 ${className}`;
+    : `relative w-full h-full bg-[#1a1a1a] rounded-xl overflow-hidden shadow-2xl border-4 border-[#2a2a2a] flex items-end justify-center pb-3 ${className}`;
 
   // For export 'raw', we use larger dimensions to capture full avatar including parts that extend beyond standard size
   // For 'scene' or interactive, we let parent/classes control size.
   const containerStyle: React.CSSProperties = exportMode && exportLayout === 'raw'
     ? { width: `${CANVAS_WIDTH}px`, height: `${CANVAS_HEIGHT * 1.5}px` }
     : {};
-  if (backgroundColor) {
+  if (backgroundImage) {
+    containerStyle.backgroundColor = 'transparent'; // Ensure no color blocks it
+  } else if (backgroundColor) {
     containerStyle.backgroundColor = backgroundColor;
   }
 
@@ -186,8 +193,21 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
       className={containerClass}
       style={containerStyle}
     >
-      {isScene && showGradient !== false && !backgroundColor && (
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b] opacity-50" />
+      {/* Background Image Layer */}
+      {backgroundImage && (
+        <div
+          className="absolute inset-0 w-full h-full z-[0]"
+        >
+          <img
+            src={backgroundImage}
+            alt="Custom Background"
+            className="w-full h-full object-cover"
+          />
+        </div>
+      )}
+
+      {isScene && showGradient !== false && !backgroundImage && (
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f172a] to-[#1e293b] opacity-50 z-[0]" />
       )}
 
       {/* Inner Anchor - "The Mannequin Grid" (209x314) */}
@@ -197,8 +217,9 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
           height: `${CANVAS_HEIGHT}px`,
           position: 'relative',
           flexShrink: 0,
+          zIndex: 10,
           // Scale: 0.45 for Scene (interactive or export), None for Raw Export
-          transform: isScene ? 'scale(0.45)' : 'none',
+          transform: `scale(${currentScale})`,
           transformOrigin: 'bottom center',
         }}
       >

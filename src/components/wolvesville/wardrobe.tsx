@@ -1,9 +1,9 @@
 "use client";
 
 import { useWolvesville } from "@/context/wolvesville-context";
-import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap, WovRarity } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
-import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown } from "lucide-react";
+import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown, Settings, SlidersHorizontal, Search, Check, ChevronRight, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { AvatarCanvas, SKIN_TONES } from "./avatar-canvas";
@@ -16,6 +16,10 @@ import { toPng } from 'html-to-image';
 //  CONSTANTS
 // ─────────────────────────────────────────────
 
+const RARITIES: Array<WovRarity | "ALL"> = [
+  "ALL", "COMMON", "RARE", "EPIC", "LEGENDARY"
+];
+
 const CALIBRATION_CATEGORIES: WovCategory[] = [
   "HAT", "HAIR", "GLASSES", "EYES", "MOUTH", "MASK", "BEARD",
   "SHIRT",
@@ -24,13 +28,35 @@ const CALIBRATION_CATEGORIES: WovCategory[] = [
 ];
 
 export function Wardrobe() {
-  const { equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration, resetCalibration, batchUpdateCalibration, items, equipItem } = useWolvesville();
+  const {
+    equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration,
+    resetCalibration, batchUpdateCalibration, items, equipItem,
+    // Filters
+    searchTerm, setSearchTerm, selectedRarity, setSelectedRarity,
+    gridColumns: columns, setGridColumns: setColumns, sortBy, setSortBy
+  } = useWolvesville();
+
   const [downloading, setDownloading] = useState(false);
   const [activeSkinId, setActiveSkinId] = useState<string>(SKIN_TONES[0].id);
   const [exportScene, setExportScene] = useState(true); // Default to Scene (Card) export
   const hiddenAvatarRef = useRef<HTMLDivElement>(null);
   const [showDetails, setShowDetails] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
   const [bgColor, setBgColor] = useState<string>("#1a1a1a");
+  const [bgImage, setBgImage] = useState<string | null>(null);
+
+  const handleBgUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBgImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      // Reset input value to allow selecting the same file again
+      e.target.value = '';
+    }
+  };
 
 
 
@@ -241,26 +267,199 @@ export function Wardrobe() {
 
   const isVirtualCategory = selectedCategory === "BODY" || selectedCategory === "HEAD";
 
+  // ─────────────────────────────────────────────
+  // CONFIGURAZIONE SCALA AVATAR
+  // Modifica qui i valori per cambiare la grandezza dell'avatar
+  // 0.36 = Mobile (circa 80% della grandezza originale)
+  // 0.45 = Desktop (grandezza originale)
+  // ─────────────────────────────────────────────
+  const [avatarScale, setAvatarScale] = useState(0.45);
+
+  // ─────────────────────────────────────────────
+  // CONFIGURAZIONE SCALA CONTENITORE (Box Esterno)
+  // Modifica qui i valori per cambiare la grandezza del riquadro che contiene l'avatar
+  // ─────────────────────────────────────────────
+  const [containerStyle, setContainerStyle] = useState({ width: '400px', height: '400px' });
+
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 768;
+
+      // 1. Imposta Scala Avatar
+      setAvatarScale(isMobile ? 0.36 : 0.45);
+
+      // 2. Imposta Dimensione Contenitore
+      if (isMobile) {
+        setContainerStyle({ width: '300px', height: '300px' });
+      } else {
+        setContainerStyle({ width: '370px', height: '370px' }); // Desktop (md) size
+      }
+    };
+
+    // Set initial
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
       <div className="sticky top-4 md:top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col items-center gap-1 md:gap-6 w-full">
-        <div className="text-center">
-          <h3 className="text-xl md:text-2xl font-bold font-serif gold-text mb-1">Avatar Builder By R0ck</h3>
-          <p className="text-[10px] md:text-xs text-muted-foreground">Crea il tuo stile unico</p>
+        <div className="w-full flex items-center justify-between relative">
+          <div className="w-10" /> {/* Spacer */}
+          <div className="text-center">
+            <h3 className="text-xl md:text-2xl font-bold font-serif gold-text mb-1">Avatar Builder By R0ck</h3>
+            <p className="text-[10px] md:text-xs text-muted-foreground">Crea il tuo stile unico</p>
+          </div>
+
+          {/* Options Button */}
+          <div className="w-10 flex justify-end relative">
+            <button
+              onClick={() => setShowOptions(!showOptions)}
+              className={`p-2 rounded-lg border transition-all tap-target shrink-0 ${showOptions
+                ? "bg-primary text-primary-foreground border-primary shadow-lg"
+                : "bg-card/40 border-white/10 text-muted-foreground hover:bg-card/60 hover:text-foreground"
+                }`}
+              title="Opzioni Filtri"
+            >
+              <Settings size={20} />
+            </button>
+
+            {/* Options Dropdown Panel */}
+            {showOptions && (
+              <div className="absolute top-12 right-0 w-[280px] md:w-[320px] bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 flex flex-col gap-4 animate-in fade-in zoom-in-95 origin-top-right z-50 text-left">
+
+                <div className="flex justify-between items-center border-b border-white/10 pb-2 mb-1">
+                  <span className="text-sm font-bold text-white flex items-center gap-2">
+                    <SlidersHorizontal size={14} className="text-primary" />
+                    Filtri & Opzioni
+                  </span>
+                  <button onClick={() => setShowOptions(false)}><X size={16} className="text-muted-foreground hover:text-white" /></button>
+                </div>
+
+                {/* 1. Search */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
+                    Cerca
+                    {searchTerm && <span className="text-primary text-[9px] cursor-pointer" onClick={() => setSearchTerm("")}>RESET</span>}
+                  </label>
+                  <div className="relative">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      placeholder="Nome oggetto..."
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/50 text-white"
+                      autoFocus
+                    />
+                    {searchTerm && <button onClick={() => setSearchTerm("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"><X size={14} /></button>}
+                  </div>
+                </div>
+
+                {/* Background Upload */}
+                <div className="space-y-1.5 pt-2 border-t border-white/10">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] text-muted-foreground uppercase font-bold">Sfondo</label>
+                    {bgImage && (
+                      <button
+                        onClick={() => setBgImage(null)}
+                        className="text-[9px] text-red-400 hover:text-red-300 flex items-center gap-1"
+                      >
+                        <Trash2 size={10} /> Rimuovi
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2">
+                    <label
+                      htmlFor="bg-upload-input"
+                      className="flex-1 cursor-pointer bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/50 transition-all rounded-lg p-2 flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-white group"
+                    >
+                      <ImagePlus size={16} className="group-hover:text-primary transition-colors" />
+                      <span>Carica Sfondo</span>
+                    </label>
+                    <input
+                      id="bg-upload-input"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleBgUpload}
+                    />
+                  </div>
+                  {bgImage && (
+                    <div className="mt-2 relative w-full h-8 rounded-lg overflow-hidden border border-white/20 flex items-center bg-black/50">
+                      <img src={bgImage} alt="Anteprima" className="h-full w-auto aspect-square object-cover" />
+                      <span className="ml-2 text-[9px] text-muted-foreground truncate flex-1">Sfondo caricato</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* 2. Rarity */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-muted-foreground uppercase font-bold">Rarità</label>
+                  <div className="relative">
+                    <select
+                      value={selectedRarity}
+                      onChange={e => setSelectedRarity(e.target.value as any)}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 appearance-none text-white cursor-pointer"
+                    >
+                      {RARITIES.map(r => <option key={r} value={r} className="bg-zinc-900 text-white">{r === "ALL" ? "Tutte le rarità" : r}</option>)}
+                    </select>
+                    <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none" size={14} />
+                  </div>
+                </div>
+
+                {/* 3. Columns */}
+                <div className="space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] text-muted-foreground uppercase font-bold">Dimensione Griglia</label>
+                    <span className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-white">{columns} col</span>
+                  </div>
+                  <input
+                    type="range" min={2} max={10} step={1}
+                    value={columns}
+                    onChange={e => setColumns(Number(e.target.value))}
+                    className="w-full accent-primary h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <div className="flex justify-between text-[9px] text-muted-foreground px-1">
+                    <span>Grande</span>
+                    <span>Piccola</span>
+                  </div>
+                </div>
+
+                {/* 4. Sort */}
+                <div className="pt-2 border-t border-white/10">
+                  <label className="flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-white/5 transition-colors">
+                    <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 bg-black/40"}`}>
+                      {sortBy === "LEGENDARY" && <Check size={10} className="text-black font-bold" />}
+                    </div>
+                    <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(sortBy === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
+                    <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Mostra Leggendari prima</span>
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* ─────────────────────────────────────────────
             AVATAR PREVIEW CANVAS
         ───────────────────────────────────────────── */}
-        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[480px] h-[380px] md:w-[470px] md:h-[470px]">
+        <div
+          className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden"
+          style={containerStyle}
+        >
           <AvatarCanvas
             skinId={activeSkinId}
             showMannequin={true}
             exportMode={exportScene}
             exportLayout={exportScene ? 'scene' : 'raw'}
-            className={exportScene ? "bg-[#1a1a1a]" : undefined}
+            className={exportScene ? (bgImage ? "" : "bg-[#1a1a1a]") : undefined}
             backgroundColor={bgColor}
-            showGradient={!bgColor}
+            backgroundImage={bgImage || undefined}
+            showGradient={!bgColor && !bgImage}
+            scale={avatarScale}
           />
         </div>
 

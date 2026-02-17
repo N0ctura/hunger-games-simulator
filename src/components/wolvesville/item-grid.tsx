@@ -90,9 +90,10 @@ const PREVIEW_PRIORITY: Record<string, number> = {
   "HEAD": 99
 };
 
-// Dimensioni celle virtualizzazione
-const CELL_W = 160;
-const CELL_H = 210;
+// Dimensioni base per calcolo aspect ratio
+const BASE_CELL_W = 160;
+const BASE_CELL_H = 210;
+const ASPECT_RATIO = BASE_CELL_H / BASE_CELL_W; // ~1.3125
 
 // ─────────────────────────────────────────────
 //  ROBUST IMAGE – 5 fallback CDN progressivi
@@ -183,17 +184,18 @@ const RobustImage = memo(function RobustImage({
 // ─────────────────────────────────────────────
 
 const ItemCard = memo(function ItemCard({
-  item, equipped, onEquip, cellW
+  item, equipped, onEquip, cellW, cellH
 }: {
   item: WovAvatarItem;
   equipped: boolean;
   onEquip: (i: WovAvatarItem) => void;
   cellW: number;
+  cellH: number;
 }) {
   return (
     <div
       onClick={() => onEquip(item)}
-      style={{ width: cellW - 8, height: CELL_H - 8 }}
+      style={{ width: cellW - 8, height: cellH - 8 }}
       className={[
         "relative flex flex-col items-center rounded-lg p-2 transition-all cursor-pointer select-none group",
         equipped
@@ -261,13 +263,16 @@ function VirtualGrid({
   }, []);
 
   const manualCols = typeof columns === 'number' ? Math.max(2, Math.min(columns, 10)) : undefined;
-  const colCount = manualCols ?? Math.max(1, Math.floor(containerW / CELL_W));
+  const colCount = manualCols ?? Math.max(1, Math.floor(containerW / BASE_CELL_W));
   const cellW = Math.floor(containerW / colCount);
-  const rowCount = Math.ceil(items.length / colCount);
-  const totalH = rowCount * CELL_H;
+  // Calcolo altezza dinamica mantenendo l'aspect ratio
+  const cellH = Math.floor(cellW * ASPECT_RATIO);
 
-  const firstRow = Math.max(0, Math.floor(scrollTop / CELL_H) - OVERSCAN);
-  const lastRow = Math.min(rowCount - 1, Math.ceil((scrollTop + containerH) / CELL_H) + OVERSCAN);
+  const rowCount = Math.ceil(items.length / colCount);
+  const totalH = rowCount * cellH;
+
+  const firstRow = Math.max(0, Math.floor(scrollTop / cellH) - OVERSCAN);
+  const lastRow = Math.min(rowCount - 1, Math.ceil((scrollTop + containerH) / cellH) + OVERSCAN);
 
   const visibleRows = [];
   for (let r = firstRow; r <= lastRow; r++) {
@@ -288,7 +293,7 @@ function VirtualGrid({
       {/* Spacer – dà l'altezza totale alla scrollbar */}
       <div style={{ height: totalH, position: "relative" }}>
         {visibleRows.map(rowIdx => {
-          const top = rowIdx * CELL_H;
+          const top = rowIdx * cellH;
           return (
             <div
               key={rowIdx}
@@ -297,7 +302,7 @@ function VirtualGrid({
                 top,
                 left: 0,
                 right: 0,
-                height: CELL_H,
+                height: cellH,
                 display: "flex",
                 gap: 8,
                 padding: "4px 0",
@@ -316,6 +321,7 @@ function VirtualGrid({
                     equipped={isEquipped(item.id)}
                     onEquip={equipItem}
                     cellW={cellW}
+                    cellH={cellH}
                   />
                 );
               })}
@@ -337,17 +343,12 @@ interface ItemGridProps {
 }
 
 export function ItemGrid({ items, loading }: ItemGridProps) {
-  const { equipItem, equipSet, isEquipped, sets } = useWardrobe();
+  const {
+    equipItem, equipSet, isEquipped, sets,
+    searchTerm, selectedRarity, gridColumns: columns, sortBy
+  } = useWardrobe();
 
-  const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
-  const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
-  const [columns, setColumns] = useState<number>(4);
-
-  // Advanced Filters
-  const [showFilters, setShowFilters] = useState(false);
-  const [showOptions, setShowOptions] = useState(false);
-  const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
 
   // Create a lookup map for items to efficiently find set contents
   const itemMap = useMemo(() => {
@@ -495,127 +496,26 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
           ))}
         </div>
 
-        {/* Options Toggle */}
-        <button
-          onClick={() => setShowOptions(!showOptions)}
-className = {`p-2 rounded-lg border transition-all tap-target shrink-0 ${showOptions
-  ? "bg-primary text-primary-foreground border-primary shadow-lg"
-  : "bg-card/40 border-white/10 text-muted-foreground hover:bg-card/60 hover:text-foreground"
-  }`}
-title = "Opzioni Filtri"
-  >
-  <Settings size={20} />
-        </button >
-
-  {/* Options Dropdown Panel */ }
-{
-  showOptions && (
-    <>
-      {/* Mobile Backdrop */}
-      <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[1px] md:bg-transparent md:backdrop-blur-none" onClick={() => setShowOptions(false)} />
-
-      <div className="absolute top-12 right-0 w-[280px] md:w-[320px] bg-black/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-4 flex flex-col gap-4 animate-in fade-in zoom-in-95 origin-top-right z-50">
-
-        <div className="flex justify-between items-center border-b border-white/10 pb-2 mb-1">
-          <span className="text-sm font-bold text-white flex items-center gap-2">
-            <SlidersHorizontal size={14} className="text-primary" />
-            Filtri & Opzioni
-          </span>
-          <button onClick={() => setShowOptions(false)}><X size={16} className="text-muted-foreground hover:text-white" /></button>
-        </div>
-
-        {/* 1. Search */}
-        <div className="space-y-1.5">
-          <label className="text-[10px] text-muted-foreground uppercase font-bold flex justify-between">
-            Cerca
-            {searchTerm && <span className="text-primary text-[9px] cursor-pointer" onClick={() => setSearchTerm("")}>RESET</span>}
-          </label>
-          <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              placeholder="Nome oggetto..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 placeholder:text-muted-foreground/50 text-white"
-              autoFocus
-            />
-            {searchTerm && <button onClick={() => setSearchTerm("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-white"><X size={14} /></button>}
-          </div>
-        </div>
-
-        {/* 2. Rarity */}
-        <div className="space-y-1.5">
-          <label className="text-[10px] text-muted-foreground uppercase font-bold">Rarità</label>
-          <div className="relative">
-            <select
-              value={selectedRarity}
-              onChange={e => setSelectedRarity(e.target.value as any)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-3 pr-8 text-base md:text-sm focus:outline-none focus:border-primary/50 appearance-none text-white cursor-pointer"
-            >
-              {RARITIES.map(r => <option key={r} value={r} className="bg-zinc-900 text-white">{r === "ALL" ? "Tutte le rarità" : r}</option>)}
-            </select>
-            <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none" size={14} />
-          </div>
-        </div>
-
-        {/* 3. Columns */}
-        <div className="space-y-1.5">
-          <div className="flex justify-between items-center">
-            <label className="text-[10px] text-muted-foreground uppercase font-bold">Dimensione Griglia</label>
-            <span className="text-[10px] font-mono bg-white/10 px-1.5 py-0.5 rounded text-white">{columns} col</span>
-          </div>
-          <input
-            type="range" min={2} max={10} step={1}
-            value={columns}
-            onChange={e => setColumns(Number(e.target.value))}
-            className="w-full accent-primary h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
-          />
-          <div className="flex justify-between text-[9px] text-muted-foreground px-1">
-            <span>Grande</span>
-            <span>Piccola</span>
-          </div>
-        </div>
-
-        {/* 4. Sort */}
-        <div className="pt-2 border-t border-white/10">
-          <label className="flex items-center gap-3 cursor-pointer group p-1 rounded-lg hover:bg-white/5 transition-colors">
-            <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${sortBy === "LEGENDARY" ? "bg-primary border-primary" : "border-white/30 bg-black/40"}`}>
-              {sortBy === "LEGENDARY" && <Check size={10} className="text-black font-bold" />}
-            </div>
-            <input type="checkbox" className="hidden" checked={sortBy === "LEGENDARY"} onChange={() => setSortBy(s => s === "LEGENDARY" ? "DEFAULT" : "LEGENDARY")} />
-            <span className="text-sm text-gray-300 group-hover:text-white transition-colors">Mostra Leggendari prima</span>
-          </label>
-        </div>
-
-        {/* Summary */}
-        <div className="text-center text-[10px] text-muted-foreground pt-2 border-t border-white/5">
-          {filtered.length} oggetti trovati
-        </div>
-
       </div>
-    </>
-  )
-}
 
-      </div >
 
-  {/* ── Griglia virtualizzata ───────────────── */ }
-{
-  filtered.length === 0 ? (
-    <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-      Nessun oggetto corrisponde ai filtri
-    </div>
-  ) : (
-  <div className="flex-1 overflow-hidden rounded-xl border border-white/5">
-    <VirtualGrid
-      items={filtered}
-      isEquipped={selectedCategory === "SET" ? () => false : isEquipped}
-      equipItem={handleEquip}
-      columns={columns}
-    />
-  </div>
-)
-}
+      {/* ── Griglia virtualizzata ───────────────── */}
+      {
+        filtered.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+            Nessun oggetto corrisponde ai filtri
+          </div>
+        ) : (
+          <div className="flex-1 overflow-hidden rounded-xl border border-white/5">
+            <VirtualGrid
+              items={filtered}
+              isEquipped={selectedCategory === "SET" ? () => false : isEquipped}
+              equipItem={handleEquip}
+              columns={columns}
+            />
+          </div>
+        )
+      }
     </div >
   );
 }

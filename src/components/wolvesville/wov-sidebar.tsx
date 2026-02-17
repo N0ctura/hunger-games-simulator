@@ -1,8 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Shirt, User, Users, BookOpen, Trophy, Image as ImageIcon, Menu, X } from "lucide-react";
+import { LayoutDashboard, Shirt, User, Users, BookOpen, Trophy, Image as ImageIcon, Menu, X, ArrowLeft } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 interface SidebarProps {
   activeTab: string;
@@ -85,7 +86,17 @@ export function WovSidebar({ activeTab, onTabChange }: SidebarProps) {
           })}
         </nav>
 
-        <div className="mt-auto p-4 opacity-50 text-[10px] text-center">
+        <div className="mt-auto px-4 pb-2">
+          <Link
+            href="/"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-muted-foreground hover:bg-card/50 hover:text-foreground transition-all duration-200 tap-target border border-border/50 hover:border-primary/20"
+          >
+            <ArrowLeft size={18} />
+            <span>Torna alla Hub</span>
+          </Link>
+        </div>
+
+        <div className="p-4 opacity-50 text-[10px] text-center">
           v3.4.1 Dev by R0ck
         </div>
       </div>
