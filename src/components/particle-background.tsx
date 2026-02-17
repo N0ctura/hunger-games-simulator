@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useAppearance } from "@/context/appearance-context";
 
 interface Particle {
   x: number;
@@ -9,15 +10,24 @@ interface Particle {
   vy: number;
   size: number;
   opacity: number;
-  hue: number;
+  colorIndex: number;
 }
 
 interface ParticleBackgroundProps {
   color?: string;
 }
 
+// Helper function to convert hex to rgba
+function hexToRgba(hex: string, alpha: number): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 export function ParticleBackground({ color }: ParticleBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { particles: particleSettings, background } = useAppearance();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,7 +38,7 @@ export function ParticleBackground({ color }: ParticleBackgroundProps) {
 
     let animationId: number;
     const particles: Particle[] = [];
-    const particleCount = 50;
+    const particleCount = particleSettings.density;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -42,16 +52,25 @@ export function ParticleBackground({ color }: ParticleBackgroundProps) {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 2 + 0.5,
+        vx: (Math.random() - 0.5) * particleSettings.speed,
+        vy: (Math.random() - 0.5) * particleSettings.speed,
+        size: Math.random() * particleSettings.size + 0.5,
         opacity: Math.random() * 0.5 + 0.1,
-        hue: Math.random() > 0.7 ? 43 : 270,
+        colorIndex: Math.random() > 0.5 ? 0 : 1,
       });
     }
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      // Apply background gradient or solid color
+      if (background.useGradient) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, background.gradientColor1);
+        gradient.addColorStop(1, background.gradientColor2);
+        ctx.fillStyle = gradient;
+      } else {
+        ctx.fillStyle = background.backgroundColor;
+      }
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (const p of particles) {
         p.x += p.vx;
@@ -64,25 +83,24 @@ export function ParticleBackground({ color }: ParticleBackgroundProps) {
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle =
-          p.hue === 43
-            ? `hsla(43, 90%, 55%, ${p.opacity})`
-            : `hsla(270, 60%, 50%, ${p.opacity})`;
+        const particleColor = p.colorIndex === 0 ? particleSettings.color1 : particleSettings.color2;
+        ctx.fillStyle = hexToRgba(particleColor, p.opacity);
         ctx.fill();
       }
 
       // Draw connections
+      const maxDistance = particleSettings.connectionDistance;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 120) {
+          if (dist < maxDistance) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `hsla(43, 90%, 55%, ${0.05 * (1 - dist / 120)})`;
+            ctx.strokeStyle = hexToRgba(particleSettings.color1, 0.05 * (1 - dist / maxDistance));
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -98,7 +116,7 @@ export function ParticleBackground({ color }: ParticleBackgroundProps) {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
     };
-  }, []);
+  }, [particleSettings, background]);
 
   return (
     <canvas

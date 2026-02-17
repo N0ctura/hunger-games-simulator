@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import Link from "next/link";
 import { Home, ImageIcon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeSettings } from "@/components/ui/theme-settings";
 import { AppearanceSettings } from "@/components/ui/appearance-settings";
 
 interface NavbarProps {
@@ -76,6 +77,7 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
             <span className="ml-1.5 hidden sm:inline text-xs">Logo</span>
           </Button>
           
+          <ThemeSettings />
           <AppearanceSettings />
         </div>
       </nav>
