@@ -243,16 +243,16 @@ export function Wardrobe() {
 
   return (
     <>
-      <div className="sticky top-4 md:top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col items-center gap-4 md:gap-6 w-full">
+      <div className="sticky top-4 md:top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col items-center gap-1 md:gap-6 w-full">
         <div className="text-center">
-          <h3 className="text-xl md:text-2xl font-bold font-serif gold-text mb-1">Avatar Builder</h3>
+          <h3 className="text-xl md:text-2xl font-bold font-serif gold-text mb-1">Avatar Builder By R0ck</h3>
           <p className="text-[10px] md:text-xs text-muted-foreground">Crea il tuo stile unico</p>
         </div>
 
         {/* ─────────────────────────────────────────────
             AVATAR PREVIEW CANVAS
         ───────────────────────────────────────────── */}
-        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[280px] h-[280px] md:w-[370px] md:h-[370px]">
+        <div className="avatar-canvas-container relative inline-block shadow-2xl rounded-xl overflow-hidden w-[480px] h-[380px] md:w-[470px] md:h-[470px]">
           <AvatarCanvas
             skinId={activeSkinId}
             showMannequin={true}

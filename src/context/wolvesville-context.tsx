@@ -8,7 +8,7 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar, WovRankedSeason, WovPlayerLeaderboardEntry, CalibrationMap, DEFAULT_CALIBRATION, CalibrationData, WovCategory, WovDensity } from "@/lib/wolvesville-types";
+import { WovAvatarItem, WovRole, WovBackground, WovAvatarSet, WovShopOffer, WovCalendar, WovRankedSeason, WovPlayerLeaderboardEntry, CalibrationMap, DEFAULT_CALIBRATION, CalibrationData, WovCategory, WovDensity, WovRarity } from "@/lib/wolvesville-types";
 import { WovEngine } from "@/lib/wov-engine";
 import { enrichItem } from "@/lib/item-mapper";
 
@@ -49,6 +49,20 @@ interface WolvesvilleContextType {
   updateCalibration: (category: WovCategory, density: WovDensity, data: Partial<CalibrationData>) => void;
   batchUpdateCalibration: (updates: CalibrationMap) => void;
   resetCalibration: () => void;
+
+  // UI Settings
+  avatarScale: number;
+  setAvatarScale: (scale: number) => void;
+
+  // Filter Settings
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedRarity: WovRarity | "ALL";
+  setSelectedRarity: (rarity: WovRarity | "ALL") => void;
+  gridColumns: number;
+  setGridColumns: (cols: number) => void;
+  sortBy: "DEFAULT" | "LEGENDARY";
+  setSortBy: (sort: "DEFAULT" | "LEGENDARY") => void;
 }
 
 const WolvesvilleContext = createContext<WolvesvilleContextType | undefined>(undefined);
@@ -158,6 +172,15 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
 
   const [equippedItems, setEquippedItems] = useState<Record<string, WovAvatarItem>>({});
   const [calibrationMap, setCalibrationMap] = useState<CalibrationMap>(DEFAULT_CALIBRATION_MAP);
+
+  // UI Settings
+  const [avatarScale, setAvatarScale] = useState(1);
+
+  // Filter Settings
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
+  const [gridColumns, setGridColumns] = useState(4);
+  const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
 
   // ── Data Fetch ────────────────────────────────────────────
   useEffect(() => {
@@ -470,16 +493,34 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         highscores,
         loading,
         error,
+
+        // Wardrobe
         equippedItems,
         equipItem,
         equipSet,
         unequipItem,
         clearWardrobe,
         isEquipped,
+
+        // Calibration
         calibrationMap,
         updateCalibration,
         batchUpdateCalibration,
-        resetCalibration
+        resetCalibration,
+
+        // UI Settings
+        avatarScale,
+        setAvatarScale,
+
+        // Filter Settings
+        searchTerm,
+        setSearchTerm,
+        selectedRarity,
+        setSelectedRarity,
+        gridColumns,
+        setGridColumns,
+        sortBy,
+        setSortBy
       }}
     >
       {children}
