@@ -29,9 +29,9 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
   const handleImageUpload = (file: File, phase: 'day' | 'night' | 'feast') => {
     if (!file) return;
 
-    // 1MB limit to be safe with localStorage
-    if (file.size > 1024 * 1024) {
-      alert("L'immagine è troppo grande (max 1MB). Per favore comprimila o scegline una più piccola.");
+    // 5MB limit to be safe with localStorage
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("L'immagine è troppo grande (max 5MB). Per favore comprimila o scegline una più piccola.");
       return;
     }
 
