@@ -63,13 +63,16 @@ export function SimulationEngine({
     if (shouldPlayAmbient) {
       audio.playAmbient();
     } else {
-      audio.stopAmbient();
+      audio.pauseAmbient();
     }
+  }, [shouldPlayAmbient, audio]);
 
+  // Stop music only on unmount
+  useEffect(() => {
     return () => {
       audio.stopAmbient();
     };
-  }, [shouldPlayAmbient, audio]);
+  }, [audio]);
 
   // Scroll to bottom of event list when new events are added
   useEffect(() => {

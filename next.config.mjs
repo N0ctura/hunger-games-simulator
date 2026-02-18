@@ -12,6 +12,10 @@ const nextConfig = {
   // This allows local production builds (npm run build && npm start) to work without the prefix
   basePath: (isProd && isGithubActions) ? '/hunger-games-simulator' : '',
   assetPrefix: (isProd && isGithubActions) ? '/hunger-games-simulator/' : '',
+  env: {
+    // Espone il base path al client per gestire correttamente i percorsi manuali (es. new Audio)
+    NEXT_PUBLIC_BASE_PATH: (isProd && isGithubActions) ? '/hunger-games-simulator' : '',
+  },
   images: {
     unoptimized: true,
     remotePatterns: [

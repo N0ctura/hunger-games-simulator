@@ -51,19 +51,33 @@ function playSword(ctx: AudioContext, volume: number) {
 const getAudioPath = (path: string) => {
   // Rimuovi lo slash iniziale se presente per evitare doppi slash
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-
-  // Se siamo in produzione (GitHub Pages), aggiungi il prefisso del repo
-  // Nota: questo deve corrispondere al basePath in next.config.mjs
-  const isProd = process.env.NODE_ENV === 'production';
-  const prefix = isProd ? '/hunger-games-simulator/' : '/';
-
+  
+  // Usa il basePath configurato in next.config.mjs (o vuoto in dev/locale)
+  // Nota: NEXT_PUBLIC_BASE_PATH viene iniettato da next.config.mjs
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
+  
+  // Se basePath è presente, usalo come prefisso, altrimenti usa root /
+  const prefix = basePath ? (basePath.endsWith('/') ? basePath : `${basePath}/`) : '/';
+  
   return `${prefix}${cleanPath}`;
 };
 
 // ─── Hook principale ─────────────────────────────────────────────────────────
 
 export function useAudio(audioConfig?: Partial<AudioConfig>) {
-  const config = { ...DEFAULT_AUDIO_CONFIG, ...audioConfig };
+  // Stabilizza la configurazione per evitare re-render non necessari che resettano l'audio
+  const config = useMemo(() => ({
+    ...DEFAULT_AUDIO_CONFIG,
+    ...audioConfig
+  }), [
+    audioConfig?.musicEnabled,
+    audioConfig?.musicVolume,
+    audioConfig?.sfxVolume,
+    audioConfig?.cannonEnabled,
+    audioConfig?.cornucopiaEnabled,
+    audioConfig?.swordEnabled,
+  ]);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize ambient audio element
