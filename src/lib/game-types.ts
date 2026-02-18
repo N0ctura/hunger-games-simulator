@@ -20,6 +20,15 @@ export interface GameEvent {
   weight?: number;
 }
 
+export interface AudioConfig {
+  musicVolume: number;      // 0-1
+  sfxVolume: number;        // 0-1
+  cannonEnabled: boolean;
+  swordEnabled: boolean;
+  musicEnabled: boolean;
+  cornucopiaEnabled: boolean;
+}
+
 export interface GameConfig {
   dayDuration: number;
   nightDuration: number;
@@ -28,16 +37,19 @@ export interface GameConfig {
   autoPlaySpeed: number;
   deathRate?: number;
   overlayOpacity?: number;
+  enableCornucopia?: boolean;
   phaseImages?: {
     day: string;
     night: string;
     feast: string;
+    cornucopia?: string;
   };
+  audio?: AudioConfig;
 }
 
 export interface SimulationLog {
   id: string;
-  phase: "day" | "night" | "feast";
+  phase: "day" | "night" | "feast" | "cornucopia";
   phaseNumber: number;
   events: SimulatedEvent[];
   deaths: string[];
@@ -50,6 +62,7 @@ export interface SimulatedEvent {
   deaths: string[];
   killerId?: string;
   originalEventId?: string;
+  isCornucopia?: boolean;
 }
 
 export interface GameState {
@@ -57,7 +70,7 @@ export interface GameState {
   events: GameEvent[];
   objects: string[];
   isRunning: boolean;
-  currentPhase: "setup" | "day" | "night" | "feast" | "summary" | "finished";
+  currentPhase: "setup" | "cornucopia" | "day" | "night" | "feast" | "summary" | "finished";
   currentPhaseNumber: number;
   logs: SimulationLog[];
   winner: Tribute | null;
@@ -65,17 +78,38 @@ export interface GameState {
   currentStep: number;
 }
 
+/** Struttura del file di salvataggio Export/Import */
+export interface SavedGame {
+  version: number;
+  savedAt: string;
+  tributes: Array<Omit<Tribute, "image"> & { image: null }>;
+  events: GameEvent[];
+  config: Omit<GameConfig, "phaseImages"> & { phaseImages?: undefined };
+}
+
+export const DEFAULT_AUDIO_CONFIG: AudioConfig = {
+  musicVolume: 0.4,
+  sfxVolume: 0.7,
+  cannonEnabled: true,
+  swordEnabled: true,
+  musicEnabled: true,
+  cornucopiaEnabled: true,
+};
+
 export const DEFAULT_CONFIG: GameConfig = {
   dayDuration: 3,
   nightDuration: 2,
   feastFrequency: 3,
   autoPlay: false,
   autoPlaySpeed: 2000,
+  enableCornucopia: true,
   phaseImages: {
     day: "/images/giorno.webp",
     night: "/images/notte.webp",
-    feast: "/images/banchetto.webp"
-  }
+    feast: "/images/banchetto.webp",
+    cornucopia: "/images/cornucopia.webp",
+  },
+  audio: DEFAULT_AUDIO_CONFIG,
 };
 
 export const DEFAULT_OBJECTS = [
@@ -566,4 +600,49 @@ export const DEFAULT_FEAST_EVENTS: GameEvent[] = [
   { id: "f128", text: "{P1} viene schiacciato nella ressa alla Cornucopia.", type: "feast", isFatal: true, killCount: 1, killer: null, victims: [1], weight: 5 },
   { id: "f129", text: "{P1} sgozza {P2} con un coltello da caccia.", type: "feast", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 5 },
   { id: "f130", text: "{P1} viene pugnalato ripetutamente da {P2} alla Cornucopia.", type: "feast", isFatal: true, killCount: 1, killer: 2, victims: [1], weight: 5 },
+];
+
+// ── CORNUCOPIA (Bloodbath) ───────────────────────────────────────────────────
+// Fase speciale di apertura: tutti i tributi si scontrano alla Cornucopia.
+// Ha peso letale molto più alto del normale, poiché è il massacro iniziale.
+
+export const DEFAULT_CORNUCOPIA_EVENTS: GameEvent[] = [
+  // NON LETALI
+  { id: "c1",  text: "{P1} scatta verso la Cornucopia e afferra uno zaino.", type: "arena", isFatal: false, killCount: 0, weight: 6 },
+  { id: "c2",  text: "{P1} corre verso la Cornucopia ma decide di fuggire nella foresta.", type: "arena", isFatal: false, killCount: 0, weight: 6 },
+  { id: "c3",  text: "{P1} e {P2} si scontrano per lo stesso zaino ma si separano indenni.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c4",  text: "{P1} prende un'arma e scappa nella foresta.", type: "arena", isFatal: false, killCount: 0, weight: 6 },
+  { id: "c5",  text: "{P1} evita {P2} per un pelo e corre verso i boschi.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c6",  text: "{P1} inciampa ma si rialza e scappa con uno zaino.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c7",  text: "{P1} si nasconde dietro la Cornucopia aspettando che la ressa finisca.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+  { id: "c8",  text: "{P1} prende medicine e si allontana di corsa.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c9",  text: "{P1} e {P2} si guardano negli occhi: entrambi scelgono di scappare.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+  { id: "c10", text: "{P1} afferra solo una borraccia prima di fuggire nel caos.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c11", text: "{P1} schiva un coltello lanciato da {P2} e fugge.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c12", text: "{P1} prende un arco e una faretra e scompare nella giungla.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c13", text: "{P1} si ferisce a una mano ma porta via uno zaino.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+  { id: "c14", text: "{P1} decide di non rischiare e si ritira subito nell'arena.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c15", text: "{P1} ruba lo zaino di {P2} e scappa a perdifiato.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c16", text: "{P1} e {P2} si coprano a vicenda e fuggono insieme.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+  { id: "c17", text: "{P1} raccoglie cibo e acqua nel caos generale.", type: "arena", isFatal: false, killCount: 0, weight: 5 },
+  { id: "c18", text: "{P1} spinge via {P2} e prende l'arma migliore.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+  { id: "c19", text: "{P1} sopravvive al bloodbath nascondendosi tra i cadaveri.", type: "arena", isFatal: false, killCount: 0, weight: 3 },
+  { id: "c20", text: "{P1} corre più veloce di tutti e ottiene lo zaino d'oro.", type: "arena", isFatal: false, killCount: 0, weight: 4 },
+
+  // LETALI (alto peso, è il bloodbath)
+  { id: "c21", text: "{P1} abbatte {P2} con un'ascia al primo secondo dei Giochi.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c22", text: "{P1} lancia un coltello a {P2}: colpo mortale alla gola.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c23", text: "{P2} viene travolto da {P1} mentre fugge dalla Cornucopia.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
+  { id: "c24", text: "{P1} infilza {P2} con una lancia ancor prima che il gong finisca di suonare.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c25", text: "{P1} rompe il collo di {P2} nella ressa alla Cornucopia.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
+  { id: "c26", text: "{P2} calpesta una mina piazzata alla base della Cornucopia.", type: "arena", isFatal: true, killCount: 1, killer: null, victims: [2], weight: 6 },
+  { id: "c27", text: "{P1} abbatte {P2} con una mazza nel sangue del bloodbath.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c28", text: "{P1} sgozza {P2} di fronte a tutta Panem.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c29", text: "{P2} viene colpito alla testa da {P1} con una pietra.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
+  { id: "c30", text: "{P1} decapita {P2} con la spada d'oro della Cornucopia.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
+  { id: "c31", text: "{P2} viene trapassato da una freccia sparata da {P1}.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c32", text: "{P1} e {P2} lottano per il tridente: {P2} non sopravvive.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
+  { id: "c33", text: "{P1} pugnala {P2} alle spalle mentre fugge con uno zaino.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 8 },
+  { id: "c34", text: "{P2} viene schiacciato nella calca disperata davanti alla Cornucopia.", type: "arena", isFatal: true, killCount: 1, killer: null, victims: [2], weight: 5 },
+  { id: "c35", text: "{P1} usa lo scudo come ariete e travolge {P2}.", type: "arena", isFatal: true, killCount: 1, killer: 1, victims: [2], weight: 7 },
 ];

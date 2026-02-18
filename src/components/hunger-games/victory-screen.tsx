@@ -21,8 +21,11 @@ export function VictoryScreen({ winner, tributes, logs, onReset }: VictoryScreen
     }
     summary += "CRONOLOGIA:\n\n";
     for (const log of logs) {
-      const phaseName = log.phase === "day" ? "Giorno" : log.phase === "night" ? "Notte" : "Banchetto";
-      summary += `${phaseName} ${log.phaseNumber}\n`;
+      const phaseName =
+        log.phase === "cornucopia" ? "Cornucopia (Bloodbath)" :
+        log.phase === "day" ? "Giorno" :
+        log.phase === "night" ? "Notte" : "Banchetto";
+      summary += `${phaseName}${log.phase !== "cornucopia" ? ` ${log.phaseNumber}` : ""}\n`;
       for (const event of log.events) {
         summary += `- ${event.text}\n`;
       }
@@ -96,11 +99,14 @@ export function VictoryScreen({ winner, tributes, logs, onReset }: VictoryScreen
         <h3 className="mb-4 font-serif text-lg">Cronologia Completa</h3>
         <div className="space-y-4">
           {logs.map((log) => {
-            const phaseName = log.phase === "day" ? "Giorno" : log.phase === "night" ? "Notte" : "Banchetto";
+            const phaseName =
+              log.phase === "cornucopia" ? "Cornucopia (Bloodbath)" :
+              log.phase === "day" ? "Giorno" :
+              log.phase === "night" ? "Notte" : "Banchetto";
             return (
               <div key={log.id} className="space-y-2">
-                <h4 className="text-sm font-semibold text-primary">
-                  {phaseName} {log.phaseNumber}
+                <h4 className={`text-sm font-semibold ${log.phase === "cornucopia" ? "text-yellow-500" : "text-primary"}`}>
+                  {phaseName}{log.phase !== "cornucopia" ? ` ${log.phaseNumber}` : ""}
                 </h4>
                 {log.events.map((event) => (
                   <div

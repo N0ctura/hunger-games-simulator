@@ -1,14 +1,14 @@
 "use client";
 
-import type { GameConfig } from "@/lib/game-types";
+import type { GameConfig, AudioConfig } from "@/lib/game-types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Settings, Trash2, Image as ImageIcon, RotateCcw, Upload, X } from "lucide-react";
+import { Settings, Trash2, Image as ImageIcon, RotateCcw, Upload, X, Volume2, VolumeX, Music, Sword, Zap, Swords } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DEFAULT_CONFIG } from "@/lib/game-types";
+import { DEFAULT_CONFIG, DEFAULT_AUDIO_CONFIG } from "@/lib/game-types";
 import { useRef } from "react";
 
 interface GameConfigPanelProps {
@@ -237,6 +237,123 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
                {renderImageUploader("Fase Notte", "night", nightInputRef)}
                {renderImageUploader("Fase Banchetto", "feast", feastInputRef)}
              </div>
+          </div>
+
+          {/* ── SEZIONE AUDIO ──────────────────────────────── */}
+          <div className="pt-4 border-t border-border/30 space-y-4">
+            <Label className="text-base font-serif gold-text flex items-center gap-2">
+              <Volume2 size={18} />
+              Audio & Effetti Sonori
+            </Label>
+
+            {/* Musica di sottofondo */}
+            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
+              <div className="flex items-center gap-2">
+                <Music size={16} className="text-primary" />
+                <div>
+                  <Label className="text-sm font-medium">Musica di Sottofondo</Label>
+                  <p className="text-xs text-muted-foreground">Atmosfera tesa dell&apos;arena</p>
+                </div>
+              </div>
+              <Switch
+                checked={config.audio?.musicEnabled ?? DEFAULT_AUDIO_CONFIG.musicEnabled}
+                onCheckedChange={(v) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), musicEnabled: v } })}
+              />
+            </div>
+            {(config.audio?.musicEnabled ?? DEFAULT_AUDIO_CONFIG.musicEnabled) && (
+              <div className="space-y-1 px-1">
+                <Label className="text-xs text-muted-foreground">
+                  Volume musica: {Math.round((config.audio?.musicVolume ?? DEFAULT_AUDIO_CONFIG.musicVolume) * 100)}%
+                </Label>
+                <div className="flex items-center gap-3">
+                  <VolumeX size={14} className="text-muted-foreground" />
+                  <Slider
+                    value={[config.audio?.musicVolume ?? DEFAULT_AUDIO_CONFIG.musicVolume]}
+                    onValueChange={([v]) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), musicVolume: v } })}
+                    min={0} max={1} step={0.05} className="flex-1"
+                  />
+                  <Volume2 size={14} className="text-muted-foreground" />
+                </div>
+              </div>
+            )}
+
+            {/* Effetti speciali */}
+            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
+              <div className="flex items-center gap-2">
+                <Zap size={16} className="text-destructive" />
+                <div>
+                  <Label className="text-sm font-medium">Suono Cannone</Label>
+                  <p className="text-xs text-muted-foreground">Boom alla morte di un tributo</p>
+                </div>
+              </div>
+              <Switch
+                checked={config.audio?.cannonEnabled ?? DEFAULT_AUDIO_CONFIG.cannonEnabled}
+                onCheckedChange={(v) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), cannonEnabled: v } })}
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
+              <div className="flex items-center gap-2">
+                <Sword size={16} className="text-primary" />
+                <div>
+                  <Label className="text-sm font-medium">Suono Spada</Label>
+                  <p className="text-xs text-muted-foreground">Clang su eventi non fatali</p>
+                </div>
+              </div>
+              <Switch
+                checked={config.audio?.swordEnabled ?? DEFAULT_AUDIO_CONFIG.swordEnabled}
+                onCheckedChange={(v) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), swordEnabled: v } })}
+              />
+            </div>
+
+            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
+              <div className="flex items-center gap-2">
+                <Swords size={16} className="text-yellow-500" />
+                <div>
+                  <Label className="text-sm font-medium">Suono Cornucopia</Label>
+                  <p className="text-xs text-muted-foreground">Fanfara all&apos;inizio del bloodbath</p>
+                </div>
+              </div>
+              <Switch
+                checked={config.audio?.cornucopiaEnabled ?? DEFAULT_AUDIO_CONFIG.cornucopiaEnabled}
+                onCheckedChange={(v) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), cornucopiaEnabled: v } })}
+              />
+            </div>
+
+            {/* Volume globale SFX */}
+            <div className="space-y-1 px-1">
+              <Label className="text-xs text-muted-foreground">
+                Volume effetti (cannone/spada): {Math.round((config.audio?.sfxVolume ?? DEFAULT_AUDIO_CONFIG.sfxVolume) * 100)}%
+              </Label>
+              <div className="flex items-center gap-3">
+                <VolumeX size={14} className="text-muted-foreground" />
+                <Slider
+                  value={[config.audio?.sfxVolume ?? DEFAULT_AUDIO_CONFIG.sfxVolume]}
+                  onValueChange={([v]) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), sfxVolume: v } })}
+                  min={0} max={1} step={0.05} className="flex-1"
+                />
+                <Volume2 size={14} className="text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+
+          {/* ── CORNUCOPIA ─────────────────────────────────── */}
+          <div className="pt-4 border-t border-border/30 space-y-3">
+            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-4">
+              <div>
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Swords size={16} className="text-yellow-500" />
+                  Fase Cornucopia
+                </Label>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Bloodbath iniziale: scontro alla Cornucopia prima del Giorno 1
+                </p>
+              </div>
+              <Switch
+                checked={config.enableCornucopia ?? DEFAULT_CONFIG.enableCornucopia ?? true}
+                onCheckedChange={(v) => update({ enableCornucopia: v })}
+              />
+            </div>
           </div>
 
           <div className="pt-4 border-t border-border/30">

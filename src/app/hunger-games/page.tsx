@@ -12,10 +12,10 @@ import { EventEditor } from "@/components/hunger-games/event-editor";
 import { GameConfigPanel } from "@/components/hunger-games/game-config";
 import { SimulationEngine } from "@/components/hunger-games/simulation-engine";
 import { VictoryScreen } from "@/components/hunger-games/victory-screen";
+import { SaveLoadPanel } from "@/components/hunger-games/save-load-panel";
 import { IntroTutorial, useIntroTutorial } from "@/components/hunger-games/intro-tutorial";
-import { CopyPromptButton } from "@/components/hunger-games/copy-prompt-button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Scroll, Swords, Settings, Sparkles } from "lucide-react";
+import { Users, Scroll, Swords, Settings, Sparkles, Save } from "lucide-react";
 
 export default function HungerGamesPage() {
   const searchParams = useSearchParams();
@@ -29,16 +29,17 @@ export default function HungerGamesPage() {
   const [showVictory, setShowVictory] = useState(false);
   const [showIntro, dismissIntro] = useIntroTutorial();
 
-  // Ensure config has all new properties (migration for existing users)
+  // Migrazione configurazione per utenti esistenti
   useEffect(() => {
-    if (config && !config.phaseImages) {
-      setConfig((prev) => ({
-        ...DEFAULT_CONFIG,
-        ...prev,
-        phaseImages: DEFAULT_CONFIG.phaseImages,
-      }));
-    }
-  }, [config, setConfig]);
+    setConfig((prev) => ({
+      ...DEFAULT_CONFIG,
+      ...prev,
+      phaseImages: prev.phaseImages ?? DEFAULT_CONFIG.phaseImages,
+      audio: prev.audio ?? DEFAULT_CONFIG.audio,
+      enableCornucopia: prev.enableCornucopia ?? DEFAULT_CONFIG.enableCornucopia,
+    }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const defaultsLoaded = useRef(false);
   useEffect(() => {
@@ -106,6 +107,24 @@ export default function HungerGamesPage() {
     }
   };
 
+  const handleLoadSave = ({
+    tributes: newTributes,
+    events: newEvents,
+    config: newConfig,
+  }: {
+    tributes: Tribute[];
+    events: GameEvent[];
+    config: GameConfig;
+  }) => {
+    setTributes(newTributes);
+    setEvents(newEvents);
+    setConfig({
+      ...newConfig,
+      phaseImages: config.phaseImages ?? DEFAULT_CONFIG.phaseImages, // mantieni le immagini attuali
+    });
+    setActiveTab("tributes");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <ParticleBackground />
@@ -131,7 +150,7 @@ export default function HungerGamesPage() {
           />
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="mx-auto grid w-full max-w-lg grid-cols-4 bg-secondary">
+            <TabsList className="mx-auto grid w-full max-w-2xl grid-cols-5 bg-secondary">
               <TabsTrigger value="tributes" className="flex items-center gap-1.5 text-xs sm:text-sm">
                 <Users size={16} />
                 <span className="hidden sm:inline">Tributi</span>
@@ -143,6 +162,10 @@ export default function HungerGamesPage() {
               <TabsTrigger value="config" className="flex items-center gap-1.5 text-xs sm:text-sm">
                 <Settings size={16} />
                 <span className="hidden sm:inline">Config</span>
+              </TabsTrigger>
+              <TabsTrigger value="save" className="flex items-center gap-1.5 text-xs sm:text-sm">
+                <Save size={16} />
+                <span className="hidden sm:inline">Salva</span>
               </TabsTrigger>
               <TabsTrigger value="arena" className="flex items-center gap-1.5 text-xs sm:text-sm">
                 <Swords size={16} />
@@ -157,10 +180,18 @@ export default function HungerGamesPage() {
               <EventEditor events={events} onEventsChange={setEvents} />
             </TabsContent>
             <TabsContent value="config" className="animate-fade-in">
-              <GameConfigPanel 
-                config={config} 
-                onConfigChange={setConfig} 
+              <GameConfigPanel
+                config={config}
+                onConfigChange={setConfig}
                 onFullReset={handleFullReset}
+              />
+            </TabsContent>
+            <TabsContent value="save" className="animate-fade-in">
+              <SaveLoadPanel
+                tributes={tributes}
+                events={events}
+                config={config}
+                onLoad={handleLoadSave}
               />
             </TabsContent>
             <TabsContent value="arena" className="animate-fade-in">

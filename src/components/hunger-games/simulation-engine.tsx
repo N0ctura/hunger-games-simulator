@@ -2,13 +2,16 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { Tribute, GameEvent, GameConfig, GameState, SimulationLog, SimulatedEvent } from "@/lib/game-types";
-import { DEFAULT_OBJECTS, DEFAULT_CONFIG } from "@/lib/game-types";
+import { DEFAULT_OBJECTS, DEFAULT_CONFIG, DEFAULT_CORNUCOPIA_EVENTS } from "@/lib/game-types";
+import { useAudio } from "@/hooks/use-audio";
 import { TributeCard } from "./tribute-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, SkipForward, RotateCcw, Trophy, Sun, Moon, Utensils, Copy, Skull, ArrowRight, FastForward, Eye } from "lucide-react";
+import {
+  Play, SkipForward, RotateCcw, Trophy, Sun, Moon, Utensils, Copy,
+  Skull, ArrowRight, FastForward, Eye, Swords,
+} from "lucide-react";
 import { useAppearance } from "@/context/appearance-context";
-import { DM_Serif_Display } from "next/font/google";
 
 // Helper for color opacity
 const hexToRgba = (hex: string, alpha: number) => {
@@ -34,6 +37,7 @@ export function SimulationEngine({
   onWinner,
 }: SimulationEngineProps) {
   const { popupColor, popupOpacity, textColor } = useAppearance();
+  const audio = useAudio(config.audio);
 
   const [gameState, setGameState] = useState<GameState>({
     tributes,
@@ -76,13 +80,7 @@ export function SimulationEngine({
   ): GameEvent | null => {
     if (pool.length === 0) return null;
 
-    // Dynamic Death Rate: Scale fatal event weights based on day
-    // Day 1: 0.5x chance (relative to base)
-    // Increases by 0.25 per day, capped at 2.5x
     const dayFactor = Math.min(0.5 + (phaseNumber - 1) * 0.25, 2.5);
-
-    // Config death rate slider (assumed 0-1, default 0.5)
-    // 0.5 -> 1x, 1.0 -> 2x, 0.1 -> 0.2x
     const configFactor = (deathRateConfig || 0.5) * 2;
 
     const weightedPool = pool.map(event => {
@@ -108,7 +106,8 @@ export function SimulationEngine({
     event: GameEvent,
     availableTributes: Tribute[],
     updatedTributes: Tribute[],
-    totalAliveCount: number
+    totalAliveCount: number,
+    isCornucopiaPhase = false,
   ): SimulatedEvent | null => {
     if (availableTributes.length < 1) return null;
 
@@ -121,7 +120,6 @@ export function SimulationEngine({
     }
     if (availableTributes.length < maxPlaceholder) return null;
 
-    // Narrative Variety: Check if P1 has used this event
     const p1 = availableTributes[0];
     if (p1.usedEvents?.includes(event.id)) return null;
 
@@ -129,14 +127,10 @@ export function SimulationEngine({
 
     if (maxPlaceholder > 1) {
       const candidates = availableTributes.slice(1);
-      // Filter candidates for Loyalty and Narrative Variety
       const validCandidates = candidates.filter(c => {
-        // Narrative Variety
         if (c.usedEvents?.includes(event.id)) return false;
-
-        // Loyalty Logic: If fatal and not last 2, avoid same district
         if (event.isFatal && totalAliveCount > 2) {
-          if (c.district !== undefined && c.district === p1.district) return false;
+          if (!isCornucopiaPhase && c.district !== undefined && c.district === p1.district) return false;
         }
         return true;
       });
@@ -177,18 +171,19 @@ export function SimulationEngine({
 
       if (killerIndex >= 1 && killerIndex <= maxPlaceholder && deaths.length > 0) {
         const killer = participants[killerIndex - 1];
-        killerId = killer.id;
-        const kIdx = updatedTributes.findIndex((t) => t.id === killer.id);
-        if (kIdx !== -1) {
-          updatedTributes[kIdx] = {
-            ...updatedTributes[kIdx],
-            kills: updatedTributes[kIdx].kills + deaths.length,
-          };
+        if (!deaths.includes(killer.id)) {
+          killerId = killer.id;
+          const kIdx = updatedTributes.findIndex((t) => t.id === killer.id);
+          if (kIdx !== -1) {
+            updatedTributes[kIdx] = {
+              ...updatedTributes[kIdx],
+              kills: updatedTributes[kIdx].kills + deaths.length,
+            };
+          }
         }
       }
     }
 
-    // Update usedEvents for all participants in the simulation state
     participants.forEach(p => {
       const idx = updatedTributes.findIndex(ut => ut.id === p.id);
       if (idx !== -1) {
@@ -207,14 +202,89 @@ export function SimulationEngine({
       deaths,
       killerId,
       originalEventId: event.id,
+      isCornucopia: isCornucopiaPhase,
     };
   };
 
+  // ── Cornucopia (bloodbath) ────────────────────────────────────────────────
+  const prepareCornucopia = useCallback(() => {
+    const alive = tributes.filter((t) => t.isAlive);
+    if (alive.length <= 1) {
+      const winner = alive[0] || null;
+      setGameState((prev) => ({ ...prev, currentPhase: "finished", winner, isRunning: false }));
+      onWinner(winner, gameState.logs);
+      return;
+    }
+
+    // Pool: eventi cornucopia di default + eventuali eventi "arena" aggiunti dall'utente
+    const cornucopiaEvents: GameEvent[] = [
+      ...DEFAULT_CORNUCOPIA_EVENTS,
+      ...events.filter(e => e.type === "arena"),
+    ];
+
+    // Alta letalità nella cornucopia: death rate aumentato del 50%
+    const cornucopiaDeathRate = Math.min((config.deathRate ?? 0.5) * 1.5, 1);
+
+    const simulationTributes = tributes.map(t => ({ ...t, usedEvents: [] as string[] }));
+    const shuffledAlive = shuffleArray(alive);
+    const simulatedEvents: SimulatedEvent[] = [];
+    const processedIds = new Set<string>();
+
+    let i = 0;
+    while (i < shuffledAlive.length) {
+      const currentTributeId = shuffledAlive[i].id;
+      const currentTributeSim = simulationTributes.find(t => t.id === currentTributeId);
+
+      if (!currentTributeSim || !currentTributeSim.isAlive || processedIds.has(currentTributeId)) {
+        i++;
+        continue;
+      }
+
+      const available = [
+        shuffledAlive[i],
+        ...shuffledAlive.slice(i + 1).filter(t =>
+          !processedIds.has(t.id) &&
+          simulationTributes.find(st => st.id === t.id)?.isAlive
+        )
+      ];
+
+      let result: SimulatedEvent | null = null;
+      let attempts = 0;
+
+      while (!result && attempts < 15) {
+        const randomEvent = getWeightedEvent(cornucopiaEvents, 1, cornucopiaDeathRate);
+        if (randomEvent) {
+          result = processEvent(randomEvent, available, simulationTributes, alive.length, true);
+        }
+        attempts++;
+      }
+
+      if (result) {
+        simulatedEvents.push(result);
+        result.participants.forEach(pid => processedIds.add(pid));
+      } else {
+        processedIds.add(currentTributeId);
+      }
+      i++;
+    }
+
+    setGameState((prev) => ({
+      ...prev,
+      pendingEvents: simulatedEvents,
+      currentPhase: "cornucopia",
+      currentPhaseNumber: 0,
+      currentStep: 0,
+      isRunning: true,
+    }));
+
+    audio.playCornucopiaSound();
+  }, [tributes, events, onWinner, gameState.logs, config.deathRate, audio]);
+
+  // ── Fase normale ──────────────────────────────────────────────────────────
   const preparePhase = useCallback(
     (phaseType: "day" | "night" | "feast") => {
       const phaseEvents = events.filter((e) => e.type === phaseType);
 
-      // Fallback Correction: ensure we have something
       const fallbackEvent: GameEvent = {
         id: "fallback-generic",
         text: "{P1} si guarda intorno nervosamente.",
@@ -225,7 +295,6 @@ export function SimulationEngine({
       };
 
       if (phaseEvents.length === 0) {
-        // If no events at all, use fallback
         phaseEvents.push(fallbackEvent);
       }
 
@@ -237,7 +306,6 @@ export function SimulationEngine({
         return;
       }
 
-      // Simulate on a copy to generate events
       const simulationTributes = tributes.map(t => ({ ...t, usedEvents: t.usedEvents || [] }));
       const shuffledAlive = shuffleArray(alive);
       const simulatedEvents: SimulatedEvent[] = [];
@@ -245,9 +313,6 @@ export function SimulationEngine({
 
       let i = 0;
       while (i < shuffledAlive.length) {
-        // Get currently available tributes (those still alive in simulation)
-        // Note: shuffledAlive are the *original* alive tributes.
-        // We must check if they are still alive in simulationTributes AND not processed in this phase
         const currentTributeId = shuffledAlive[i].id;
         const currentTributeSim = simulationTributes.find(t => t.id === currentTributeId);
 
@@ -281,7 +346,6 @@ export function SimulationEngine({
           attempts++;
         }
 
-        // Fallback Correction: if we couldn't find a valid event after retries
         if (!result) {
           result = processEvent(fallbackEvent, available, simulationTributes, alive.length);
         }
@@ -290,7 +354,6 @@ export function SimulationEngine({
           simulatedEvents.push(result);
           result.participants.forEach(pid => processedIds.add(pid));
         } else {
-          // If fallback also failed (e.g. not enough participants?), mark this tribute as processed to avoid infinite loops
           processedIds.add(currentTributeId);
         }
 
@@ -309,8 +372,6 @@ export function SimulationEngine({
     [tributes, events, onWinner, gameState.logs, config.deathRate, gameState.currentPhaseNumber]
   );
 
-  // I'll implement the loop properly inside the replacement string.
-
   const handleNextEvent = () => {
     if (gameState.currentStep >= gameState.pendingEvents.length) return;
 
@@ -319,14 +380,18 @@ export function SimulationEngine({
       let newT = { ...t };
       if (event.deaths.includes(t.id)) newT.isAlive = false;
       if (event.killerId && t.id === event.killerId) newT.kills += event.deaths.length;
-
-      // Update usedEvents persistence
       if (event.originalEventId && event.participants.includes(t.id)) {
         newT.usedEvents = [...(newT.usedEvents || []), event.originalEventId];
       }
-
       return newT;
     });
+
+    // Suoni
+    if (event.deaths.length > 0) {
+      audio.playCannonSound();
+    } else {
+      audio.playSwordSound();
+    }
 
     onTributesChange(updatedTributes);
     setGameState(prev => ({
@@ -339,7 +404,6 @@ export function SimulationEngine({
   const handleSkip = () => {
     let updatedTributes = [...gameState.tributes];
 
-    // Apply all remaining events
     for (let i = gameState.currentStep; i < gameState.pendingEvents.length; i++) {
       const event = gameState.pendingEvents[i];
       updatedTributes = updatedTributes.map(t => {
@@ -362,15 +426,18 @@ export function SimulationEngine({
     const deaths: string[] = [];
     gameState.pendingEvents.forEach(e => deaths.push(...e.deaths));
 
+    const isCornucopia = gameState.currentPhase === "cornucopia";
     const newLog: SimulationLog = {
       id: crypto.randomUUID(),
-      phase: gameState.currentPhase as "day" | "night" | "feast",
-      phaseNumber: gameState.currentPhaseNumber + (gameState.currentPhase === "day" ? 1 : 0),
+      phase: isCornucopia ? "cornucopia" : gameState.currentPhase as "day" | "night" | "feast",
+      phaseNumber: isCornucopia ? 0 : gameState.currentPhaseNumber + (gameState.currentPhase === "day" ? 1 : 0),
       events: gameState.pendingEvents,
       deaths,
     };
 
-    const newPhaseNumber = gameState.currentPhase === "day" ? gameState.currentPhaseNumber + 1 : gameState.currentPhaseNumber;
+    const newPhaseNumber = gameState.currentPhase === "day"
+      ? gameState.currentPhaseNumber + 1
+      : gameState.currentPhaseNumber;
     const newLogs = [...gameState.logs, newLog];
 
     setGameState(prev => ({
@@ -385,22 +452,33 @@ export function SimulationEngine({
 
   const startSimulation = () => {
     if (tributes.length < 2 || events.length === 0) return;
-    const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0 }));
+    const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0, usedEvents: [] }));
     onTributesChange(resetTributes);
+
+    audio.startMusic();
+
+    const hasCornucopia = config.enableCornucopia ?? true;
+
     setGameState({
       tributes: resetTributes,
       events,
       objects: DEFAULT_OBJECTS,
       isRunning: true,
-      currentPhase: "day", // Will be triggered by effect or user
+      currentPhase: hasCornucopia ? "cornucopia" : "day",
       currentPhaseNumber: 0,
       logs: [],
       winner: null,
       pendingEvents: [],
       currentStep: 0,
     });
-    // Trigger first phase immediately
-    setTimeout(() => preparePhase("day"), 0);
+
+    setTimeout(() => {
+      if (hasCornucopia) {
+        prepareCornucopia();
+      } else {
+        preparePhase("day");
+      }
+    }, 0);
   };
 
   const nextPhase = () => {
@@ -408,21 +486,21 @@ export function SimulationEngine({
     if (alive.length <= 1) {
       setGameState((prev) => ({ ...prev, currentPhase: "finished", winner: alive[0] || null }));
       onWinner(alive[0] || null, gameState.logs);
+      audio.stopMusic();
       return;
     }
 
     const lastPhase = gameState.logs[gameState.logs.length - 1]?.phase;
     let nextPhaseType: "day" | "night" | "feast";
 
-    // Fix for feast loop bug: explicitly check lastPhase
-    if (lastPhase === "feast") {
+    if (lastPhase === "cornucopia" || lastPhase === undefined) {
+      nextPhaseType = "day";
+    } else if (lastPhase === "feast") {
       nextPhaseType = "night";
     } else if (lastPhase === "day") {
-      // Check if feast is due
       const shouldFeast = (gameState.currentPhaseNumber % config.feastFrequency) === (config.feastFrequency - 1);
       nextPhaseType = shouldFeast ? "feast" : "night";
     } else {
-      // lastPhase is night or undefined (start of next day)
       nextPhaseType = "day";
     }
 
@@ -431,7 +509,8 @@ export function SimulationEngine({
 
   const resetSimulation = () => {
     if (autoPlayRef.current) clearTimeout(autoPlayRef.current);
-    const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0 }));
+    audio.stopMusic();
+    const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0, usedEvents: [] }));
     onTributesChange(resetTributes);
     setGameState({
       tributes: resetTributes,
@@ -456,8 +535,11 @@ export function SimulationEngine({
     }
     summary += "CRONOLOGIA:\n\n";
     for (const log of gameState.logs) {
-      const phaseName = log.phase === "day" ? "Giorno" : log.phase === "night" ? "Notte" : "Banchetto";
-      summary += `${phaseName} ${log.phaseNumber}\n`;
+      const phaseName =
+        log.phase === "cornucopia" ? "Cornucopia (Bloodbath)" :
+        log.phase === "day" ? "Giorno" :
+        log.phase === "night" ? "Notte" : "Banchetto";
+      summary += `${phaseName}${log.phase !== "cornucopia" ? ` ${log.phaseNumber}` : ""}\n`;
       for (const event of log.events) {
         summary += `- ${event.text}\n`;
       }
@@ -476,6 +558,7 @@ export function SimulationEngine({
 
   const getPhaseBadgeClass = () => {
     switch (gameState.currentPhase) {
+      case "cornucopia": return "phase-badge phase-feast";
       case "day": return "phase-badge phase-day";
       case "night": return "phase-badge phase-night";
       case "feast": return "phase-badge phase-feast";
@@ -485,6 +568,7 @@ export function SimulationEngine({
 
   const PhaseIcon = () => {
     switch (gameState.currentPhase) {
+      case "cornucopia": return <Swords className="text-yellow-400" size={24} />;
       case "day": return <Sun className="text-primary" size={24} />;
       case "night": return <Moon className="text-accent" size={24} />;
       case "feast": return <Utensils className="text-destructive" size={24} />;
@@ -492,7 +576,6 @@ export function SimulationEngine({
     }
   };
 
-  // Render Helpers
   const renderDistrictGrid = () => {
     const groupedTributes = tributes.reduce((acc, tribute) => {
       const district = tribute.district || 0;
@@ -524,26 +607,32 @@ export function SimulationEngine({
     );
   };
 
-  const isSimulating = gameState.isRunning && gameState.currentPhase !== "summary" && gameState.currentPhase !== "finished";
-  const showSummaryGrid = gameState.currentPhase === "summary" || gameState.currentPhase === "finished" || gameState.currentPhase === "setup";
+  const isSimulating =
+    gameState.isRunning &&
+    gameState.currentPhase !== "summary" &&
+    gameState.currentPhase !== "finished";
+
+  const showSummaryGrid =
+    gameState.currentPhase === "summary" ||
+    gameState.currentPhase === "finished" ||
+    gameState.currentPhase === "setup";
 
   const bgImage = useMemo(() => {
     const images = config.phaseImages || DEFAULT_CONFIG.phaseImages;
     if (!images) return null;
 
-    // Priority: Feast > Night > Day
+    if (gameState.currentPhase === "cornucopia") return images.cornucopia || images.feast;
     if (gameState.currentPhase === "feast") return images.feast;
     if (gameState.currentPhase === "night") return images.night;
 
-    // For summary, use the phase of the last log
     if (gameState.currentPhase === "summary" && gameState.logs.length > 0) {
       const lastLog = gameState.logs[gameState.logs.length - 1];
+      if (lastLog.phase === "cornucopia") return images.cornucopia || images.feast;
       if (lastLog.phase === "feast") return images.feast;
       if (lastLog.phase === "night") return images.night;
       return images.day;
     }
 
-    // Default to day (covers "day", "setup", and "finished")
     return images.day;
   }, [gameState.currentPhase, gameState.logs, config.phaseImages]);
 
@@ -556,8 +645,8 @@ export function SimulationEngine({
             className="absolute inset-0 z-0 transition-all duration-1000 ease-in-out"
             style={{
               backgroundImage: `url(${bgImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundSize: "cover",
+              backgroundPosition: "center",
             }}
           />
           <div
@@ -576,18 +665,26 @@ export function SimulationEngine({
         .animate-shake {
           animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
         }
+        @keyframes cornucopia-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(234,179,8,0); }
+          50% { box-shadow: 0 0 24px 8px rgba(234,179,8,0.35); }
+        }
+        .cornucopia-glow {
+          animation: cornucopia-pulse 1.5s ease-in-out infinite;
+        }
       `}</style>
 
       <CardHeader>
-        <CardTitle className="flex flex-wrap items-center justify-between gap-2 font-serif">
+        <CardTitle className="flex flex-wrap items-center justify-between gap-2 font-serif relative z-10">
           <div className="flex items-center gap-2">
             <Trophy className="text-primary" />
             <span className="gold-text">Arena</span>
           </div>
           {gameState.isRunning && (
-            <div className={getPhaseBadgeClass()}>
+            <div className={`${getPhaseBadgeClass()} ${gameState.currentPhase === "cornucopia" ? "cornucopia-glow" : ""}`}>
               <PhaseIcon />
               <span className="ml-2">
+                {gameState.currentPhase === "cornucopia" && "Cornucopia — Bloodbath"}
                 {gameState.currentPhase === "day" && `Giorno ${gameState.currentPhaseNumber}`}
                 {gameState.currentPhase === "night" && `Notte ${gameState.currentPhaseNumber}`}
                 {gameState.currentPhase === "feast" && "Banchetto"}
@@ -600,17 +697,34 @@ export function SimulationEngine({
 
       <CardContent className="flex-grow space-y-6 flex flex-col relative z-10">
 
-        {/* NARRATIVE AREA (Top Focus) */}
+        {/* NARRATIVE AREA */}
         {isSimulating && (
           <div
             ref={eventListRef}
             className="flex-grow max-h-[60vh] overflow-y-auto space-y-3 p-2 rounded-lg bg-black/20"
           >
+            {gameState.currentPhase === "cornucopia" && gameState.currentStep === 0 && (
+              <div className="text-center py-6 space-y-2 animate-fade-in">
+                <Swords size={48} className="mx-auto text-yellow-400 cornucopia-glow rounded-full p-2" />
+                <p className="text-yellow-300 font-serif text-2xl font-bold tracking-wider">
+                  CHE I GIOCHI ABBIANO INIZIO
+                </p>
+                <p className="text-muted-foreground text-sm italic">
+                  I tributi si lanciano verso la Cornucopia...
+                </p>
+              </div>
+            )}
+
             {gameState.pendingEvents.slice(0, gameState.currentStep).map((event) => (
               <div
                 key={event.id}
-                className={`animate-fade-in rounded-lg p-4 shadow-md ${event.deaths.length > 0 ? "border-l-4 border-l-destructive animate-shake" : "border-l-4 border-l-primary/20"
-                  }`}
+                className={`animate-fade-in rounded-lg p-4 shadow-md ${
+                  event.deaths.length > 0
+                    ? "border-l-4 border-l-destructive animate-shake"
+                    : event.isCornucopia
+                    ? "border-l-4 border-l-yellow-500"
+                    : "border-l-4 border-l-primary/20"
+                }`}
                 style={{
                   backgroundColor: hexToRgba(popupColor, popupOpacity),
                   color: textColor,
@@ -643,7 +757,6 @@ export function SimulationEngine({
                           {tribute.name}
                         </span>
 
-                        {/* Death Indicator overlay */}
                         {event.deaths.includes(participantId) && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/60 rounded-md">
                             <Skull className="text-destructive w-8 h-8" />
@@ -663,7 +776,8 @@ export function SimulationEngine({
                 )}
               </div>
             ))}
-            {gameState.currentStep === 0 && (
+
+            {gameState.currentStep === 0 && gameState.currentPhase !== "cornucopia" && (
               <div className="text-center text-muted-foreground py-10 italic">
                 La fase sta per iniziare...
               </div>
@@ -671,7 +785,7 @@ export function SimulationEngine({
           </div>
         )}
 
-        {/* SUMMARY LOG (Miniaturized for Summary Phase) */}
+        {/* SUMMARY LOG */}
         {gameState.currentPhase === "summary" && (
           <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 mb-4">
             <p className="flex items-center gap-2 font-medium text-destructive text-lg mb-2">
@@ -689,12 +803,11 @@ export function SimulationEngine({
           </div>
         )}
 
-        {/* TRIBUTES GRID (Bottom / Hidden during Focus) */}
+        {/* TRIBUTES GRID */}
         <div className={`transition-all duration-500 ${isSimulating ? "opacity-10 blur-sm pointer-events-none scale-95 grayscale" : "opacity-100"}`}>
           {showSummaryGrid ? (
             renderDistrictGrid()
           ) : (
-            /* Flat Grid for Setup/Running (blurred) */
             <div className="grid grid-cols-6 gap-3 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12">
               {tributes.map((tribute) => (
                 <TributeCard key={tribute.id} tribute={tribute} size="sm" showKills />
@@ -729,7 +842,7 @@ export function SimulationEngine({
                   </Button>
                 </>
               ) : (
-                <Button onClick={finalizePhase} className="btn-gold w-full max-w-md animate-pulse shadow-xl" size="lg">
+                <Button onClick={finalizePhase} className={`btn-gold w-full max-w-md shadow-xl ${gameState.currentPhase === "cornucopia" ? "animate-pulse" : "animate-pulse"}`} size="lg">
                   <Eye size={24} className="mr-2" />
                   Vedi Riepilogo
                 </Button>
@@ -740,7 +853,13 @@ export function SimulationEngine({
           {gameState.currentPhase === "summary" && (
             <Button onClick={nextPhase} className="btn-gold w-full max-w-md shadow-lg" size="lg">
               <SkipForward size={20} className="mr-2" />
-              {gameState.currentPhaseNumber % config.feastFrequency === config.feastFrequency - 1 ? "Vai al Banchetto" : "Prossima Fase"}
+              {(() => {
+                const lastPhase = gameState.logs[gameState.logs.length - 1]?.phase;
+                if (lastPhase === "cornucopia") return "Inizia il Giorno 1";
+                if (lastPhase === "feast") return "Continua la Notte";
+                if (lastPhase === "day" && (gameState.currentPhaseNumber % config.feastFrequency) === (config.feastFrequency - 1)) return "Vai al Banchetto";
+                return "Prossima Fase";
+              })()}
             </Button>
           )}
 
@@ -758,7 +877,12 @@ export function SimulationEngine({
           )}
 
           {gameState.isRunning && (
-            <Button onClick={resetSimulation} variant="ghost" size="sm" className="absolute right-4 top-4 opacity-50 hover:opacity-100">
+            <Button
+              onClick={resetSimulation}
+              variant="ghost"
+              size="sm"
+              className="absolute right-4 top-4 opacity-50 hover:opacity-100"
+            >
               <RotateCcw size={16} />
             </Button>
           )}
