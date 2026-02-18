@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DEFAULT_CONFIG, DEFAULT_AUDIO_CONFIG } from "@/lib/game-types";
 import { useRef } from "react";
+import { toast } from "sonner";
 
 interface GameConfigPanelProps {
   config: GameConfig;
