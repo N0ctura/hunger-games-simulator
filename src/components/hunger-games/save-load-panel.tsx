@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef, useState } from "react";
-import type { Tribute, GameEvent, GameConfig, SavedGame } from "@/lib/game-types";
+import type { Tribute, GameEvent, GameConfig, SavedGame, AppearanceConfig } from "@/lib/game-types";
 import { DEFAULT_CONFIG } from "@/lib/game-types";
 import { generateUUID } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Upload, Save, AlertCircle, CheckCircle, FileJson, Trash2 } from "lucide-react";
+import { useAppearance } from "@/context/appearance-context";
 
 interface SaveLoadPanelProps {
   tributes: Tribute[];
@@ -29,7 +30,8 @@ function stripImages(tributes: Tribute[]): SavedGame["tributes"] {
 function buildSaveData(
   tributes: Tribute[],
   events: GameEvent[],
-  config: GameConfig
+  config: GameConfig,
+  appearance?: AppearanceConfig
 ): SavedGame {
   return {
     version: CURRENT_VERSION,
@@ -37,6 +39,7 @@ function buildSaveData(
     tributes: stripImages(tributes),
     events,
     config: config, // Ora salviamo anche phaseImages
+    appearance,
   };
 }
 
@@ -61,7 +64,7 @@ function validateSaveData(raw: unknown): raw is SavedGame {
 
 function parseSaveData(
   save: SavedGame
-): { tributes: Tribute[]; events: GameEvent[]; config: GameConfig } {
+): { tributes: Tribute[]; events: GameEvent[]; config: GameConfig; appearance?: AppearanceConfig } {
   // Ricostruisci i tributi con i valori di default per i campi mancanti
   const tributes: Tribute[] = save.tributes.map((t, idx) => ({
     id: t.id || generateUUID(),
@@ -98,7 +101,7 @@ function parseSaveData(
     phaseImages: save.config.phaseImages ?? DEFAULT_CONFIG.phaseImages, // Carica le immagini personalizzate o usa default
   };
 
-  return { tributes, events, config };
+  return { tributes, events, config, appearance: save.appearance };
 }
 
 // ─── Componente ──────────────────────────────────────────────────────────────
@@ -107,6 +110,7 @@ export function SaveLoadPanel({ tributes, events, config, onLoad }: SaveLoadPane
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [toast, setToast] = useState<ToastState>(null);
   const [importPreview, setImportPreview] = useState<SavedGame | null>(null);
+  const appearance = useAppearance();
 
   const showToast = (message: string, type: "success" | "error") => {
     setToast({ message, type });
@@ -114,7 +118,20 @@ export function SaveLoadPanel({ tributes, events, config, onLoad }: SaveLoadPane
   };
 
   const handleExport = () => {
-    const data = buildSaveData(tributes, events, config);
+    // Costruisci la configurazione grafica serializzabile
+    const appearanceConfig: AppearanceConfig = {
+      popupColor: appearance.popupColor,
+      popupOpacity: appearance.popupOpacity,
+      textColor: appearance.textColor,
+      themeMode: appearance.themeMode,
+      themePreset: appearance.themePreset,
+      particles: appearance.particles,
+      background: appearance.background,
+      primaryColor: appearance.primaryColor,
+      secondaryColor: appearance.secondaryColor,
+    };
+
+    const data = buildSaveData(tributes, events, config, appearanceConfig);
     const date = new Date().toISOString().slice(0, 10);
     downloadJson(data, `hunger-games-save-${date}.json`);
     showToast(`Salvataggio esportato! (${tributes.length} tributi, ${events.length} eventi)`, "success");
@@ -147,9 +164,23 @@ export function SaveLoadPanel({ tributes, events, config, onLoad }: SaveLoadPane
     try {
       const parsed = parseSaveData(importPreview);
       onLoad(parsed);
+
+      // Ripristina impostazioni grafiche se presenti
+      if (parsed.appearance) {
+        if (parsed.appearance.popupColor) appearance.setPopupColor(parsed.appearance.popupColor);
+        if (parsed.appearance.popupOpacity !== undefined) appearance.setPopupOpacity(parsed.appearance.popupOpacity);
+        if (parsed.appearance.textColor) appearance.setTextColor(parsed.appearance.textColor);
+        if (parsed.appearance.themeMode) appearance.setThemeMode(parsed.appearance.themeMode as any);
+        if (parsed.appearance.themePreset) appearance.setThemePreset(parsed.appearance.themePreset as any);
+        if (parsed.appearance.particles) appearance.setParticles(parsed.appearance.particles);
+        if (parsed.appearance.background) appearance.setBackground(parsed.appearance.background);
+        if (parsed.appearance.primaryColor) appearance.setPrimaryColor(parsed.appearance.primaryColor);
+        if (parsed.appearance.secondaryColor) appearance.setSecondaryColor(parsed.appearance.secondaryColor);
+      }
+
       setImportPreview(null);
       showToast(
-        `Caricato! ${parsed.tributes.length} tributi e ${parsed.events.length} eventi importati. Le immagini non sono state ripristinate.`,
+        `Caricato! ${parsed.tributes.length} tributi e ${parsed.events.length} eventi importati.`,
         "success"
       );
     } catch {
@@ -176,8 +207,8 @@ export function SaveLoadPanel({ tributes, events, config, onLoad }: SaveLoadPane
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Esporta tributi, eventi e configurazione in un file <code className="rounded bg-secondary px-1 text-xs">.json</code>.
-          Le immagini dei tributi e le immagini di sfondo <strong>non vengono salvate</strong> per mantenere il file leggero.
+          Esporta tributi, eventi, configurazione di gioco e <strong>aspetto grafico</strong> in un file <code className="rounded bg-secondary px-1 text-xs">.json</code>.
+          Le immagini vengono salvate.
         </p>
 
         {/* Export */}

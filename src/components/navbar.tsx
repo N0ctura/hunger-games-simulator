@@ -55,7 +55,11 @@ export function Navbar({ logo, onLogoChange, showHome }: NavbarProps) {
               </button>
             </div>
           ) : (
-            <span className="gold-text font-serif text-base md:text-lg font-bold">CEH</span>
+            <img
+              src={`${basePath}/images/logocelestino.png`}
+              alt="Celestial Elysium Hub"
+              className="max-h-8 md:max-h-10 max-w-[100px] md:max-w-[140px] object-contain"
+            />
           )}
         </div>
 

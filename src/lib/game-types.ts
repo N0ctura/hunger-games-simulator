@@ -48,6 +48,30 @@ export interface GameConfig {
   audio?: AudioConfig;
 }
 
+export interface AppearanceConfig {
+  popupColor?: string;
+  popupOpacity?: number;
+  textColor?: string;
+  themeMode?: "dark" | "light";
+  themePreset?: string;
+  particles?: {
+    color1: string;
+    color2: string;
+    density: number;
+    speed: number;
+    size: number;
+    connectionDistance: number;
+  };
+  background?: {
+    backgroundColor: string;
+    gradientColor1: string;
+    gradientColor2: string;
+    useGradient: boolean;
+  };
+  primaryColor?: string;
+  secondaryColor?: string;
+}
+
 export interface SimulationLog {
   id: string;
   phase: "day" | "night" | "feast" | "cornucopia";
@@ -86,6 +110,7 @@ export interface SavedGame {
   tributes: Tribute[]; // Ora include anche le immagini
   events: GameEvent[];
   config: GameConfig; // Include phaseImages
+  appearance?: AppearanceConfig; // Include impostazioni grafiche
 }
 
 export const DEFAULT_AUDIO_CONFIG: AudioConfig = {
