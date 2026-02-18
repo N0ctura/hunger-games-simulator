@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { DEFAULT_CONFIG, DEFAULT_AUDIO_CONFIG } from "@/lib/game-types";
 import { useRef } from "react";
 import { toast } from "sonner";
+import { compressImage } from "@/lib/utils";
 
 interface GameConfigPanelProps {
   config: GameConfig;
@@ -27,18 +28,20 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
     onConfigChange({ ...config, ...partial });
   };
 
-  const handleImageUpload = (file: File, phase: 'day' | 'night' | 'feast') => {
+  const handleImageUpload = async (file: File, phase: 'day' | 'night' | 'feast') => {
     if (!file) return;
 
-    // 5MB limit to be safe with localStorage
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("L'immagine è troppo grande (max 5MB). Per favore comprimila o scegline una più piccola.");
+    // 10MB limit for raw upload (compression will reduce it)
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("L'immagine è troppo grande (max 10MB).");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
+    try {
+      toast.info("Compressione immagine in corso...");
+      // Comprimi l'immagine per ridurre drasticamente la dimensione (JPEG 0.7 quality, max 1280px)
+      const base64 = await compressImage(file, 1280, 0.7);
+
       const currentImages = config.phaseImages || DEFAULT_CONFIG.phaseImages!;
       update({
         phaseImages: {
@@ -46,8 +49,11 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
           [phase]: base64
         }
       });
-    };
-    reader.readAsDataURL(file);
+      toast.success("Immagine caricata e ottimizzata!");
+    } catch (error) {
+      console.error("Errore compressione:", error);
+      toast.error("Errore durante il caricamento dell'immagine.");
+    }
   };
 
   const resetImage = (phase: 'day' | 'night' | 'feast') => {
