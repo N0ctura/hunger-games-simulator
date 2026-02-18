@@ -47,6 +47,19 @@ function playSword(ctx: AudioContext, volume: number) {
   osc2.stop(now + 0.35);
 }
 
+// Helper per gestire i percorsi su GitHub Pages
+const getAudioPath = (path: string) => {
+  // Rimuovi lo slash iniziale se presente per evitare doppi slash
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+
+  // Se siamo in produzione (GitHub Pages), aggiungi il prefisso del repo
+  // Nota: questo deve corrispondere al basePath in next.config.mjs
+  const isProd = process.env.NODE_ENV === 'production';
+  const prefix = isProd ? '/hunger-games-simulator/' : '/';
+
+  return `${prefix}${cleanPath}`;
+};
+
 // ─── Hook principale ─────────────────────────────────────────────────────────
 
 export function useAudio(audioConfig?: Partial<AudioConfig>) {
@@ -55,7 +68,7 @@ export function useAudio(audioConfig?: Partial<AudioConfig>) {
 
   // Initialize ambient audio element
   useEffect(() => {
-    const audio = new Audio("/audio/ambiente.mp3");
+    const audio = new Audio(getAudioPath("audio/ambiente.mp3"));
     audio.loop = true;
     // Validate volume to prevent "non-finite" error
     const rawVolume = Number.isFinite(config.musicVolume)
@@ -82,7 +95,7 @@ export function useAudio(audioConfig?: Partial<AudioConfig>) {
     switch (type) {
       case "cannon":
         try {
-          const cannon = new Audio("/audio/cannone.mp3");
+          const cannon = new Audio(getAudioPath("audio/cannone.mp3"));
           cannon.volume = config.sfxVolume;
           cannon.play().catch(e => console.log("Cannon play failed:", e));
         } catch (e) {
@@ -92,7 +105,7 @@ export function useAudio(audioConfig?: Partial<AudioConfig>) {
 
       case "cornucopia": // Suono Fenice all'inizio
         try {
-          const fenice = new Audio("/audio/fenice.mp3");
+          const fenice = new Audio(getAudioPath("audio/fenice.mp3"));
           fenice.volume = config.sfxVolume;
           fenice.play().catch(e => console.log("Fenice play failed:", e));
         } catch (e) {
