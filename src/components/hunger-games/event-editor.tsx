@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import type { GameEvent } from "@/lib/game-types";
-import { DEFAULT_DAY_EVENTS, DEFAULT_NIGHT_EVENTS, DEFAULT_FEAST_EVENTS } from "@/lib/game-types";
+import { GameEvent } from "@/lib/game-types";
+import { DEFAULT_DAY_EVENTS, DEFAULT_NIGHT_EVENTS, DEFAULT_FEAST_EVENTS, DEFAULT_CORNUCOPIA_EVENTS } from "@/lib/game-types";
+import { generateUUID } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Plus, Trash2, Sun, Moon, Utensils, Wand2, Scroll, Info, FileJson, CheckCircle, AlertCircle } from "lucide-react";
+import { Plus, Trash2, Sun, Moon, Utensils, Wand2, Scroll, Info, FileJson, CheckCircle, AlertCircle, Sword } from "lucide-react";
 import { CopyPromptButton } from "@/components/hunger-games/copy-prompt-button";
 
 interface EventEditorProps {
@@ -18,9 +19,10 @@ interface EventEditorProps {
   onEventsChange: (events: GameEvent[]) => void;
 }
 
+
 export function EventEditor({ events, onEventsChange }: EventEditorProps) {
   const [newEventText, setNewEventText] = useState("");
-  const [newEventType, setNewEventType] = useState<"day" | "night" | "feast">("day");
+  const [newEventType, setNewEventType] = useState<"day" | "night" | "feast" | "arena">("day");
   const [newEventFatal, setNewEventFatal] = useState(false);
   const [newEventWeight, setNewEventWeight] = useState(5);
   const [showJsonImport, setShowJsonImport] = useState(false);
@@ -31,7 +33,7 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
     if (!newEventText.trim()) return;
 
     const newEvent: GameEvent = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       text: newEventText.trim(),
       type: newEventType,
       isFatal: newEventFatal,
@@ -49,9 +51,10 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
 
   const loadDefaultEvents = () => {
     const defaults: GameEvent[] = [
-      ...DEFAULT_DAY_EVENTS.map((e) => ({ ...e, id: crypto.randomUUID() })),
-      ...DEFAULT_NIGHT_EVENTS.map((e) => ({ ...e, id: crypto.randomUUID() })),
-      ...DEFAULT_FEAST_EVENTS.map((e) => ({ ...e, id: crypto.randomUUID() })),
+      ...DEFAULT_DAY_EVENTS.map((e) => ({ ...e, id: generateUUID() })),
+      ...DEFAULT_NIGHT_EVENTS.map((e) => ({ ...e, id: generateUUID() })),
+      ...DEFAULT_FEAST_EVENTS.map((e) => ({ ...e, id: generateUUID() })),
+      ...DEFAULT_CORNUCOPIA_EVENTS.map((e) => ({ ...e, id: generateUUID() })),
     ];
     onEventsChange(defaults);
   };
@@ -70,9 +73,12 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
       for (const item of items) {
         if (!item.text || typeof item.text !== "string") continue;
 
-        const validTypes = ["day", "night", "feast", "arena"];
-        const type = validTypes.includes(item.type) ? item.type : "day";
-        const mappedType = type === "arena" ? "feast" : type;
+        const validTypes = ["day", "night", "feast", "arena", "cornucopia"];
+        let type = validTypes.includes(item.type) ? item.type : "day";
+        // Mappiamo 'cornucopia' su 'arena' per compatibilità
+        if (type === "cornucopia") type = "arena";
+
+        const mappedType = type;
 
         const isFatal = typeof item.isFatal === "boolean" ? item.isFatal : false;
         const killer = typeof item.killer === "number" ? item.killer : null;
@@ -82,9 +88,9 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
         const killCount = isFatal ? Math.max(victims.length, 1) : 0;
 
         imported.push({
-          id: crypto.randomUUID(),
+          id: generateUUID(),
           text: item.text,
-          type: mappedType as "day" | "night" | "feast",
+          type: mappedType as "day" | "night" | "feast" | "arena",
           isFatal,
           killCount,
           killer,
@@ -110,6 +116,7 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
   const dayEvents = events.filter((e) => e.type === "day");
   const nightEvents = events.filter((e) => e.type === "night");
   const feastEvents = events.filter((e) => e.type === "feast");
+  const cornucopiaEvents = events.filter((e) => e.type === "arena");
 
   const EventList = ({ items, type }: { items: GameEvent[]; type: string }) => (
     <div className="max-h-[300px] space-y-2 overflow-y-auto pr-2">
@@ -121,9 +128,8 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
         items.map((event) => (
           <div
             key={event.id}
-            className={`event-card flex items-center justify-between gap-2 ${
-              event.isFatal ? "border-l-4 border-l-destructive" : ""
-            }`}
+            className={`event-card flex items-center justify-between gap-2 ${event.isFatal ? "border-l-4 border-l-destructive" : ""
+              }`}
           >
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm">{event.text}</p>
@@ -171,7 +177,7 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
                 </TooltipContent>
               </Tooltip>
             </CardTitle>
-            
+
             {/* Bottone AI Generator - ORA VISIBILE! */}
             <CopyPromptButton />
           </div>
@@ -198,12 +204,13 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
                 <Label className="text-sm">Tipo:</Label>
                 <select
                   value={newEventType}
-                  onChange={(e) => setNewEventType(e.target.value as "day" | "night" | "feast")}
+                  onChange={(e) => setNewEventType(e.target.value as "day" | "night" | "feast" | "arena")}
                   className="rounded-md border border-border bg-input px-3 py-1.5 text-sm"
                 >
                   <option value="day">Giorno</option>
                   <option value="night">Notte</option>
                   <option value="feast">Banchetto</option>
+                  <option value="arena">Cornucopia</option>
                 </select>
               </div>
 
@@ -275,11 +282,10 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
           {/* Toast Feedback */}
           {toast && (
             <div
-              className={`flex items-center gap-2 rounded-lg border p-3 text-sm animate-fade-in ${
-                toast.type === "success"
-                  ? "border-primary/30 bg-primary/10 text-primary"
-                  : "border-destructive/30 bg-destructive/10 text-destructive"
-              }`}
+              className={`flex items-center gap-2 rounded-lg border p-3 text-sm animate-fade-in ${toast.type === "success"
+                ? "border-primary/30 bg-primary/10 text-primary"
+                : "border-destructive/30 bg-destructive/10 text-destructive"
+                }`}
             >
               {toast.type === "success" ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
               {toast.message}
@@ -288,18 +294,26 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
 
           {/* Events Tabs */}
           <Tabs defaultValue="day" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-secondary">
+            <TabsList className="grid w-full grid-cols-4 bg-secondary">
               <TabsTrigger value="day" className="flex items-center gap-1">
                 <Sun size={14} />
-                Giorno ({dayEvents.length})
+                <span className="hidden sm:inline">Giorno ({dayEvents.length})</span>
+                <span className="sm:hidden">D ({dayEvents.length})</span>
               </TabsTrigger>
               <TabsTrigger value="night" className="flex items-center gap-1">
                 <Moon size={14} />
-                Notte ({nightEvents.length})
+                <span className="hidden sm:inline">Notte ({nightEvents.length})</span>
+                <span className="sm:hidden">N ({nightEvents.length})</span>
               </TabsTrigger>
               <TabsTrigger value="feast" className="flex items-center gap-1">
                 <Utensils size={14} />
-                Banchetto ({feastEvents.length})
+                <span className="hidden sm:inline">Banchetto ({feastEvents.length})</span>
+                <span className="sm:hidden">B ({feastEvents.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value="cornucopia" className="flex items-center gap-1">
+                <Sword size={14} />
+                <span className="hidden sm:inline">Cornucopia ({cornucopiaEvents.length})</span>
+                <span className="sm:hidden">C ({cornucopiaEvents.length})</span>
               </TabsTrigger>
             </TabsList>
 
@@ -311,6 +325,9 @@ export function EventEditor({ events, onEventsChange }: EventEditorProps) {
             </TabsContent>
             <TabsContent value="feast" className="mt-4">
               <EventList items={feastEvents} type="banchetto" />
+            </TabsContent>
+            <TabsContent value="cornucopia" className="mt-4">
+              <EventList items={cornucopiaEvents} type="cornucopia" />
             </TabsContent>
           </Tabs>
 

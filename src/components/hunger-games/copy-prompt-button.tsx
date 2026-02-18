@@ -8,7 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const AI_GENERATOR_PROMPT = `Agisci come un esperto programmatore JSON per Hunger Games. 
 Trasforma le frasi che ti fornirò in un array JSON seguendo queste regole:
 
-1. Fasi: 'day' (giorno), 'night' (notte), 'feast' (banchetto).
+1. Fasi: 'day' (giorno), 'night' (notte), 'feast' (banchetto), 'arena' (cornucopia).
 2. Placeholder: Usa {P1}-{P10} per i tributi.
 3. Parametri: text, type, isFatal (boolean), weight (1-10).
 4. Logica Morti: Se isFatal è true, specifica killer (indice numerico, es: 1 per {P1}) e victims (array di indici, es: [2]).
@@ -17,6 +17,7 @@ Esempi di output:
 - {"text": "{P1} e {P2} riposano.", "type": "day", "isFatal": false, "weight": 8}
 - {"text": "{P1} uccide {P2} con {O}.", "type": "night", "isFatal": true, "killer": 1, "victims": [2], "weight": 5}
 - {"text": "Al banchetto {P1} elimina {P2} e {P3}.", "type": "feast", "isFatal": true, "killer": 1, "victims": [2, 3], "weight": 3}
+- {"text": "{P1} corre alla Cornucopia e prende un'arma.", "type": "arena", "isFatal": false, "weight": 6}
 
 Rispondi esclusivamente con il codice JSON.`;
 

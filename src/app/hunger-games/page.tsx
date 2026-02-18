@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import type { Tribute, GameEvent, GameConfig, SimulationLog } from "@/lib/game-types";
 import { DEFAULT_CONFIG, generateDefaultTributes } from "@/lib/game-types";
+import { generateUUID } from "@/lib/utils";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { ParticleBackground } from "@/components/particle-background";
 import { Navbar } from "@/components/navbar";
@@ -38,7 +39,7 @@ export default function HungerGamesPage() {
       audio: prev.audio ?? DEFAULT_CONFIG.audio,
       enableCornucopia: prev.enableCornucopia ?? DEFAULT_CONFIG.enableCornucopia,
     }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const defaultsLoaded = useRef(false);
@@ -57,7 +58,7 @@ export default function HungerGamesPage() {
         if (decoded.t && Array.isArray(decoded.t)) {
           const importedTributes: Tribute[] = decoded.t.map(
             (t: { n: string; i: string | null }, idx: number) => ({
-              id: crypto.randomUUID(),
+              id: generateUUID(),
               name: t.n,
               image: t.i,
               isAlive: true,

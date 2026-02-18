@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import type { Tribute, GameEvent, GameConfig, SavedGame } from "@/lib/game-types";
 import { DEFAULT_CONFIG } from "@/lib/game-types";
+import { generateUUID } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download, Upload, Save, AlertCircle, CheckCircle, FileJson, Trash2 } from "lucide-react";
@@ -21,7 +22,8 @@ const CURRENT_VERSION = 1;
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function stripImages(tributes: Tribute[]): SavedGame["tributes"] {
-  return tributes.map(({ image: _img, ...rest }) => ({ ...rest, image: null }));
+  // Ora manteniamo le immagini (se sono in base64 o URL validi)
+  return tributes;
 }
 
 function buildSaveData(
@@ -29,14 +31,12 @@ function buildSaveData(
   events: GameEvent[],
   config: GameConfig
 ): SavedGame {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { phaseImages: _pi, ...configWithoutImages } = config;
   return {
     version: CURRENT_VERSION,
     savedAt: new Date().toISOString(),
     tributes: stripImages(tributes),
     events,
-    config: configWithoutImages as SavedGame["config"],
+    config: config, // Ora salviamo anche phaseImages
   };
 }
 
@@ -64,9 +64,9 @@ function parseSaveData(
 ): { tributes: Tribute[]; events: GameEvent[]; config: GameConfig } {
   // Ricostruisci i tributi con i valori di default per i campi mancanti
   const tributes: Tribute[] = save.tributes.map((t, idx) => ({
-    id: t.id || crypto.randomUUID(),
+    id: t.id || generateUUID(),
     name: t.name || `Tributo ${idx + 1}`,
-    image: null, // le immagini non vengono salvate
+    image: t.image || null, // Ora carica l'immagine se presente
     isAlive: true,
     kills: 0,
     district: t.district ?? Math.floor(idx / 2) + 1,
@@ -74,22 +74,28 @@ function parseSaveData(
     usedEvents: [],
   }));
 
-  const events: GameEvent[] = save.events.map((e) => ({
-    id: e.id || crypto.randomUUID(),
-    text: e.text,
-    type: e.type,
-    isFatal: e.isFatal ?? false,
-    killCount: e.killCount ?? 0,
-    killer: e.killer ?? null,
-    victims: e.victims ?? [],
-    weight: e.weight ?? 5,
-  }));
+  const events: GameEvent[] = save.events.map((e) => {
+    // Normalizza il tipo per gestire eventuali modifiche manuali al JSON
+    let type = e.type;
+    if ((type as string) === "cornucopia") type = "arena";
+
+    return {
+      id: e.id || generateUUID(),
+      text: e.text,
+      type: type,
+      isFatal: e.isFatal ?? false,
+      killCount: e.killCount ?? 0,
+      killer: e.killer ?? null,
+      victims: e.victims ?? [],
+      weight: e.weight ?? 5,
+    };
+  });
 
   // Merge config salvata con DEFAULT_CONFIG per campi nuovi aggiunti in futuro
   const config: GameConfig = {
     ...DEFAULT_CONFIG,
     ...save.config,
-    phaseImages: DEFAULT_CONFIG.phaseImages, // le immagini usano sempre quelle di default
+    phaseImages: save.config.phaseImages ?? DEFAULT_CONFIG.phaseImages, // Carica le immagini personalizzate o usa default
   };
 
   return { tributes, events, config };
@@ -252,11 +258,10 @@ export function SaveLoadPanel({ tributes, events, config, onLoad }: SaveLoadPane
         {/* Toast */}
         {toast && (
           <div
-            className={`flex items-center gap-2 rounded-lg border p-3 text-sm animate-fade-in ${
-              toast.type === "success"
-                ? "border-primary/30 bg-primary/10 text-primary"
-                : "border-destructive/30 bg-destructive/10 text-destructive"
-            }`}
+            className={`flex items-center gap-2 rounded-lg border p-3 text-sm animate-fade-in ${toast.type === "success"
+              ? "border-primary/30 bg-primary/10 text-primary"
+              : "border-destructive/30 bg-destructive/10 text-destructive"
+              }`}
           >
             {toast.type === "success" ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
             {toast.message}

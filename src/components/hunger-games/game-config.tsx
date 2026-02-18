@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Settings, Trash2, Image as ImageIcon, RotateCcw, Upload, X, Volume2, VolumeX, Music, Sword, Zap, Swords } from "lucide-react";
+import { Settings, Trash2, Image as ImageIcon, RotateCcw, Upload, X, Volume2, VolumeX, Music, Sword, Zap, Swords, Skull } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DEFAULT_CONFIG, DEFAULT_AUDIO_CONFIG } from "@/lib/game-types";
@@ -28,7 +28,7 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
 
   const handleImageUpload = (file: File, phase: 'day' | 'night' | 'feast') => {
     if (!file) return;
-    
+
     // 1MB limit to be safe with localStorage
     if (file.size > 1024 * 1024) {
       alert("L'immagine è troppo grande (max 1MB). Per favore comprimila o scegline una più piccola.");
@@ -73,9 +73,9 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium">{label}</Label>
           {!isDefault && (
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="h-6 w-6 p-0 text-destructive hover:bg-destructive/10"
               onClick={() => resetImage(phase)}
               title="Ripristina predefinita"
@@ -84,14 +84,14 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
             </Button>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3">
           {/* Preview */}
           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border border-border bg-black/20">
             {currentImage && (
-              <img 
-                src={currentImage} 
-                alt={`${phase} preview`} 
+              <img
+                src={currentImage}
+                alt={`${phase} preview`}
                 className="h-full w-full object-cover"
               />
             )}
@@ -109,9 +109,9 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
                 if (file) handleImageUpload(file, phase);
               }}
             />
-            <Button 
-              variant="secondary" 
-              size="sm" 
+            <Button
+              variant="secondary"
+              size="sm"
               className="w-full text-xs"
               onClick={() => inputRef.current?.click()}
             >
@@ -161,9 +161,9 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
               max={1}
               step={0.01}
             />
-             <p className="text-xs text-muted-foreground">
-               Un valore basso renderà i giochi più lunghi e focalizzati sulle alleanze, un valore alto causerà un massacro immediato.
-             </p>
+            <p className="text-xs text-muted-foreground">
+              Un valore basso renderà i giochi più lunghi e focalizzati sulle alleanze, un valore alto causerà un massacro immediato.
+            </p>
           </div>
 
           <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-4">
@@ -195,48 +195,48 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
           )}
 
           <div className="pt-4 border-t border-border/30 space-y-4">
-             <div className="flex items-center justify-between">
-               <Label className="text-base font-serif gold-text flex items-center gap-2">
-                 <ImageIcon size={18} />
-                 Personalizzazione Atmosfera
-               </Label>
-               <Button
-                 variant="outline"
-                 size="sm"
-                 onClick={() => update({ phaseImages: DEFAULT_CONFIG.phaseImages, overlayOpacity: DEFAULT_CONFIG.overlayOpacity })}
-                 title="Ripristina tutte le immagini predefinite"
-               >
-                 <RotateCcw size={14} className="mr-2" />
-                 Reset Tutto
-               </Button>
-             </div>
+            <div className="flex items-center justify-between">
+              <Label className="text-base font-serif gold-text flex items-center gap-2">
+                <ImageIcon size={18} />
+                Personalizzazione Atmosfera
+              </Label>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => update({ phaseImages: DEFAULT_CONFIG.phaseImages, overlayOpacity: DEFAULT_CONFIG.overlayOpacity })}
+                title="Ripristina tutte le immagini predefinite"
+              >
+                <RotateCcw size={14} className="mr-2" />
+                Reset Tutto
+              </Button>
+            </div>
 
-             <div className="space-y-2">
-                <Label className="text-sm">
-                  Oscuramento Sfondo: {Math.round((config.overlayOpacity ?? 0.7) * 100)}%
-                </Label>
-                <div className="flex items-center gap-4">
-                  <span className="text-xs text-muted-foreground">Chiaro</span>
-                  <Slider
-                    value={[config.overlayOpacity ?? 0.7]}
-                    onValueChange={([v]) => update({ overlayOpacity: v })}
-                    min={0.1}
-                    max={0.9}
-                    step={0.05}
-                    className="flex-1"
-                  />
-                  <span className="text-xs text-muted-foreground">Scuro</span>
-                </div>
-                <p className="text-[10px] text-muted-foreground">
-                  Regola quanto deve essere scuro lo sfondo per rendere leggibile il testo.
-                </p>
-             </div>
-             
-             <div className="grid gap-3">
-               {renderImageUploader("Fase Giorno", "day", dayInputRef)}
-               {renderImageUploader("Fase Notte", "night", nightInputRef)}
-               {renderImageUploader("Fase Banchetto", "feast", feastInputRef)}
-             </div>
+            <div className="space-y-2">
+              <Label className="text-sm">
+                Oscuramento Sfondo: {Math.round((config.overlayOpacity ?? 0.7) * 100)}%
+              </Label>
+              <div className="flex items-center gap-4">
+                <span className="text-xs text-muted-foreground">Chiaro</span>
+                <Slider
+                  value={[config.overlayOpacity ?? 0.7]}
+                  onValueChange={([v]) => update({ overlayOpacity: v })}
+                  min={0.1}
+                  max={0.9}
+                  step={0.05}
+                  className="flex-1"
+                />
+                <span className="text-xs text-muted-foreground">Scuro</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground">
+                Regola quanto deve essere scuro lo sfondo per rendere leggibile il testo.
+              </p>
+            </div>
+
+            <div className="grid gap-3">
+              {renderImageUploader("Fase Giorno", "day", dayInputRef)}
+              {renderImageUploader("Fase Notte", "night", nightInputRef)}
+              {renderImageUploader("Fase Banchetto", "feast", feastInputRef)}
+            </div>
           </div>
 
           {/* ── SEZIONE AUDIO ──────────────────────────────── */}
@@ -294,20 +294,6 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
 
             <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
               <div className="flex items-center gap-2">
-                <Sword size={16} className="text-primary" />
-                <div>
-                  <Label className="text-sm font-medium">Suono Spada</Label>
-                  <p className="text-xs text-muted-foreground">Clang su eventi non fatali</p>
-                </div>
-              </div>
-              <Switch
-                checked={config.audio?.swordEnabled ?? DEFAULT_AUDIO_CONFIG.swordEnabled}
-                onCheckedChange={(v) => update({ audio: { ...(config.audio ?? DEFAULT_AUDIO_CONFIG), swordEnabled: v } })}
-              />
-            </div>
-
-            <div className="flex items-center justify-between rounded-lg bg-secondary/30 p-3">
-              <div className="flex items-center gap-2">
                 <Swords size={16} className="text-yellow-500" />
                 <div>
                   <Label className="text-sm font-medium">Suono Cornucopia</Label>
@@ -323,7 +309,7 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
             {/* Volume globale SFX */}
             <div className="space-y-1 px-1">
               <Label className="text-xs text-muted-foreground">
-                Volume effetti (cannone/spada): {Math.round((config.audio?.sfxVolume ?? DEFAULT_AUDIO_CONFIG.sfxVolume) * 100)}%
+                Volume effetti: {Math.round((config.audio?.sfxVolume ?? DEFAULT_AUDIO_CONFIG.sfxVolume) * 100)}%
               </Label>
               <div className="flex items-center gap-3">
                 <VolumeX size={14} className="text-muted-foreground" />
@@ -354,20 +340,44 @@ export function GameConfigPanel({ config, onConfigChange, onFullReset }: GameCon
                 onCheckedChange={(v) => update({ enableCornucopia: v })}
               />
             </div>
+
+            {(config.enableCornucopia ?? true) && (
+              <div className="space-y-2 px-1 animate-in fade-in slide-in-from-top-2">
+                <div className="flex justify-between items-center">
+                  <Label className="text-xs font-bold text-yellow-500 uppercase tracking-widest flex items-center gap-2">
+                    <Skull size={12} /> Letalità Cornucopia
+                  </Label>
+                  <span className="text-xs font-mono bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded border border-yellow-500/20">
+                    {Math.round((config.cornucopiaLethality ?? 0.8) * 100)}%
+                  </span>
+                </div>
+                <Slider
+                  value={[config.cornucopiaLethality ?? 0.8]}
+                  onValueChange={([v]) => update({ cornucopiaLethality: v })}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  className="py-2"
+                />
+                <p className="text-[10px] text-muted-foreground text-right">
+                  0% = Nessun morto | 100% = Massacro quasi totale
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="pt-4 border-t border-border/30">
-             <Button 
-               variant="destructive" 
-               className="w-full" 
-               onClick={onFullReset}
-             >
-               <Trash2 size={18} className="mr-2" />
-               Reset Completo Applicazione
-             </Button>
-             <p className="mt-2 text-xs text-center text-muted-foreground">
-               Cancella tutti i dati salvati e ricarica la pagina.
-             </p>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={onFullReset}
+            >
+              <Trash2 size={18} className="mr-2" />
+              Reset Completo Applicazione
+            </Button>
+            <p className="mt-2 text-xs text-center text-muted-foreground">
+              Cancella tutti i dati salvati e ricarica la pagina.
+            </p>
           </div>
         </div>
       </CardContent>

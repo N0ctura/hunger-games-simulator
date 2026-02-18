@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import type { Tribute, GameEvent, GameConfig, GameState, SimulationLog, SimulatedEvent } from "@/lib/game-types";
 import { DEFAULT_OBJECTS, DEFAULT_CONFIG, DEFAULT_CORNUCOPIA_EVENTS } from "@/lib/game-types";
 import { useAudio } from "@/hooks/use-audio";
+import { generateUUID } from "@/lib/utils";
 import { TributeCard } from "./tribute-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,6 +55,21 @@ export function SimulationEngine({
 
   const eventListRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Manage ambient music
+  const shouldPlayAmbient = gameState.isRunning && !gameState.winner && gameState.currentPhase !== "cornucopia";
+
+  useEffect(() => {
+    if (shouldPlayAmbient) {
+      audio.playAmbient();
+    } else {
+      audio.stopAmbient();
+    }
+
+    return () => {
+      audio.stopAmbient();
+    };
+  }, [shouldPlayAmbient, audio]);
 
   // Scroll to bottom of event list when new events are added
   useEffect(() => {
@@ -129,9 +145,10 @@ export function SimulationEngine({
       const candidates = availableTributes.slice(1);
       const validCandidates = candidates.filter(c => {
         if (c.usedEvents?.includes(event.id)) return false;
-        if (event.isFatal && totalAliveCount > 2) {
-          if (!isCornucopiaPhase && c.district !== undefined && c.district === p1.district) return false;
-        }
+        // RIMOSSO: Protezione contro fuoco amico (stesso distretto)
+        // if (event.isFatal && totalAliveCount > 2) {
+        //   if (!isCornucopiaPhase && c.district !== undefined && c.district === p1.district) return false;
+        // }
         return true;
       });
 
@@ -196,7 +213,7 @@ export function SimulationEngine({
     });
 
     return {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       text,
       participants: participantIds,
       deaths,
@@ -222,8 +239,32 @@ export function SimulationEngine({
       ...events.filter(e => e.type === "arena"),
     ];
 
-    // Alta letalità nella cornucopia: death rate aumentato del 50%
-    const cornucopiaDeathRate = Math.min((config.deathRate ?? 0.5) * 1.5, 1);
+    // Calcolo "POTENTE" del death rate per la Cornucopia
+    // Mappiamo 0-1 a un moltiplicatore aggressivo
+    // 0.0 -> Moltiplicatore 0 (solo eventi non fatali)
+    // 0.5 -> Moltiplicatore 1 (normale)
+    // 1.0 -> Moltiplicatore 100 (quasi solo eventi fatali)
+    const userLethality = config.cornucopiaLethality ?? 0.8;
+    let cornucopiaDeathRate = 0;
+
+    if (userLethality <= 0.5) {
+      // Da 0 a 0.5 mappiamo linearmente a 0..1
+      cornucopiaDeathRate = userLethality * 2;
+    } else {
+      // Da 0.5 a 1.0 mappiamo esponenzialmente a 1..100
+      // Formula: 1 + (x - 0.5) * 200
+      cornucopiaDeathRate = 1 + (userLethality - 0.5) * 200;
+    }
+
+    // Se l'utente vuole 0 morti, forziamo il filtraggio
+    const effectiveEvents = userLethality === 0
+      ? cornucopiaEvents.filter(e => !e.isFatal)
+      : cornucopiaEvents;
+
+    // Se l'utente vuole 100% morti, rimuoviamo i non fatali (se possibile)
+    const finalEvents = (userLethality === 1 && effectiveEvents.some(e => e.isFatal))
+      ? effectiveEvents.filter(e => e.isFatal)
+      : effectiveEvents;
 
     const simulationTributes = tributes.map(t => ({ ...t, usedEvents: [] as string[] }));
     const shuffledAlive = shuffleArray(alive);
@@ -252,7 +293,7 @@ export function SimulationEngine({
       let attempts = 0;
 
       while (!result && attempts < 15) {
-        const randomEvent = getWeightedEvent(cornucopiaEvents, 1, cornucopiaDeathRate);
+        const randomEvent = getWeightedEvent(finalEvents, 1, cornucopiaDeathRate);
         if (randomEvent) {
           result = processEvent(randomEvent, available, simulationTributes, alive.length, true);
         }
@@ -277,8 +318,8 @@ export function SimulationEngine({
       isRunning: true,
     }));
 
-    audio.playCornucopiaSound();
-  }, [tributes, events, onWinner, gameState.logs, config.deathRate, audio]);
+    audio.playCornucopia();
+  }, [tributes, events, onWinner, gameState.logs, config.deathRate, config.cornucopiaLethality, audio]);
 
   // ── Fase normale ──────────────────────────────────────────────────────────
   const preparePhase = useCallback(
@@ -388,9 +429,7 @@ export function SimulationEngine({
 
     // Suoni
     if (event.deaths.length > 0) {
-      audio.playCannonSound();
-    } else {
-      audio.playSwordSound();
+      audio.playCannon();
     }
 
     onTributesChange(updatedTributes);
@@ -428,7 +467,7 @@ export function SimulationEngine({
 
     const isCornucopia = gameState.currentPhase === "cornucopia";
     const newLog: SimulationLog = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       phase: isCornucopia ? "cornucopia" : gameState.currentPhase as "day" | "night" | "feast",
       phaseNumber: isCornucopia ? 0 : gameState.currentPhaseNumber + (gameState.currentPhase === "day" ? 1 : 0),
       events: gameState.pendingEvents,
@@ -450,12 +489,36 @@ export function SimulationEngine({
     }));
   };
 
+  const handlePlayPause = () => {
+    if (gameState.winner) return;
+
+    if (gameState.isRunning) {
+      if (autoPlayRef.current) {
+        clearTimeout(autoPlayRef.current);
+        autoPlayRef.current = null;
+      }
+      setGameState((prev) => ({ ...prev, isRunning: false }));
+      audio.pauseAmbient();
+    } else {
+      if (gameState.currentPhase === "setup") {
+        setGameState((prev) => ({
+          ...prev,
+          isRunning: true,
+          currentPhase: "cornucopia",
+          currentPhaseNumber: 0,
+        }));
+        // Music will be handled by the useEffect
+      } else {
+        setGameState((prev) => ({ ...prev, isRunning: true }));
+        // Music will be handled by the useEffect
+      }
+    }
+  };
+
   const startSimulation = () => {
     if (tributes.length < 2 || events.length === 0) return;
     const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0, usedEvents: [] }));
     onTributesChange(resetTributes);
-
-    audio.startMusic();
 
     const hasCornucopia = config.enableCornucopia ?? true;
 
@@ -486,7 +549,7 @@ export function SimulationEngine({
     if (alive.length <= 1) {
       setGameState((prev) => ({ ...prev, currentPhase: "finished", winner: alive[0] || null }));
       onWinner(alive[0] || null, gameState.logs);
-      audio.stopMusic();
+      audio.stopAmbient();
       return;
     }
 
@@ -508,10 +571,14 @@ export function SimulationEngine({
   };
 
   const resetSimulation = () => {
-    if (autoPlayRef.current) clearTimeout(autoPlayRef.current);
-    audio.stopMusic();
+    if (autoPlayRef.current) {
+      clearTimeout(autoPlayRef.current);
+      autoPlayRef.current = null;
+    }
+    audio.stopAmbient();
     const resetTributes = tributes.map((t) => ({ ...t, isAlive: true, kills: 0, usedEvents: [] }));
     onTributesChange(resetTributes);
+    onWinner(null, []);
     setGameState({
       tributes: resetTributes,
       events,
@@ -537,8 +604,8 @@ export function SimulationEngine({
     for (const log of gameState.logs) {
       const phaseName =
         log.phase === "cornucopia" ? "Cornucopia (Bloodbath)" :
-        log.phase === "day" ? "Giorno" :
-        log.phase === "night" ? "Notte" : "Banchetto";
+          log.phase === "day" ? "Giorno" :
+            log.phase === "night" ? "Notte" : "Banchetto";
       summary += `${phaseName}${log.phase !== "cornucopia" ? ` ${log.phaseNumber}` : ""}\n`;
       for (const event of log.events) {
         summary += `- ${event.text}\n`;
@@ -718,13 +785,12 @@ export function SimulationEngine({
             {gameState.pendingEvents.slice(0, gameState.currentStep).map((event) => (
               <div
                 key={event.id}
-                className={`animate-fade-in rounded-lg p-4 shadow-md ${
-                  event.deaths.length > 0
-                    ? "border-l-4 border-l-destructive animate-shake"
-                    : event.isCornucopia
+                className={`animate-fade-in rounded-lg p-4 shadow-md ${event.deaths.length > 0
+                  ? "border-l-4 border-l-destructive animate-shake"
+                  : event.isCornucopia
                     ? "border-l-4 border-l-yellow-500"
                     : "border-l-4 border-l-primary/20"
-                }`}
+                  }`}
                 style={{
                   backgroundColor: hexToRgba(popupColor, popupOpacity),
                   color: textColor,

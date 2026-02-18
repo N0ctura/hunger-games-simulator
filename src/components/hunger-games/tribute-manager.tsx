@@ -4,6 +4,7 @@ import React from "react"
 
 import { useState, useRef } from "react";
 import type { Tribute } from "@/lib/game-types";
+import { generateUUID } from "@/lib/utils";
 import { TributeCard } from "./tribute-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +44,7 @@ export function TributeManager({ tributes, onTributesChange }: TributeManagerPro
     const districtNum = Math.floor(tributes.length / 2) + 1;
 
     const newTribute: Tribute = {
-      id: crypto.randomUUID(),
+      id: generateUUID(),
       name: newName.trim(),
       image: newImage,
       isAlive: true,
