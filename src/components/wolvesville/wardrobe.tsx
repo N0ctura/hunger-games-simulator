@@ -75,6 +75,7 @@ export function Wardrobe() {
 
     // Store original srcs to restore later
     const originalSrcs: Map<HTMLImageElement, string> = new Map();
+    const createdObjectUrls: string[] = [];
 
     try {
       // 1. PRE-PROCESS: Use a CORS-friendly proxy (wsrv.nl) for all images
@@ -85,31 +86,37 @@ export function Wardrobe() {
       // Create a promise for each image to load via proxy
       const loadPromises = Array.from(images).map(async (img) => {
         const originalSrc = img.src;
-        // Skip if already data uri or local
+        // Skip if already data uri or local (blob: is also local)
         if (originalSrc.startsWith('data:') || originalSrc.startsWith('blob:') || originalSrc.startsWith('/')) return;
 
         try {
           // Use wsrv.nl as proxy to fetch the image data
-          // We fetch it manually to convert to Base64, avoiding any crossOrigin issues in the DOM
+          // We fetch it manually to convert to Blob/ObjectURL, avoiding any crossOrigin issues in the DOM
           const proxyUrl = `https://wsrv.nl/?url=${encodeURIComponent(originalSrc)}&output=png`;
 
           const response = await fetch(proxyUrl);
           if (!response.ok) throw new Error('Proxy fetch failed');
 
           const blob = await response.blob();
-          const base64 = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-          });
+          
+          // Use ObjectURL instead of Base64 for better performance and memory usage on iOS
+          const objectUrl = URL.createObjectURL(blob);
+          createdObjectUrls.push(objectUrl);
 
           // Store original to restore later
           originalSrcs.set(img, originalSrc);
 
-          // Set Base64 source - no crossOrigin needed for Data URIs
+          // Set ObjectURL source
           img.removeAttribute('crossorigin'); // Ensure no lingering attribute
-          img.src = base64;
+          img.src = objectUrl;
+
+          // CRITICAL FOR IOS: Force decode before proceeding
+          // This ensures the image is fully rasterized and ready for canvas capture
+          try {
+            await img.decode();
+          } catch (decodeErr) {
+            console.warn(`[Download] Image decode failed for ${originalSrc}`, decodeErr);
+          }
 
         } catch (e) {
           console.warn(`[Download] Failed to load image via proxy: ${originalSrc}`, e);
@@ -119,8 +126,8 @@ export function Wardrobe() {
 
       await Promise.all(loadPromises);
 
-      // Wait a tiny bit more for rendering
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Wait a bit for rendering stability (increased for iOS safety)
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       // 2. CAPTURE
       const dataUrl = await toPng(targetElement, {
@@ -145,6 +152,10 @@ export function Wardrobe() {
       originalSrcs.forEach((src, img) => {
         img.src = src;
       });
+      
+      // Revoke all object URLs to free memory
+      createdObjectUrls.forEach(url => URL.revokeObjectURL(url));
+      
       setDownloading(false);
     }
   };
