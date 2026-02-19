@@ -33,7 +33,9 @@ export function Wardrobe() {
     resetCalibration, batchUpdateCalibration, items, equipItem,
     // Filters
     searchTerm, setSearchTerm, selectedRarity, setSelectedRarity,
-    gridColumns: columns, setGridColumns: setColumns, sortBy, setSortBy
+    gridColumns: columns, setGridColumns: setColumns, sortBy, setSortBy,
+    // Recent Items
+    recentItems, addToRecents
   } = useWolvesville();
 
   const [downloading, setDownloading] = useState(false);
@@ -87,7 +89,13 @@ export function Wardrobe() {
       const loadPromises = Array.from(images).map(async (img) => {
         const originalSrc = img.src;
         // Skip if already data uri or local (blob: is also local)
-        if (originalSrc.startsWith('data:') || originalSrc.startsWith('blob:') || originalSrc.startsWith('/')) return;
+        // Also skip if it's on the same origin (localhost or domain) to avoid proxy errors
+        if (originalSrc.startsWith('data:') ||
+          originalSrc.startsWith('blob:') ||
+          originalSrc.startsWith('/') ||
+          originalSrc.includes(window.location.origin)) {
+          return;
+        }
 
         try {
           // Use wsrv.nl as proxy to fetch the image data
@@ -98,24 +106,41 @@ export function Wardrobe() {
           if (!response.ok) throw new Error('Proxy fetch failed');
 
           const blob = await response.blob();
-          
+
           // Use ObjectURL instead of Base64 for better performance and memory usage on iOS
-          const objectUrl = URL.createObjectURL(blob);
-          createdObjectUrls.push(objectUrl);
+          // UPDATE: html-to-image ha problemi seri con blob: URL quando tenta di re-fetchare
+          // Per stabilità massima, convertiamo in Base64 (Data URI)
+          // Anche se è meno efficiente per la RAM, è l'unico modo garantito per far funzionare html-to-image
+          // senza che provi a fare richieste di rete fallimentari verso localhost
+          const base64 = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
 
           // Store original to restore later
           originalSrcs.set(img, originalSrc);
 
-          // Set ObjectURL source
+          // Set Data URI source
           img.removeAttribute('crossorigin'); // Ensure no lingering attribute
-          img.src = objectUrl;
+          img.src = base64;
 
           // CRITICAL FOR IOS: Force decode before proceeding
           // This ensures the image is fully rasterized and ready for canvas capture
           try {
-            await img.decode();
+            if (img.decode) {
+              await img.decode();
+            } else {
+              // Fallback for very old browsers (unlikely but safe)
+              await new Promise((resolve) => {
+                if (img.complete) resolve(true);
+                else img.onload = () => resolve(true);
+              });
+            }
           } catch (decodeErr) {
             console.warn(`[Download] Image decode failed for ${originalSrc}`, decodeErr);
+            // Non-fatal error, we continue hoping the browser renders it anyway
           }
 
         } catch (e) {
@@ -130,12 +155,55 @@ export function Wardrobe() {
       await new Promise(resolve => setTimeout(resolve, 800));
 
       // 2. CAPTURE
+      console.log('Starting html-to-image capture...');
+
+      // Assicurati che il targetElement sia visibile e renderizzato
+      if (!targetElement.isConnected) {
+        throw new Error('Elemento canvas non connesso al DOM');
+      }
+
+      // IMPORTANTE: html-to-image a volte prova a ricaricare le immagini anche se sono blob.
+      // Dobbiamo dirgli di non fare richieste di rete per le immagini che abbiamo già gestito.
       const dataUrl = await toPng(targetElement, {
         cacheBust: true,
         pixelRatio: 2,
         skipFonts: true,
         backgroundColor: exportScene ? undefined : undefined,
-      });
+        // Opzioni critiche per stabilità
+        style: {
+          transform: 'scale(1)', // Resetta trasformazioni
+        },
+        // Filtra nodi non necessari
+        filter: (node: any) => {
+          if (node instanceof HTMLElement && node.style.display === 'none') return false;
+          return true;
+        },
+        // Disabilita fetch esterna per immagini che potrebbero causare errori
+        fetchRequestInit: {
+          cache: 'force-cache',
+        },
+        // Disabilita il tentativo di html-to-image di "embeddare" di nuovo le immagini che sono già data/blob
+        // Questo è CRUCIALE perché html-to-image prova a fare fetch(blob:...) che fallisce sempre
+        skipAutoScale: true,
+        // Hook per manipolare il nodo clonato PRIMA che venga rasterizzato
+        onClone: (clonedNode: any) => {
+          if (clonedNode instanceof HTMLElement) {
+            // Rimuovi crossOrigin da tutte le immagini nel nodo clonato
+            const clonedImages = clonedNode.querySelectorAll('img');
+            clonedImages.forEach(img => {
+              img.removeAttribute('crossorigin');
+              // Se è un blob URL, assicurati che sia caricato e rimuovi srcset
+              if (img.src.startsWith('blob:') || img.src.startsWith('data:')) {
+                img.crossOrigin = null;
+                img.removeAttribute('srcset'); // Importante per evitare ricaricamenti
+              }
+            });
+          }
+        },
+        preferredFontFormat: 'woff2',
+        contentType: 'image/png',
+      } as any);
+      console.log('Capture successful, data URL length:', dataUrl.length);
 
       // 3. DOWNLOAD
       const link = document.createElement('a');
@@ -146,16 +214,43 @@ export function Wardrobe() {
 
     } catch (err) {
       console.error('Failed to capture screenshot:', err);
-      alert("Errore durante la creazione dello screenshot. Dettagli: " + (err instanceof Error ? err.message : 'Unknown error'));
+      // Analisi profonda dell'oggetto errore (che spesso appare vuoto {})
+      let errorMessage = 'Errore sconosciuto';
+      let errorStack = '';
+
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        errorStack = err.stack || '';
+      } else if (typeof err === 'object' && err !== null) {
+        // A volte gli errori DOM sono oggetti non-Error
+        try {
+          // Tentativo di estrarre informazioni dall'evento DOM (se è un evento di caricamento fallito)
+          const target = (err as any).target;
+          if (target && (target instanceof HTMLImageElement || target.src)) {
+            errorMessage = `Errore caricamento immagine: ${target.src}`;
+          } else {
+            errorMessage = JSON.stringify(err);
+            if (errorMessage === '{}' || errorMessage === '{"isTrusted":true}') {
+              errorMessage = 'Errore di rete o CORS (immagine bloccata)';
+            }
+          }
+        } catch (e) {
+          errorMessage = String(err);
+        }
+      } else {
+        errorMessage = String(err);
+      }
+
+      alert(`Errore durante la creazione dello screenshot.\nMessaggio: ${errorMessage}\nStack: ${errorStack ? 'Vedi console' : 'N/A'}`);
     } finally {
       // 4. CLEANUP: Restore original sources
       originalSrcs.forEach((src, img) => {
         img.src = src;
       });
-      
+
       // Revoke all object URLs to free memory
       createdObjectUrls.forEach(url => URL.revokeObjectURL(url));
-      
+
       setDownloading(false);
     }
   };
@@ -206,6 +301,24 @@ export function Wardrobe() {
   // ─────────────────────────────────────────────
   //  ACTIONS
   // ─────────────────────────────────────────────
+
+  // Intercept equip to save to recent
+  const handleEquip = (item: WovAvatarItem) => {
+    // Se c'è già un item equipaggiato nello stesso slot, salvalo nei recenti prima di sostituirlo
+    const currentItem = equippedItems[item.type];
+    if (currentItem && currentItem.id !== item.id) {
+      addToRecents(currentItem);
+    }
+    equipItem(item);
+  };
+
+  const handleUnequip = (type: string) => {
+    const item = equippedItems[type];
+    if (item) {
+      addToRecents(item);
+    }
+    unequipItem(type);
+  };
 
   const handleAutoCalibration = async () => {
     setIsAutoCalibrating(true);
@@ -317,6 +430,8 @@ export function Wardrobe() {
   return (
     <>
       <div className="sticky top-4 md:top-24 bg-card/80 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl p-4 md:p-6 flex flex-col items-center gap-1 md:gap-6 w-full">
+
+
         <div className="w-full flex items-center justify-between relative">
           <div className="w-10" /> {/* Spacer */}
           <div className="text-center">
@@ -452,6 +567,8 @@ export function Wardrobe() {
               </div>
             )}
           </div>
+
+
         </div>
 
         {/* ─────────────────────────────────────────────
@@ -540,7 +657,7 @@ export function Wardrobe() {
                       if (isAdminMode) {
                         setSelectedCategory(type as WovCategory);
                       } else {
-                        unequipItem(type);
+                        handleUnequip(type);
                       }
                     }}
                     title={isAdminMode ? `Seleziona ${type} per calibrazione` : `Rimuovi ${item.name} (${type})`}

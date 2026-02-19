@@ -63,6 +63,11 @@ interface WolvesvilleContextType {
   setGridColumns: (cols: number) => void;
   sortBy: "DEFAULT" | "LEGENDARY";
   setSortBy: (sort: "DEFAULT" | "LEGENDARY") => void;
+
+  // Recent Items
+  recentItems: WovAvatarItem[];
+  addToRecents: (item: WovAvatarItem) => void;
+  clearRecents: () => void;
 }
 
 const WolvesvilleContext = createContext<WolvesvilleContextType | undefined>(undefined);
@@ -317,6 +322,39 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true; };
   }, []);
 
+  // ── Recent Items (History) ────────────────────────────────
+  const [recentItems, setRecentItems] = useState<WovAvatarItem[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem("wov_recent_items");
+      if (saved) setRecentItems(JSON.parse(saved));
+    } catch {
+      // ignore corrupt data
+    }
+  }, []);
+
+  const addToRecents = useCallback((item: WovAvatarItem) => {
+    setRecentItems(prev => {
+      // Rimuovi se esiste già per portarlo in cima
+      const filtered = prev.filter(i => i.id !== item.id);
+      // Aggiungi in testa e limita a 50
+      const updated = [item, ...filtered].slice(0, 50);
+      try {
+        localStorage.setItem("wov_recent_items", JSON.stringify(updated));
+      } catch {
+        // ignore quota
+      }
+      return updated;
+    });
+  }, []);
+
+  const clearRecents = useCallback(() => {
+    setRecentItems([]);
+    localStorage.removeItem("wov_recent_items");
+  }, []);
+
   // ── Wardrobe persistence ───────────────────────────────────
   // FIX #3 – localStorage guard (SSR / Next.js static export)
   useEffect(() => {
@@ -493,6 +531,11 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         highscores,
         loading,
         error,
+
+        // Recent Items
+        recentItems,
+        addToRecents,
+        clearRecents,
 
         // Wardrobe
         equippedItems,

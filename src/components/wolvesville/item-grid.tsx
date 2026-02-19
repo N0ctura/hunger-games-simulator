@@ -2,7 +2,7 @@
 
 import { WovAvatarItem, WovCategory, WovRarity, WovDensity, WovAvatarSet } from "@/lib/wolvesville-types";
 import { useWardrobe } from "@/context/wolvesville-context";
-import { Check, Loader2, Search, X, Filter, Settings, SlidersHorizontal, ChevronRight, Menu } from "lucide-react";
+import { Check, Loader2, Search, X, Filter, Settings, SlidersHorizontal, ChevronRight, Menu, History } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react";
 import { getCdnUrl } from "@/lib/wov-mapping";
@@ -345,10 +345,12 @@ interface ItemGridProps {
 export function ItemGrid({ items, loading }: ItemGridProps) {
   const {
     equipItem, equipSet, isEquipped, sets,
-    searchTerm, selectedRarity, gridColumns: columns, sortBy
+    searchTerm, selectedRarity, gridColumns: columns, sortBy,
+    recentItems, addToRecents, equippedItems
   } = useWardrobe();
 
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
+  const [showRecents, setShowRecents] = useState(false);
 
   // Create a lookup map for items to efficiently find set contents
   const itemMap = useMemo(() => {
@@ -433,6 +435,14 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   }, [items, sets, searchTerm, selectedCategory, selectedRarity, sortBy, itemMap]);
 
   const handleEquip = useCallback((item: WovAvatarItem) => {
+    // Save current item to recents if we are swapping a single item
+    if (item.type !== "SET") {
+      const currentItem = equippedItems[item.type];
+      if (currentItem && currentItem.id !== item.id) {
+        addToRecents(currentItem);
+      }
+    }
+
     if (item.type === "SET" && (item as any)._originalSet) {
       const originalSet = (item as any)._originalSet as WovAvatarSet;
 
@@ -463,7 +473,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
     } else {
       equipItem(item);
     }
-  }, [equipItem, equipSet, itemMap]);
+  }, [equipItem, equipSet, itemMap, equippedItems, addToRecents]);
 
   if (loading) {
     return (
@@ -475,13 +485,23 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   }
 
   return (
-    <div className="flex flex-col" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
+    <div className="flex flex-col relative" style={{ height: "calc(100vh - 180px)", minHeight: 400 }}>
 
       {/* ── Filtri & Categorie ─────────────────────────────── */}
       <div className="shrink-0 flex items-center gap-2 mb-2 relative z-30">
 
         {/* Categories List (Scrollable) */}
         <div className="flex-1 overflow-x-auto pb-2 -mx-1 px-1 custom-scrollbar scrollbar-hide select-none flex gap-1.5 md:gap-2">
+          {/* Recent Items Button */}
+          <button
+            onClick={() => setShowRecents(true)}
+            className="whitespace-nowrap px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[10px] md:text-xs font-bold transition-all border shrink-0 tap-target bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500/20 hover:text-purple-300 flex items-center gap-1.5"
+            title="Oggetti Recenti"
+          >
+            <History size={14} />
+            Recenti
+          </button>
+
           {CATEGORIES.map(c => (
             <button
               key={c}
@@ -516,6 +536,59 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
           </div>
         )
       }
+
+      {/* Recent Items Overlay */}
+      {showRecents && (
+        <div className="absolute inset-0 z-50 bg-[#121212] flex flex-col animate-in fade-in zoom-in-95 duration-200 rounded-xl overflow-hidden border border-white/10 m-2 shadow-2xl">
+          <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/20 shrink-0">
+            <div className="flex items-center gap-2 text-purple-400 font-bold">
+              <History size={18} />
+              <span className="text-sm">Oggetti Recenti</span>
+            </div>
+            <button
+              onClick={() => setShowRecents(false)}
+              className="p-1.5 hover:bg-white/10 rounded-full transition-colors text-gray-400 hover:text-white"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+            {recentItems.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-3 opacity-50">
+                <History size={40} />
+                <p className="text-sm">Nessun oggetto recente</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-4 md:grid-cols-5 gap-3">
+                {recentItems.map((item) => {
+                  const isEquippedItem = equippedItems[item.type]?.id === item.id;
+                  return (
+                    <div
+                      key={`recent-${item.id}`}
+                      className={`relative aspect-square bg-black/40 rounded-xl border p-1 group cursor-pointer transition-all tap-target ${isEquippedItem ? "border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.2)]" : "border-white/10 hover:border-purple-500/50 hover:bg-white/5"
+                        }`}
+                      onClick={() => {
+                        handleEquip(item);
+                      }}
+                      title={item.name}
+                    >
+                      <div className="relative w-full h-full p-1.5">
+                        <RobustImage item={item} />
+                      </div>
+                      {isEquippedItem && (
+                        <div className="absolute top-1 right-1 bg-purple-500 rounded-full p-0.5 shadow-lg z-10">
+                          <Check size={10} className="text-white" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div >
   );
 }
