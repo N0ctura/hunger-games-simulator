@@ -131,10 +131,10 @@ export const DEFAULT_CONFIG: GameConfig = {
   cornucopiaLethality: 0.8, // Default alta letalità
   enableCornucopia: true,
   phaseImages: {
-    day: "/images/giorno.webp",
-    night: "/images/notte.webp",
-    feast: "/images/banchetto.webp",
-    cornucopia: "/images/cornucopia.webp",
+    day: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/giorno.webp`,
+    night: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/notte.webp`,
+    feast: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/banchetto.webp`,
+    cornucopia: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/cornucopia.webp`,
   },
   audio: DEFAULT_AUDIO_CONFIG,
 };

@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   title: "Celestial Elysium Hub",
   description:
     "Portale gaming con simulatore Hunger Games personalizzabile. Crea la tua arena, personalizza tributi ed eventi.",
+  icons: {
+    icon: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/images/logocelestino.png`,
+  },
 };
 
 export const viewport: Viewport = {
@@ -28,12 +31,12 @@ export default function RootLayout({
   return (
     <html lang="it" className="dark" suppressHydrationWarning>
       <head>
-        <link 
-          rel="stylesheet" 
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" 
-          integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" 
-          crossOrigin="anonymous" 
-          referrerPolicy="no-referrer" 
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
       </head>
       <body

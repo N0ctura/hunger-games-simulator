@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
-const isGithubActions = process.env.GITHUB_ACTIONS || false;
+const isGithubActions = process.env.GITHUB_ACTIONS || process.env.CI || false;
 
 console.log('Current NODE_ENV:', process.env.NODE_ENV);
 console.log('Is Production?', isProd);
