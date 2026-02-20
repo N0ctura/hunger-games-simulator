@@ -204,7 +204,7 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
             </div>
 
             {/* Grid */}
-            <div className="flex-1 overflow-y-auto grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2 content-start pr-2">
+            <div className="flex-1 overflow-y-auto grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 content-start pr-2">
               {pageItems.map(item => {
                 const itemColors = calibratedData[item.id] || [];
                 const isSelected = itemColors.includes(activeColor);
