@@ -11,6 +11,7 @@ import {
   WovPlayerProfile
 } from "./wolvesville-types";
 import colorCalibrationData from "@/data/color-calibration.json";
+import allAvatarItemsSnapshot from "@/data/all-avatar-items.json"; // Import the local snapshot
 import {
   FALLBACK_ROLES,
   FALLBACK_AVATAR_SETS,
@@ -286,11 +287,36 @@ export const WovEngine = {
   },
 
   async getAvatarItems(): Promise<WovAvatarItem[]> {
-    // Try to fetch individual items with metadata
-    const items = await this.fetch<WovAvatarItem[]>("/items/avatarItems", []);
-    const enriched = items.map(enrichItem);
-    // Add default skins to the beginning of the list
-    return [...DEFAULT_SKINS, ...enriched];
+    // 1. Use Local Snapshot First
+    let items = [...(allAvatarItemsSnapshot as any[])] as WovAvatarItem[];
+
+    try {
+      // Optional: Fetch latest 50 items to see if there are new ones
+      // This is a "Delta Check" - very lightweight
+      const latestItems = await this.fetch<WovAvatarItem[]>("/items/avatarItems?limit=50", [], { suppressErrors: true });
+
+      if (latestItems && Array.isArray(latestItems) && latestItems.length > 0) {
+        const snapshotIds = new Set(items.map(i => i.id));
+        const newItems = latestItems.filter(i => !snapshotIds.has(i.id));
+
+        if (newItems.length > 0) {
+          // console.log(`[WovEngine] Found ${newItems.length} new items from API delta check.`);
+          // Prepend new items
+          items = [...newItems, ...items];
+        }
+      }
+    } catch (e) {
+      // console.warn("[WovEngine] Delta fetch failed, using snapshot only.");
+    }
+
+    // Add default skins if not present
+    // ... logic for default skins ...
+
+    return items.map(item => {
+      const enriched = enrichItem(item);
+      enriched.imageUrl = this.resolveImageUrl(enriched.id, "avatar", enriched.imageUrl, enriched.type);
+      return enriched;
+    });
   },
 
   async getBackgrounds(): Promise<WovBackground[]> {

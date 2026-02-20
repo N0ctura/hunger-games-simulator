@@ -161,6 +161,50 @@ interface AvatarCanvasProps {
   scale?: number; // Custom scale prop
 }
 
+// Helper Component for Hybrid Loading (Local -> Remote)
+const CanvasLayerImage = ({ src: remoteSrc, itemId, alt, style }: { src: string, itemId?: string, alt: string, style: React.CSSProperties }) => {
+  const [currentSrc, setCurrentSrc] = React.useState<string>(() => {
+    // 1. Try Local Asset first if we have an ID and it's a standard item
+    if (itemId && !remoteSrc.startsWith('color:') && !remoteSrc.includes('bodyPaints')) {
+      return `/assets/items/${itemId}.png`;
+    }
+    return remoteSrc;
+  });
+
+  const handleError = () => {
+    // 2. Fallback to Remote API if local fails
+    if (currentSrc !== remoteSrc) {
+      setCurrentSrc(remoteSrc);
+    }
+  };
+
+  // Reset when item changes
+  React.useEffect(() => {
+    if (itemId && !remoteSrc.startsWith('color:') && !remoteSrc.includes('bodyPaints')) {
+      setCurrentSrc(`/assets/items/${itemId}.png`);
+    } else {
+      setCurrentSrc(remoteSrc);
+    }
+  }, [remoteSrc, itemId]);
+
+  return (
+    <img
+      src={currentSrc}
+      alt={alt}
+      width="auto"
+      height="auto"
+      style={{
+        ...style,
+        maxWidth: 'none',
+        maxHeight: 'none',
+        objectFit: 'none'
+      }}
+      onError={handleError}
+    // crossOrigin="anonymous" removed because Wolvesville CDN blocks it
+    />
+  );
+};
+
 export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequin = true, exportMode = false, exportLayout = 'raw', backgroundColor, backgroundImage, showGradient = true, scale }: AvatarCanvasProps) {
   const { equippedItems } = useWolvesville();
 
@@ -269,18 +313,11 @@ export function AvatarCanvas({ className, skinId = SKIN_TONES[0].id, showMannequ
               if (!src) return null;
 
               return (
-                <img
+                <CanvasLayerImage
                   src={src}
+                  itemId={itemId}
                   alt={layer.category || layer.id}
-                  width="auto"
-                  height="auto"
-                  style={{
-                    ...style,
-                    maxWidth: 'none',
-                    maxHeight: 'none',
-                    objectFit: 'none' // Prevent object-fit stretching
-                  }}
-                // crossOrigin="anonymous" removed because Wolvesville CDN blocks it
+                  style={style}
                 />
               );
             };

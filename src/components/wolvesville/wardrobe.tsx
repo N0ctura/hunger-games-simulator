@@ -4,7 +4,7 @@ import { useWolvesville } from "@/context/wolvesville-context";
 import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap, WovRarity } from "@/lib/wolvesville-types";
 import { ColorCalibrator } from "./color-calibrator";
 import { WovEngine } from "@/lib/wov-engine";
-import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown, Settings, SlidersHorizontal, Search, Check, ChevronRight, ImagePlus } from "lucide-react";
+import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown, Settings, SlidersHorizontal, Search, Check, ChevronRight, ImagePlus, User } from "lucide-react";
 import Image from "next/image";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { AvatarCanvas, SKIN_TONES } from "./avatar-canvas";
@@ -24,7 +24,7 @@ const RARITIES: Array<WovRarity | "ALL"> = [
 const CALIBRATION_CATEGORIES: WovCategory[] = [
   "HAT", "HAIR", "GLASSES", "EYES", "MOUTH", "MASK", "BEARD",
   "SHIRT",
-  "BACK", "FRONT", "GRAVESTONE", "EMOJI",
+  "BACK", "FRONT", "EMOJI",
   "BODY", "HEAD"
 ];
 
@@ -33,12 +33,28 @@ const FILTER_COLORS = [
   "Orange", "Pink", "Purple", "Red", "White", "Yellow"
 ];
 
+const COLOR_MAP: Record<string, string> = {
+  "Black": "#1a1a1a",
+  "Blue": "#3b82f6",
+  "Brown": "#78350f",
+  "Gray": "#6b7280",
+  "Green": "#22c55e",
+  "Multicolor": "linear-gradient(135deg, #ef4444, #eab308, #22c55e, #3b82f6)",
+  "Orange": "#f97316",
+  "Pink": "#ec4899",
+  "Purple": "#a855f7",
+  "Red": "#ef4444",
+  "White": "#f3f4f6",
+  "Yellow": "#eab308"
+};
+
 export function Wardrobe() {
   const {
     equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration,
     resetCalibration, batchUpdateCalibration, items, allItems, equipItem,
     // Filters
     searchTerm, setSearchTerm, selectedRarity, setSelectedRarity,
+    genderMode, setGenderMode,
     gridColumns: columns, setGridColumns: setColumns, sortBy, setSortBy,
     // Recent Items
     recentItems, addToRecents,
@@ -596,19 +612,19 @@ export function Wardrobe() {
                         <button
                           key={color}
                           onClick={() => isActive ? resetTagFilter() : applyTagFilter(tag)}
-                          className={`text-[10px] px-2 py-1 rounded-full border transition-all whitespace-nowrap ${isActive
-                            ? "bg-primary text-primary-foreground border-primary font-bold"
-                            : "bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10 hover:text-white"
+                          className={`w-4 h-4 rounded-full border transition-all hover:scale-110 ${isActive
+                            ? "border-white scale-110 shadow-[0_0_8px_rgba(255,255,255,0.3)]"
+                            : "border-transparent opacity-80 hover:opacity-100"
                             }`}
-                        >
-                          {color}
-                        </button>
+                          style={{ background: COLOR_MAP[color] }}
+                          title={color}
+                        />
                       );
                     })}
                   </div>
 
                   <p className="text-[9px] text-muted-foreground/50 italic px-1 mt-1">
-                    *Filtri limitati: Bundle, Calendar, Clan Quest e Colori (da calibrazione locale) sono supportati.
+                    *mapping by E. A. K. V.
                   </p>
                 </div>
 
@@ -689,18 +705,40 @@ export function Wardrobe() {
         </div>
 
         {showDetails && (
-          <div className="flex items-center gap-2 md:gap-3 bg-black/20 border border-white/10 px-2 md:px-3 py-1.5 md:py-2 rounded-lg">
-            <span className="text-[10px] md:text-xs text-muted-foreground font-bold uppercase tracking-wider">Colore sfondo</span>
+          <div className="flex items-center justify-between gap-2 md:gap-3 bg-black/20 border border-white/10 px-2 md:px-2.5 py-1 md:py-1.5 rounded-lg mb-2">
+            <span className="text-[9px] md:text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Modello</span>
+            <div className="flex bg-black/40 rounded-lg p-0.5 border border-white/10">
+              <button
+                onClick={() => setGenderMode("MALE")}
+                className={`p-0.5 md:p-1 rounded transition-all ${genderMode === "MALE" ? "bg-blue-500 text-white shadow-lg shadow-blue-500/20" : "text-gray-400 hover:text-white hover:bg-white/5"}`}
+                title="Maschile"
+              >
+                <User size={12} className="md:w-3 md:h-3" />
+              </button>
+              <button
+                onClick={() => setGenderMode("FEMALE")}
+                className={`p-0.5 md:p-1 rounded transition-all ${genderMode === "FEMALE" ? "bg-pink-500 text-white shadow-lg shadow-pink-500/20" : "text-gray-400 hover:text-white hover:bg-white/5"}`}
+                title="Femminile"
+              >
+                <User size={12} className="md:w-3 md:h-3" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {showDetails && (
+          <div className="flex items-center gap-2 md:gap-3 bg-black/20 border border-white/10 px-2 md:px-2.5 py-1 md:py-1.5 rounded-lg">
+            <span className="text-[9px] md:text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Colore sfondo</span>
             <input
               type="color"
               value={bgColor}
               onChange={(e) => setBgColor(e.target.value)}
-              className="w-7 h-5 md:w-8 md:h-6 p-0 border border-white/20 rounded cursor-pointer bg-transparent"
+              className="w-5 h-4 md:w-6 md:h-4.5 p-0 border border-white/20 rounded cursor-pointer bg-transparent"
               title="Scegli colore di sfondo"
             />
             <button
               onClick={() => setBgColor("#1a1a1a")}
-              className="text-[9px] md:text-[10px] px-1.5 md:px-2 py-0.5 md:py-1 rounded border border-white/10 hover:bg-white/10 tap-target"
+              className="text-[8px] md:text-[9px] px-1 md:px-1.5 py-0.5 rounded border border-white/10 hover:bg-white/10 tap-target"
               title="Reset"
             >
               Reset
@@ -709,12 +747,12 @@ export function Wardrobe() {
         )}
 
         {showDetails && (
-          <div className="flex gap-1.5 md:gap-2 justify-center py-1.5 md:py-2 bg-black/20 px-3 md:px-4 rounded-full border border-white/5">
+          <div className="flex gap-1 md:gap-1.5 justify-center py-1 md:py-1.5 bg-black/20 px-2 md:px-3 rounded-full border border-white/5">
             {SKIN_TONES.map((tone) => (
               <button
                 key={tone.id}
                 onClick={() => setActiveSkinId(tone.id)}
-                className={`w-5 h-5 md:w-6 md:h-6 rounded-full border-2 transition-all hover:scale-110 tap-target ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_10px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
+                className={`w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border-[1.5px] transition-all hover:scale-110 tap-target ${activeSkinId === tone.id ? "border-white scale-110 shadow-[0_0_8px_rgba(255,255,255,0.3)]" : "border-transparent opacity-80"
                   }`}
                 style={{ backgroundColor: tone.color }}
                 title={tone.id}
@@ -729,9 +767,9 @@ export function Wardrobe() {
         {showDetails && !isEmpty && (
           <div className="w-full">
             <h4 className="text-[10px] md:text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 md:mb-3">Equipaggiati ({Object.keys(equippedItems).length})</h4>
-            <div className="grid grid-cols-4 md:grid-cols-5 gap-1.5 md:gap-2 max-h-32 md:max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="grid grid-cols-6 md:grid-cols-7 gap-1 md:gap-1.5 max-h-32 md:max-h-40 overflow-y-auto pr-1 custom-scrollbar">
               {Object.entries(equippedItems).map(([type, item]) => {
-                if (type === "SKIN") return null;
+                if (type === "SKIN" || type === "GRAVESTONE") return null;
 
                 const isSelected = isAdminMode && selectedCategory === type;
 

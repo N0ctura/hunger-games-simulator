@@ -14,7 +14,7 @@ import { getDensity } from "@/lib/utils";
 
 const CATEGORIES: Array<WovCategory | "ALL"> = [
   "ALL", "SET", "HAIR", "HAT", "EYES", "MOUTH", "GLASSES",
-  "SHIRT", "MASK", "BACK", "FRONT", "GRAVESTONE"
+  "SHIRT", "MASK", "BACK", "FRONT"
 ];
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -28,8 +28,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   SHIRT: "👕",
   MASK: "🎭",
   BACK: "🌇",
-  FRONT: "🌆",
-  GRAVESTONE: "☠"
+  FRONT: "🌆"
 };
 
 const RARITIES: Array<WovRarity | "ALL"> = [
@@ -136,6 +135,9 @@ const RobustImage = memo(function RobustImage({
   }
 
   const urls = useMemo(() => {
+    // 0. Try Local Asset first (User request)
+    const localUrl = `/assets/items/${item.id}.png`;
+
     // 1. Trust API URL
     const apiUrls = item.imageUrl && !item.imageUrl.includes("dicebear") ? [item.imageUrl] : [];
 
@@ -147,7 +149,7 @@ const RobustImage = memo(function RobustImage({
     // 3. Add minimal fallbacks
     const fallbackUrls = CDN_FALLBACKS(item);
 
-    return [...apiUrls, ...fallbackUrls.filter(u => !apiUrls.includes(u))];
+    return [localUrl, ...apiUrls, ...fallbackUrls.filter(u => !apiUrls.includes(u))];
   }, [item]);
 
   const [idx, setIdx] = useState(0);
@@ -346,7 +348,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
   const {
     equipItem, equipSet, isEquipped, sets,
     searchTerm, selectedRarity, gridColumns: columns, sortBy,
-    recentItems, addToRecents, equippedItems
+    recentItems, addToRecents, equippedItems, genderMode
   } = useWardrobe();
 
   const [selectedCategory, setSelectedCategory] = useState<WovCategory | "ALL">("ALL");
@@ -417,6 +419,10 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
       result = items.filter(item => {
         if (selectedCategory !== "ALL" && item.type !== selectedCategory) return false;
         if (selectedRarity !== "ALL" && item.rarity !== selectedRarity) return false;
+
+        // GENDER FILTER: Show only items matching current gender mode or unisex (undefined)
+        if (item.gender && item.gender !== genderMode) return false;
+
         if (term && !(
           item.id.toLowerCase().includes(term) ||
           (item.name ?? "").toLowerCase().includes(term)
@@ -432,7 +438,7 @@ export function ItemGrid({ items, loading }: ItemGridProps) {
     }
 
     return result;
-  }, [items, sets, searchTerm, selectedCategory, selectedRarity, sortBy, itemMap]);
+  }, [items, sets, searchTerm, selectedCategory, selectedRarity, sortBy, itemMap, genderMode]);
 
   const handleEquip = useCallback((item: WovAvatarItem) => {
     // Save current item to recents if we are swapping a single item

@@ -38,6 +38,7 @@ export interface WovAvatarItem {
   costInGold?: number;
   costInGems?: number;
   type: WovCategory;
+  gender?: "MALE" | "FEMALE";
   imageUrl: string;
   name?: string; // Sometimes inferred from ID or Set
   source?: "SHOP_GOLD" | "SHOP_GEM" | "BATTLE_PASS" | "BUNDLE" | "ROSE_WHEEL" | "LOOT_BOX" | "RANKED" | "CLAN_QUEST" | "DAILY_REWARD" | "UNKNOWN";

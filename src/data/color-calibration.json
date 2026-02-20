@@ -12,11 +12,17 @@
     "green",
     "red"
   ],
+  "230": [
+    "yellow"
+  ],
   "243": [
     "white"
   ],
   "246": [
     "red"
+  ],
+  "254": [
+    "white"
   ],
   "285": [
     "red"
@@ -39,11 +45,17 @@
   "377": [
     "black"
   ],
+  "386": [
+    "orange"
+  ],
   "394": [
     "white"
   ],
   "406": [
     "black"
+  ],
+  "441": [
+    "gray"
   ],
   "458": [
     "black"
@@ -58,8 +70,14 @@
   "476": [
     "white"
   ],
+  "489": [
+    "purple"
+  ],
   "517": [
     "yellow"
+  ],
+  "518": [
+    "orange"
   ],
   "554": [
     "black"
@@ -78,6 +96,9 @@
   ],
   "714": [
     "yellow"
+  ],
+  "753": [
+    "pink"
   ],
   "796": [
     "red"
@@ -100,6 +121,9 @@
   ],
   "901": [
     "black"
+  ],
+  "954": [
+    "brown"
   ],
   "--Y": [
     "white"
@@ -27550,5 +27574,9446 @@
   ],
   "zyz": [
     "black"
+  ],
+  "db-": [
+    "brown"
+  ],
+  "n-4": [
+    "brown"
+  ],
+  "FXw": [
+    "brown"
+  ],
+  "T4J": [
+    "brown"
+  ],
+  "FNR": [
+    "brown"
+  ],
+  "Cyv": [
+    "purple"
+  ],
+  "leE": [
+    "purple"
+  ],
+  "TzG": [
+    "purple"
+  ],
+  "FTP": [
+    "purple"
+  ],
+  "ALv": [
+    "purple"
+  ],
+  "a_2": [
+    "purple"
+  ],
+  "FPd": [
+    "purple"
+  ],
+  "ZQE": [
+    "purple"
+  ],
+  "ydY": [
+    "purple"
+  ],
+  "JKY": [
+    "purple"
+  ],
+  "CVx": [
+    "pink"
+  ],
+  "4Q4": [
+    "pink"
+  ],
+  "yMw": [
+    "pink"
+  ],
+  "_rd": [
+    "pink"
+  ],
+  "o9K": [
+    "pink"
+  ],
+  "dmf": [
+    "brown"
+  ],
+  "Y4n": [
+    "brown"
+  ],
+  "piq": [
+    "brown"
+  ],
+  "Uhc": [
+    "brown"
+  ],
+  "Iph": [
+    "brown"
+  ],
+  "_c-": [
+    "brown"
+  ],
+  "Qg_": [
+    "brown"
+  ],
+  "p-g": [
+    "brown"
+  ],
+  "heq": [
+    "brown"
+  ],
+  "54B": [
+    "blue"
+  ],
+  "xlf": [
+    "blue"
+  ],
+  "Eyf": [
+    "blue"
+  ],
+  "o7L": [
+    "blue"
+  ],
+  "Mwn": [
+    "blue"
+  ],
+  "cE0": [
+    "blue"
+  ],
+  "r63": [
+    "blue"
+  ],
+  "Cv-": [
+    "blue"
+  ],
+  "brw": [
+    "blue"
+  ],
+  "cYt": [
+    "blue"
+  ],
+  "n1N": [
+    "blue"
+  ],
+  "cUZ": [
+    "blue"
+  ],
+  "Rho": [
+    "blue"
+  ],
+  "fOw": [
+    "blue"
+  ],
+  "Zl6": [
+    "multicolor"
+  ],
+  "Yaw": [
+    "multicolor"
+  ],
+  "mD6": [
+    "multicolor"
+  ],
+  "2Sm": [
+    "multicolor"
+  ],
+  "-Cy": [
+    "multicolor"
+  ],
+  "VOC": [
+    "multicolor"
+  ],
+  "AHR": [
+    "multicolor"
+  ],
+  "dbr": [
+    "multicolor"
+  ],
+  "_Xc": [
+    "multicolor"
+  ],
+  "8Gf": [
+    "multicolor"
+  ],
+  "wKJ": [
+    "multicolor"
+  ],
+  "3eV": [
+    "multicolor"
+  ],
+  "aZH": [
+    "pink"
+  ],
+  "aha": [
+    "pink"
+  ],
+  "iFO": [
+    "pink"
+  ],
+  "tF9": [
+    "pink"
+  ],
+  "LRN": [
+    "pink"
+  ],
+  "ULv": [
+    "pink"
+  ],
+  "tOh": [
+    "multicolor"
+  ],
+  "1j0": [
+    "multicolor"
+  ],
+  "8m4": [
+    "multicolor"
+  ],
+  "lpo": [
+    "multicolor"
+  ],
+  "j6W": [
+    "multicolor"
+  ],
+  "eQO": [
+    "multicolor"
+  ],
+  "TkM": [
+    "orange"
+  ],
+  "pY6": [
+    "orange"
+  ],
+  "a4G": [
+    "yellow"
+  ],
+  "9ho": [
+    "gray"
+  ],
+  "yn6": [
+    "gray"
+  ],
+  "-Sl": [
+    "multicolor"
+  ],
+  "xLC": [
+    "blue"
+  ],
+  "LmL": [
+    "red"
+  ],
+  "kPS": [
+    "orange"
+  ],
+  "_WI": [
+    "orange"
+  ],
+  "9mu": [
+    "multicolor"
+  ],
+  "-oj": [
+    "multicolor"
+  ],
+  "WFc": [
+    "blue"
+  ],
+  "Wkn": [
+    "blue"
+  ],
+  "w1D": [
+    "blue"
+  ],
+  "cs6": [
+    "blue"
+  ],
+  "29L": [
+    "white"
+  ],
+  "JfO": [
+    "white"
+  ],
+  "HyK": [
+    "yellow"
+  ],
+  "NyW": [
+    "yellow"
+  ],
+  "S0g": [
+    "yellow"
+  ],
+  "tMo": [
+    "orange"
+  ],
+  "RiB": [
+    "orange"
+  ],
+  "hHN": [
+    "orange"
+  ],
+  "4oi": [
+    "brown"
+  ],
+  "47K": [
+    "brown"
+  ],
+  "Fnd": [
+    "white"
+  ],
+  "E0H": [
+    "white"
+  ],
+  "FuJ": [
+    "pink"
+  ],
+  "MkN": [
+    "brown"
+  ],
+  "6vQ": [
+    "brown"
+  ],
+  "YD-": [
+    "multicolor"
+  ],
+  "t3h": [
+    "black"
+  ],
+  "myF": [
+    "black"
+  ],
+  "kCj": [
+    "black"
+  ],
+  "DOa": [
+    "red"
+  ],
+  "hHX": [
+    "blue"
+  ],
+  "9kN": [
+    "blue"
+  ],
+  "dO2": [
+    "blue"
+  ],
+  "zRT": [
+    "blue"
+  ],
+  "uAg": [
+    "blue"
+  ],
+  "A5l": [
+    "blue"
+  ],
+  "uaI": [
+    "multicolor"
+  ],
+  "WZe": [
+    "multicolor"
+  ],
+  "JbY": [
+    "brown"
+  ],
+  "kp2": [
+    "blue"
+  ],
+  "A0L": [
+    "blue"
+  ],
+  "hkW": [
+    "multicolor"
+  ],
+  "KAl": [
+    "multicolor"
+  ],
+  "bdu": [
+    "pink"
+  ],
+  "7rO": [
+    "pink"
+  ],
+  "qtN": [
+    "pink"
+  ],
+  "Up1": [
+    "pink"
+  ],
+  "2HF": [
+    "orange"
+  ],
+  "EkN": [
+    "orange"
+  ],
+  "74F": [
+    "brown"
+  ],
+  "GwS": [
+    "brown"
+  ],
+  "C5F": [
+    "brown"
+  ],
+  "K9z": [
+    "brown"
+  ],
+  "vvd": [
+    "brown"
+  ],
+  "O96": [
+    "orange"
+  ],
+  "93U": [
+    "orange"
+  ],
+  "8KL": [
+    "orange"
+  ],
+  "23J": [
+    "yellow"
+  ],
+  "jEM": [
+    "gray"
+  ],
+  "Pg2": [
+    "gray"
+  ],
+  "gtr": [
+    "gray"
+  ],
+  "A8Q": [
+    "yellow"
+  ],
+  "Tz2": [
+    "yellow"
+  ],
+  "rFW": [
+    "orange"
+  ],
+  "hVp": [
+    "white"
+  ],
+  "TnQ": [
+    "pink"
+  ],
+  "6AG": [
+    "brown"
+  ],
+  "tHC": [
+    "brown"
+  ],
+  "Rws": [
+    "yellow"
+  ],
+  "jCm": [
+    "red"
+  ],
+  "Owl": [
+    "brown"
+  ],
+  "_zq": [
+    "brown"
+  ],
+  "sMq": [
+    "yellow"
+  ],
+  "21g": [
+    "pink"
+  ],
+  "eW7": [
+    "purple"
+  ],
+  "W2s": [
+    "purple"
+  ],
+  "PsD": [
+    "purple"
+  ],
+  "Zqf": [
+    "brown"
+  ],
+  "W-D": [
+    "multicolor"
+  ],
+  "iha": [
+    "multicolor"
+  ],
+  "SYu": [
+    "multicolor"
+  ],
+  "0kv": [
+    "multicolor"
+  ],
+  "2Ie": [
+    "multicolor"
+  ],
+  "BHP": [
+    "multicolor"
+  ],
+  "O43": [
+    "multicolor"
+  ],
+  "mXr": [
+    "multicolor"
+  ],
+  "QwP": [
+    "multicolor"
+  ],
+  "Lh3": [
+    "multicolor"
+  ],
+  "8Di": [
+    "multicolor"
+  ],
+  "rwW": [
+    "multicolor"
+  ],
+  "nVG": [
+    "multicolor"
+  ],
+  "C-6": [
+    "multicolor"
+  ],
+  "Y9E": [
+    "multicolor"
+  ],
+  "a4E": [
+    "multicolor"
+  ],
+  "XLi": [
+    "multicolor"
+  ],
+  "hqP": [
+    "multicolor"
+  ],
+  "5Qe": [
+    "multicolor"
+  ],
+  "QLK": [
+    "multicolor"
+  ],
+  "-vr": [
+    "multicolor"
+  ],
+  "Ks2": [
+    "multicolor"
+  ],
+  "sk-": [
+    "multicolor"
+  ],
+  "dw0": [
+    "multicolor"
+  ],
+  "_zw": [
+    "multicolor"
+  ],
+  "Lym": [
+    "multicolor"
+  ],
+  "D9D": [
+    "multicolor"
+  ],
+  "-VI": [
+    "multicolor"
+  ],
+  "0C1": [
+    "multicolor"
+  ],
+  "JLh": [
+    "multicolor"
+  ],
+  "udH": [
+    "multicolor"
+  ],
+  "m0B": [
+    "multicolor"
+  ],
+  "7G_": [
+    "multicolor"
+  ],
+  "BoQ": [
+    "multicolor"
+  ],
+  "7ss": [
+    "multicolor"
+  ],
+  "wfV": [
+    "multicolor"
+  ],
+  "0cw": [
+    "brown"
+  ],
+  "SQs": [
+    "gray"
+  ],
+  "fxq": [
+    "gray"
+  ],
+  "OsF": [
+    "pink"
+  ],
+  "okl": [
+    "purple"
+  ],
+  "X_5": [
+    "purple"
+  ],
+  "1-T": [
+    "purple"
+  ],
+  "c23": [
+    "purple"
+  ],
+  "iHm": [
+    "gray"
+  ],
+  "C5-": [
+    "gray"
+  ],
+  "BF1": [
+    "gray"
+  ],
+  "BkW": [
+    "gray"
+  ],
+  "kn-": [
+    "yellow"
+  ],
+  "7Uc": [
+    "white"
+  ],
+  "9e_": [
+    "brown"
+  ],
+  "ntI": [
+    "brown"
+  ],
+  "zNx": [
+    "multicolor"
+  ],
+  "v40": [
+    "orange"
+  ],
+  "CdM": [
+    "orange"
+  ],
+  "9Mj": [
+    "orange"
+  ],
+  "N9w": [
+    "orange"
+  ],
+  "GsT": [
+    "yellow"
+  ],
+  "pm-": [
+    "yellow"
+  ],
+  "35b": [
+    "yellow"
+  ],
+  "fcX": [
+    "red"
+  ],
+  "hnt": [
+    "red"
+  ],
+  "3GT": [
+    "white"
+  ],
+  "tWK": [
+    "gray"
+  ],
+  "feX": [
+    "gray"
+  ],
+  "d6O": [
+    "gray"
+  ],
+  "4ar": [
+    "gray"
+  ],
+  "Dwh": [
+    "gray"
+  ],
+  "3ew": [
+    "brown"
+  ],
+  "jzB": [
+    "white"
+  ],
+  "-8I": [
+    "blue"
+  ],
+  "AIo": [
+    "blue"
+  ],
+  "8Je": [
+    "blue"
+  ],
+  "oRv": [
+    "white"
+  ],
+  "PVr": [
+    "orange"
+  ],
+  "fNp": [
+    "orange"
+  ],
+  "f8F": [
+    "orange"
+  ],
+  "Ei1": [
+    "orange"
+  ],
+  "p18": [
+    "orange"
+  ],
+  "2AK": [
+    "orange"
+  ],
+  "0Y5": [
+    "orange"
+  ],
+  "Tl8": [
+    "orange"
+  ],
+  "AP8": [
+    "brown"
+  ],
+  "iQi": [
+    "brown"
+  ],
+  "nd9": [
+    "brown"
+  ],
+  "LnD": [
+    "brown"
+  ],
+  "LM-": [
+    "brown"
+  ],
+  "WyJ": [
+    "brown"
+  ],
+  "RmZ": [
+    "brown"
+  ],
+  "xc3": [
+    "brown"
+  ],
+  "jKv": [
+    "yellow"
+  ],
+  "FvN": [
+    "multicolor"
+  ],
+  "d9f": [
+    "brown"
+  ],
+  "qnV": [
+    "brown"
+  ],
+  "dXb": [
+    "brown"
+  ],
+  "LBx": [
+    "brown"
+  ],
+  "FI9": [
+    "yellow"
+  ],
+  "aHG": [
+    "brown"
+  ],
+  "guc": [
+    "yellow"
+  ],
+  "Lvx": [
+    "blue"
+  ],
+  "-LI": [
+    "orange"
+  ],
+  "mFd": [
+    "pink"
+  ],
+  "Kti": [
+    "pink"
+  ],
+  "ghV": [
+    "pink"
+  ],
+  "eiH": [
+    "pink"
+  ],
+  "ceP": [
+    "pink"
+  ],
+  "yBs": [
+    "pink"
+  ],
+  "BbV": [
+    "pink"
+  ],
+  "G8e": [
+    "pink"
+  ],
+  "no1": [
+    "purple"
+  ],
+  "n4z": [
+    "purple"
+  ],
+  "34l": [
+    "pink"
+  ],
+  "jzu": [
+    "pink"
+  ],
+  "DhH": [
+    "pink"
+  ],
+  "OZi": [
+    "pink"
+  ],
+  "gJl": [
+    "pink"
+  ],
+  "ASA": [
+    "pink"
+  ],
+  "aRp": [
+    "pink"
+  ],
+  "_t1": [
+    "pink"
+  ],
+  "Cii": [
+    "pink"
+  ],
+  "AIt": [
+    "pink"
+  ],
+  "Ycq": [
+    "pink"
+  ],
+  "XA3": [
+    "pink"
+  ],
+  "J9w": [
+    "pink"
+  ],
+  "Sge": [
+    "pink"
+  ],
+  "Bth": [
+    "pink"
+  ],
+  "vwH": [
+    "pink"
+  ],
+  "ezD": [
+    "pink"
+  ],
+  "gsa": [
+    "pink"
+  ],
+  "nxP": [
+    "pink"
+  ],
+  "ekV": [
+    "pink"
+  ],
+  "nA5": [
+    "pink"
+  ],
+  "TMr": [
+    "pink"
+  ],
+  "juB": [
+    "white"
+  ],
+  "Y11": [
+    "white"
+  ],
+  "jH3": [
+    "pink"
+  ],
+  "rH-": [
+    "black"
+  ],
+  "k1m": [
+    "black"
+  ],
+  "a4e": [
+    "gray"
+  ],
+  "5EV": [
+    "gray"
+  ],
+  "sIC": [
+    "brown"
+  ],
+  "WpC": [
+    "brown"
+  ],
+  "q_0": [
+    "brown"
+  ],
+  "MzK": [
+    "brown"
+  ],
+  "Ztr": [
+    "brown"
+  ],
+  "P1e": [
+    "brown"
+  ],
+  "ZsO": [
+    "brown"
+  ],
+  "OaX": [
+    "brown"
+  ],
+  "LNu": [
+    "brown"
+  ],
+  "qmV": [
+    "multicolor"
+  ],
+  "QsZ": [
+    "red"
+  ],
+  "7Xw": [
+    "red"
+  ],
+  "uZP": [
+    "red"
+  ],
+  "M39": [
+    "red"
+  ],
+  "wvy": [
+    "purple"
+  ],
+  "ni3": [
+    "purple"
+  ],
+  "84S": [
+    "purple"
+  ],
+  "kin": [
+    "purple"
+  ],
+  "j1A": [
+    "purple"
+  ],
+  "wzT": [
+    "purple"
+  ],
+  "TpP": [
+    "pink"
+  ],
+  "22H": [
+    "pink"
+  ],
+  "4yW": [
+    "brown"
+  ],
+  "rcb": [
+    "brown"
+  ],
+  "k8r": [
+    "brown"
+  ],
+  "rsO": [
+    "brown"
+  ],
+  "yFq": [
+    "brown"
+  ],
+  "j2I": [
+    "brown"
+  ],
+  "XTI": [
+    "purple"
+  ],
+  "F8L": [
+    "purple"
+  ],
+  "P8_": [
+    "purple"
+  ],
+  "Pxb": [
+    "purple"
+  ],
+  "q0o": [
+    "purple"
+  ],
+  "PTH": [
+    "purple"
+  ],
+  "XRb": [
+    "pink"
+  ],
+  "WKT": [
+    "pink"
+  ],
+  "cVh": [
+    "pink"
+  ],
+  "HzJ": [
+    "pink"
+  ],
+  "iez": [
+    "pink"
+  ],
+  "Mac": [
+    "pink"
+  ],
+  "XHc": [
+    "pink"
+  ],
+  "SqU": [
+    "pink"
+  ],
+  "8FW": [
+    "brown"
+  ],
+  "sEA": [
+    "pink"
+  ],
+  "aUt": [
+    "pink"
+  ],
+  "75T": [
+    "pink"
+  ],
+  "Nee": [
+    "pink"
+  ],
+  "6e3": [
+    "orange"
+  ],
+  "Flf": [
+    "yellow"
+  ],
+  "IXU": [
+    "yellow"
+  ],
+  "D25": [
+    "purple"
+  ],
+  "L8Y": [
+    "blue"
+  ],
+  "L9S": [
+    "blue"
+  ],
+  "swP": [
+    "blue"
+  ],
+  "zdX": [
+    "blue"
+  ],
+  "PN2": [
+    "pink"
+  ],
+  "gxA": [
+    "pink"
+  ],
+  "kk7": [
+    "pink"
+  ],
+  "aWr": [
+    "pink"
+  ],
+  "Nry": [
+    "gray"
+  ],
+  "xIN": [
+    "gray"
+  ],
+  "SZV": [
+    "gray"
+  ],
+  "jux": [
+    "pink"
+  ],
+  "Nzu": [
+    "pink"
+  ],
+  "qXk": [
+    "pink"
+  ],
+  "vTS": [
+    "pink"
+  ],
+  "t9k": [
+    "pink"
+  ],
+  "vqX": [
+    "pink"
+  ],
+  "XIG": [
+    "purple"
+  ],
+  "CuT": [
+    "purple"
+  ],
+  "fUv": [
+    "purple"
+  ],
+  "ttx": [
+    "purple"
+  ],
+  "X_K": [
+    "purple"
+  ],
+  "g9e": [
+    "purple"
+  ],
+  "Lgy": [
+    "blue"
+  ],
+  "OjF": [
+    "blue"
+  ],
+  "kpT": [
+    "blue"
+  ],
+  "pfC": [
+    "blue"
+  ],
+  "LC_": [
+    "blue"
+  ],
+  "miM": [
+    "blue"
+  ],
+  "O_4": [
+    "blue"
+  ],
+  "vVN": [
+    "blue"
+  ],
+  "LXv": [
+    "blue"
+  ],
+  "oZk": [
+    "blue"
+  ],
+  "7Vd": [
+    "blue"
+  ],
+  "OCo": [
+    "blue"
+  ],
+  "SSP": [
+    "blue"
+  ],
+  "0Lc": [
+    "blue"
+  ],
+  "MBi": [
+    "purple"
+  ],
+  "SGc": [
+    "blue"
+  ],
+  "ahk": [
+    "blue"
+  ],
+  "x4w": [
+    "blue"
+  ],
+  "tIm": [
+    "blue"
+  ],
+  "XZG": [
+    "blue"
+  ],
+  "ulm": [
+    "blue"
+  ],
+  "-1d": [
+    "white"
+  ],
+  "CKC": [
+    "white"
+  ],
+  "STb": [
+    "white"
+  ],
+  "8_K": [
+    "pink"
+  ],
+  "jQ_": [
+    "pink"
+  ],
+  "33q": [
+    "pink"
+  ],
+  "77D": [
+    "pink"
+  ],
+  "14W": [
+    "pink"
+  ],
+  "mOj": [
+    "pink"
+  ],
+  "k-d": [
+    "purple"
+  ],
+  "Ibs": [
+    "pink"
+  ],
+  "zdH": [
+    "pink"
+  ],
+  "CXX": [
+    "pink"
+  ],
+  "NPX": [
+    "orange"
+  ],
+  "nGU": [
+    "orange"
+  ],
+  "3sj": [
+    "orange"
+  ],
+  "6N7": [
+    "brown"
+  ],
+  "yfw": [
+    "pink"
+  ],
+  "zWN": [
+    "pink"
+  ],
+  "ewY": [
+    "pink"
+  ],
+  "Smf": [
+    "pink"
+  ],
+  "l_d": [
+    "pink"
+  ],
+  "TKh": [
+    "brown"
+  ],
+  "q9x": [
+    "brown"
+  ],
+  "o3y": [
+    "orange"
+  ],
+  "GmF": [
+    "orange"
+  ],
+  "wXN": [
+    "orange"
+  ],
+  "Sum": [
+    "orange"
+  ],
+  "30e": [
+    "orange"
+  ],
+  "W68": [
+    "yellow"
+  ],
+  "Yvf": [
+    "yellow"
+  ],
+  "9hd": [
+    "yellow"
+  ],
+  "dwD": [
+    "yellow"
+  ],
+  "MbZ": [
+    "yellow"
+  ],
+  "70F": [
+    "yellow"
+  ],
+  "QxL": [
+    "yellow"
+  ],
+  "AvY": [
+    "orange"
+  ],
+  "iMV": [
+    "orange"
+  ],
+  "JWb": [
+    "orange"
+  ],
+  "7dt": [
+    "orange"
+  ],
+  "D4-": [
+    "orange"
+  ],
+  "rsu": [
+    "blue"
+  ],
+  "Gwd": [
+    "blue"
+  ],
+  "r78": [
+    "blue"
+  ],
+  "bHT": [
+    "orange"
+  ],
+  "C_Y": [
+    "orange"
+  ],
+  "SJK": [
+    "brown"
+  ],
+  "cye": [
+    "white"
+  ],
+  "9pz": [
+    "black"
+  ],
+  "jbF": [
+    "black"
+  ],
+  "LqB": [
+    "black"
+  ],
+  "0__": [
+    "black"
+  ],
+  "ntL": [
+    "white"
+  ],
+  "vR3": [
+    "white"
+  ],
+  "Lyh": [
+    "white"
+  ],
+  "U3f": [
+    "white"
+  ],
+  "oue": [
+    "white"
+  ],
+  "MBS": [
+    "white"
+  ],
+  "TUq": [
+    "white"
+  ],
+  "Pst": [
+    "black"
+  ],
+  "SFD": [
+    "black"
+  ],
+  "WDh": [
+    "black"
+  ],
+  "aq_": [
+    "blue"
+  ],
+  "rqH": [
+    "blue"
+  ],
+  "9U7": [
+    "blue"
+  ],
+  "nBM": [
+    "blue"
+  ],
+  "yG0": [
+    "blue"
+  ],
+  "CeX": [
+    "blue"
+  ],
+  "9cJ": [
+    "blue"
+  ],
+  "pVe": [
+    "pink"
+  ],
+  "teE": [
+    "pink"
+  ],
+  "lXY": [
+    "pink"
+  ],
+  "9JG": [
+    "pink"
+  ],
+  "IHj": [
+    "pink"
+  ],
+  "-70": [
+    "pink"
+  ],
+  "fee": [
+    "brown"
+  ],
+  "0pI": [
+    "pink"
+  ],
+  "cVE": [
+    "red"
+  ],
+  "wJs": [
+    "red"
+  ],
+  "vq2": [
+    "red"
+  ],
+  "prS": [
+    "red"
+  ],
+  "Cuc": [
+    "brown"
+  ],
+  "uuN": [
+    "blue"
+  ],
+  "XQ3": [
+    "blue"
+  ],
+  "2QC": [
+    "blue"
+  ],
+  "sK-": [
+    "blue"
+  ],
+  "TyH": [
+    "blue"
+  ],
+  "9uk": [
+    "blue"
+  ],
+  "3Mm": [
+    "purple"
+  ],
+  "PN4": [
+    "blue"
+  ],
+  "TKQ": [
+    "pink"
+  ],
+  "Xev": [
+    "pink"
+  ],
+  "vU5": [
+    "pink"
+  ],
+  "6uZ": [
+    "pink"
+  ],
+  "sLw": [
+    "pink"
+  ],
+  "N7q": [
+    "gray"
+  ],
+  "4Jr": [
+    "brown"
+  ],
+  "XXZ": [
+    "brown"
+  ],
+  "NT8": [
+    "brown"
+  ],
+  "Kv8": [
+    "brown"
+  ],
+  "_x3": [
+    "brown"
+  ],
+  "Wgo": [
+    "brown"
+  ],
+  "AZF": [
+    "yellow"
+  ],
+  "1Jo": [
+    "yellow"
+  ],
+  "Wjp": [
+    "yellow"
+  ],
+  "Rt2": [
+    "yellow"
+  ],
+  "GT3": [
+    "yellow"
+  ],
+  "c_b": [
+    "orange"
+  ],
+  "s2A": [
+    "orange"
+  ],
+  "AT-": [
+    "brown"
+  ],
+  "rLy": [
+    "brown"
+  ],
+  "f_S": [
+    "brown"
+  ],
+  "axE": [
+    "brown"
+  ],
+  "I7c": [
+    "brown"
+  ],
+  "X3q": [
+    "brown"
+  ],
+  "Age": [
+    "brown"
+  ],
+  "wsO": [
+    "brown"
+  ],
+  "ahN": [
+    "brown"
+  ],
+  "XEJ": [
+    "brown"
+  ],
+  "qzL": [
+    "brown"
+  ],
+  "mwo": [
+    "brown"
+  ],
+  "OTB": [
+    "yellow"
+  ],
+  "s89": [
+    "yellow"
+  ],
+  "hj4": [
+    "orange"
+  ],
+  "yGK": [
+    "orange"
+  ],
+  "WQd": [
+    "brown"
+  ],
+  "OIb": [
+    "brown"
+  ],
+  "J-k": [
+    "brown"
+  ],
+  "gCb": [
+    "pink"
+  ],
+  "qZp": [
+    "pink"
+  ],
+  "bmU": [
+    "purple"
+  ],
+  "nM0": [
+    "purple"
+  ],
+  "WNY": [
+    "purple"
+  ],
+  "sV8": [
+    "pink"
+  ],
+  "6wV": [
+    "pink"
+  ],
+  "dkh": [
+    "brown"
+  ],
+  "qPM": [
+    "brown"
+  ],
+  "Tas": [
+    "brown"
+  ],
+  "oWY": [
+    "brown"
+  ],
+  "0iN": [
+    "brown"
+  ],
+  "BwD": [
+    "brown"
+  ],
+  "wos": [
+    "orange"
+  ],
+  "5JK": [
+    "purple"
+  ],
+  "5z4": [
+    "pink"
+  ],
+  "S3O": [
+    "pink"
+  ],
+  "I3X": [
+    "pink"
+  ],
+  "4bt": [
+    "pink"
+  ],
+  "p08": [
+    "pink"
+  ],
+  "-Uc": [
+    "pink"
+  ],
+  "mfL": [
+    "purple"
+  ],
+  "4qI": [
+    "purple"
+  ],
+  "vWj": [
+    "purple"
+  ],
+  "sDS": [
+    "purple"
+  ],
+  "9XP": [
+    "pink"
+  ],
+  "s4q": [
+    "red"
+  ],
+  "TDP": [
+    "red"
+  ],
+  "eZT": [
+    "red"
+  ],
+  "HLq": [
+    "pink"
+  ],
+  "Bat": [
+    "pink"
+  ],
+  "NQ6": [
+    "pink"
+  ],
+  "5o6": [
+    "pink"
+  ],
+  "cCn": [
+    "white"
+  ],
+  "UxG": [
+    "brown"
+  ],
+  "wMa": [
+    "brown"
+  ],
+  "11a": [
+    "brown"
+  ],
+  "vzN": [
+    "brown"
+  ],
+  "rdf": [
+    "white"
+  ],
+  "3ZC": [
+    "white"
+  ],
+  "5iI": [
+    "white"
+  ],
+  "TP_": [
+    "white"
+  ],
+  "Wym": [
+    "orange"
+  ],
+  "PY_": [
+    "orange"
+  ],
+  "HKs": [
+    "orange"
+  ],
+  "6Ic": [
+    "orange"
+  ],
+  "1Hp": [
+    "brown"
+  ],
+  "giE": [
+    "brown"
+  ],
+  "2JV": [
+    "red"
+  ],
+  "bBl": [
+    "brown"
+  ],
+  "Wcb": [
+    "brown"
+  ],
+  "n0h": [
+    "brown"
+  ],
+  "hZo": [
+    "yellow"
+  ],
+  "eXR": [
+    "brown"
+  ],
+  "6FA": [
+    "brown"
+  ],
+  "H15": [
+    "brown"
+  ],
+  "RMW": [
+    "blue"
+  ],
+  "ecc": [
+    "blue"
+  ],
+  "7e1": [
+    "blue"
+  ],
+  "h_t": [
+    "blue"
+  ],
+  "d-j": [
+    "brown"
+  ],
+  "Aba": [
+    "brown"
+  ],
+  "KqV": [
+    "blue"
+  ],
+  "yK5": [
+    "pink"
+  ],
+  "4nm": [
+    "pink"
+  ],
+  "VKf": [
+    "brown"
+  ],
+  "iHT": [
+    "brown"
+  ],
+  "oaH": [
+    "brown"
+  ],
+  "mdM": [
+    "brown"
+  ],
+  "4_T": [
+    "brown"
+  ],
+  "Go0": [
+    "brown"
+  ],
+  "iBP": [
+    "white"
+  ],
+  "LNe": [
+    "white"
+  ],
+  "s-h": [
+    "white"
+  ],
+  "Ey8": [
+    "gray"
+  ],
+  "l3s": [
+    "gray"
+  ],
+  "xNc": [
+    "gray"
+  ],
+  "IKb": [
+    "gray"
+  ],
+  "Ayw": [
+    "red"
+  ],
+  "oe2": [
+    "red"
+  ],
+  "qJI": [
+    "pink"
+  ],
+  "Wqt": [
+    "purple"
+  ],
+  "-Cj": [
+    "purple"
+  ],
+  "v3Y": [
+    "purple"
+  ],
+  "xMb": [
+    "blue"
+  ],
+  "lmR": [
+    "purple"
+  ],
+  "SfD": [
+    "white"
+  ],
+  "0lf": [
+    "white"
+  ],
+  "Z0t": [
+    "blue"
+  ],
+  "1rk": [
+    "brown"
+  ],
+  "s8S": [
+    "multicolor"
+  ],
+  "sv_": [
+    "pink"
+  ],
+  "oax": [
+    "pink"
+  ],
+  "zjM": [
+    "pink"
+  ],
+  "Dfy": [
+    "blue"
+  ],
+  "LKx": [
+    "blue"
+  ],
+  "Yfu": [
+    "gray"
+  ],
+  "XYP": [
+    "gray"
+  ],
+  "ZW-": [
+    "gray"
+  ],
+  "JWz": [
+    "gray"
+  ],
+  "IrL": [
+    "white"
+  ],
+  "BkA": [
+    "gray"
+  ],
+  "gjV": [
+    "blue"
+  ],
+  "ye0": [
+    "blue"
+  ],
+  "3gK": [
+    "pink"
+  ],
+  "L-T": [
+    "pink"
+  ],
+  "tD0": [
+    "pink"
+  ],
+  "mH4": [
+    "pink"
+  ],
+  "-S1": [
+    "pink"
+  ],
+  "bIl": [
+    "pink"
+  ],
+  "AiU": [
+    "pink"
+  ],
+  "_0z": [
+    "pink"
+  ],
+  "O1y": [
+    "brown"
+  ],
+  "Zk-": [
+    "brown"
+  ],
+  "wMU": [
+    "brown"
+  ],
+  "lob": [
+    "brown"
+  ],
+  "PCT": [
+    "gray"
+  ],
+  "zbq": [
+    "blue"
+  ],
+  "14p": [
+    "blue"
+  ],
+  "jEi": [
+    "blue"
+  ],
+  "JZw": [
+    "multicolor"
+  ],
+  "xOs": [
+    "multicolor"
+  ],
+  "xKw": [
+    "pink"
+  ],
+  "k7t": [
+    "pink"
+  ],
+  "bbU": [
+    "purple"
+  ],
+  "nfb": [
+    "purple"
+  ],
+  "JmD": [
+    "purple"
+  ],
+  "iL0": [
+    "black"
+  ],
+  "MNA": [
+    "black"
+  ],
+  "e0d": [
+    "black"
+  ],
+  "xZX": [
+    "black"
+  ],
+  "tHO": [
+    "black"
+  ],
+  "fyi": [
+    "pink"
+  ],
+  "I5t": [
+    "pink"
+  ],
+  "NpI": [
+    "pink"
+  ],
+  "p80": [
+    "blue"
+  ],
+  "iOb": [
+    "pink"
+  ],
+  "0yR": [
+    "pink"
+  ],
+  "rhY": [
+    "pink"
+  ],
+  "f8J": [
+    "pink"
+  ],
+  "f06": [
+    "pink"
+  ],
+  "N1G": [
+    "pink"
+  ],
+  "Jqz": [
+    "brown"
+  ],
+  "18H": [
+    "white"
+  ],
+  "Pd-": [
+    "white"
+  ],
+  "4ay": [
+    "white"
+  ],
+  "sVL": [
+    "blue"
+  ],
+  "HXq": [
+    "blue"
+  ],
+  "rVK": [
+    "blue"
+  ],
+  "hws": [
+    "blue"
+  ],
+  "X9v": [
+    "white"
+  ],
+  "gu7": [
+    "white"
+  ],
+  "hsb": [
+    "gray"
+  ],
+  "xwI": [
+    "gray"
+  ],
+  "clk": [
+    "red"
+  ],
+  "sCN": [
+    "black"
+  ],
+  "9Fr": [
+    "black"
+  ],
+  "aaJ": [
+    "black"
+  ],
+  "rvi": [
+    "black"
+  ],
+  "9xT": [
+    "black"
+  ],
+  "WSL": [
+    "black"
+  ],
+  "hUP": [
+    "gray"
+  ],
+  "G78": [
+    "yellow"
+  ],
+  "qlK": [
+    "yellow"
+  ],
+  "yDa": [
+    "red"
+  ],
+  "tW3": [
+    "orange"
+  ],
+  "NQO": [
+    "red"
+  ],
+  "4Up": [
+    "orange"
+  ],
+  "F7H": [
+    "orange"
+  ],
+  "4rk": [
+    "black"
+  ],
+  "bUN": [
+    "pink"
+  ],
+  "t3F": [
+    "gray"
+  ],
+  "VaN": [
+    "blue"
+  ],
+  "SVL": [
+    "blue"
+  ],
+  "tBg": [
+    "blue"
+  ],
+  "EfN": [
+    "blue"
+  ],
+  "6vo": [
+    "blue"
+  ],
+  "yhi": [
+    "blue"
+  ],
+  "Iwt": [
+    "orange"
+  ],
+  "GD2": [
+    "brown"
+  ],
+  "rGt": [
+    "brown"
+  ],
+  "CBT": [
+    "pink"
+  ],
+  "VCL": [
+    "pink"
+  ],
+  "lUx": [
+    "purple"
+  ],
+  "uHD": [
+    "purple"
+  ],
+  "rUy": [
+    "blue"
+  ],
+  "Iim": [
+    "blue"
+  ],
+  "39S": [
+    "blue"
+  ],
+  "da-": [
+    "blue"
+  ],
+  "val": [
+    "brown"
+  ],
+  "yjI": [
+    "brown"
+  ],
+  "Pr2": [
+    "brown"
+  ],
+  "AJz": [
+    "gray"
+  ],
+  "1a8": [
+    "gray"
+  ],
+  "uDI": [
+    "white"
+  ],
+  "GbE": [
+    "white"
+  ],
+  "4rj": [
+    "white"
+  ],
+  "Orn": [
+    "white"
+  ],
+  "kHw": [
+    "pink"
+  ],
+  "vXX": [
+    "pink"
+  ],
+  "1sQ": [
+    "pink"
+  ],
+  "IUI": [
+    "white"
+  ],
+  "qmb": [
+    "white"
+  ],
+  "taL": [
+    "white"
+  ],
+  "eSA": [
+    "blue"
+  ],
+  "cVr": [
+    "blue"
+  ],
+  "FNy": [
+    "blue"
+  ],
+  "reH": [
+    "blue"
+  ],
+  "Mz9": [
+    "blue"
+  ],
+  "OKv": [
+    "blue"
+  ],
+  "UHN": [
+    "blue"
+  ],
+  "Xob": [
+    "blue"
+  ],
+  "vPj": [
+    "white"
+  ],
+  "AWP": [
+    "white"
+  ],
+  "Bj3": [
+    "white"
+  ],
+  "skm": [
+    "white"
+  ],
+  "sjb": [
+    "white"
+  ],
+  "qWc": [
+    "white"
+  ],
+  "z1B": [
+    "white"
+  ],
+  "Rbu": [
+    "blue"
+  ],
+  "Gny": [
+    "brown"
+  ],
+  "Ny7": [
+    "pink"
+  ],
+  "Cnf": [
+    "purple"
+  ],
+  "YDR": [
+    "pink"
+  ],
+  "h5h": [
+    "pink"
+  ],
+  "CAn": [
+    "white"
+  ],
+  "w09": [
+    "white"
+  ],
+  "4u0": [
+    "white"
+  ],
+  "KAR": [
+    "pink"
+  ],
+  "sRk": [
+    "brown"
+  ],
+  "K9k": [
+    "black"
+  ],
+  "etI": [
+    "black"
+  ],
+  "vDj": [
+    "multicolor"
+  ],
+  "lxZ": [
+    "multicolor"
+  ],
+  "Ya7": [
+    "multicolor"
+  ],
+  "oHi": [
+    "multicolor"
+  ],
+  "P_M": [
+    "white"
+  ],
+  "07f": [
+    "white"
+  ],
+  "jcj": [
+    "white"
+  ],
+  "5UR": [
+    "white"
+  ],
+  "oQk": [
+    "white"
+  ],
+  "tbj": [
+    "white"
+  ],
+  "Va8": [
+    "orange"
+  ],
+  "yGC": [
+    "orange"
+  ],
+  "1xH": [
+    "brown"
+  ],
+  "wsM": [
+    "brown"
+  ],
+  "Pi-": [
+    "brown"
+  ],
+  "COM": [
+    "brown"
+  ],
+  "j95": [
+    "pink"
+  ],
+  "pDD": [
+    "pink"
+  ],
+  "TnY": [
+    "pink"
+  ],
+  "yTB": [
+    "pink"
+  ],
+  "xoE": [
+    "blue"
+  ],
+  "ufP": [
+    "blue"
+  ],
+  "_aG": [
+    "brown"
+  ],
+  "k5g": [
+    "multicolor"
+  ],
+  "v1I": [
+    "red"
+  ],
+  "keM": [
+    "red"
+  ],
+  "-Wg": [
+    "red"
+  ],
+  "xZs": [
+    "red"
+  ],
+  "Ouv": [
+    "white"
+  ],
+  "vP0": [
+    "white"
+  ],
+  "p-t": [
+    "white"
+  ],
+  "k53": [
+    "pink"
+  ],
+  "J1P": [
+    "pink"
+  ],
+  "AoZ": [
+    "pink"
+  ],
+  "Ce1": [
+    "pink"
+  ],
+  "B78": [
+    "pink"
+  ],
+  "LZF": [
+    "blue"
+  ],
+  "vZ9": [
+    "yellow"
+  ],
+  "MkE": [
+    "yellow"
+  ],
+  "_f6": [
+    "yellow"
+  ],
+  "V_1": [
+    "white"
+  ],
+  "y0A": [
+    "purple"
+  ],
+  "ekL": [
+    "purple"
+  ],
+  "9Cc": [
+    "orange"
+  ],
+  "Bkw": [
+    "orange"
+  ],
+  "nY6": [
+    "brown"
+  ],
+  "nec": [
+    "brown"
+  ],
+  "kw9": [
+    "pink"
+  ],
+  "fRl": [
+    "pink"
+  ],
+  "G71": [
+    "pink"
+  ],
+  "HG5": [
+    "pink"
+  ],
+  "Bkq": [
+    "white"
+  ],
+  "fKc": [
+    "white"
+  ],
+  "bkE": [
+    "white"
+  ],
+  "5dG": [
+    "white"
+  ],
+  "SwQ": [
+    "black"
+  ],
+  "7cQ": [
+    "black"
+  ],
+  "yFU": [
+    "purple"
+  ],
+  "RW0": [
+    "purple"
+  ],
+  "OyU": [
+    "purple"
+  ],
+  "m_I": [
+    "purple"
+  ],
+  "KrI": [
+    "brown"
+  ],
+  "oVJ": [
+    "pink"
+  ],
+  "ZpD": [
+    "pink"
+  ],
+  "XsO": [
+    "pink"
+  ],
+  "GIx": [
+    "brown"
+  ],
+  "vUG": [
+    "brown"
+  ],
+  "Zm5": [
+    "brown"
+  ],
+  "qZg": [
+    "brown"
+  ],
+  "xpr": [
+    "brown"
+  ],
+  "1br": [
+    "brown"
+  ],
+  "w-C": [
+    "brown"
+  ],
+  "VQ3": [
+    "pink"
+  ],
+  "YM9": [
+    "brown"
+  ],
+  "Bph": [
+    "purple"
+  ],
+  "9H9": [
+    "purple"
+  ],
+  "ERP": [
+    "purple"
+  ],
+  "sno": [
+    "pink"
+  ],
+  "ldX": [
+    "pink"
+  ],
+  "sLS": [
+    "pink"
+  ],
+  "yiI": [
+    "blue"
+  ],
+  "UxR": [
+    "brown"
+  ],
+  "AfS": [
+    "brown"
+  ],
+  "9jm": [
+    "brown"
+  ],
+  "cE_": [
+    "orange"
+  ],
+  "J-h": [
+    "orange"
+  ],
+  "Mfi": [
+    "orange"
+  ],
+  "2gs": [
+    "orange"
+  ],
+  "Ta9": [
+    "orange"
+  ],
+  "_KZ": [
+    "brown"
+  ],
+  "mvq": [
+    "brown"
+  ],
+  "GDt": [
+    "brown"
+  ],
+  "vRG": [
+    "blue"
+  ],
+  "I5n": [
+    "blue"
+  ],
+  "efp": [
+    "blue"
+  ],
+  "XTb": [
+    "blue"
+  ],
+  "S6X": [
+    "blue"
+  ],
+  "t8Q": [
+    "blue"
+  ],
+  "6ll": [
+    "blue"
+  ],
+  "Xcz": [
+    "blue"
+  ],
+  "QgV": [
+    "blue"
+  ],
+  "8Fk": [
+    "blue"
+  ],
+  "__1": [
+    "blue"
+  ],
+  "sHO": [
+    "blue"
+  ],
+  "Ho7": [
+    "blue"
+  ],
+  "BfS": [
+    "blue"
+  ],
+  "8U9": [
+    "blue"
+  ],
+  "29k": [
+    "blue"
+  ],
+  "tIz": [
+    "blue"
+  ],
+  "i8g": [
+    "blue"
+  ],
+  "GeE": [
+    "blue"
+  ],
+  "wEL": [
+    "blue"
+  ],
+  "o_d": [
+    "blue"
+  ],
+  "rmf": [
+    "blue"
+  ],
+  "a2l": [
+    "blue"
+  ],
+  "1oe": [
+    "blue"
+  ],
+  "PSR": [
+    "multicolor"
+  ],
+  "zs4": [
+    "pink"
+  ],
+  "0Gk": [
+    "brown"
+  ],
+  "_B-": [
+    "brown"
+  ],
+  "Wf9": [
+    "purple"
+  ],
+  "iED": [
+    "purple"
+  ],
+  "dny": [
+    "purple"
+  ],
+  "dVe": [
+    "pink"
+  ],
+  "5ZX": [
+    "pink"
+  ],
+  "g5y": [
+    "pink"
+  ],
+  "5tK": [
+    "pink"
+  ],
+  "02O": [
+    "blue"
+  ],
+  "EK1": [
+    "blue"
+  ],
+  "epU": [
+    "blue"
+  ],
+  "PhB": [
+    "blue"
+  ],
+  "niy": [
+    "blue"
+  ],
+  "i5L": [
+    "blue"
+  ],
+  "QgU": [
+    "blue"
+  ],
+  "65Z": [
+    "blue"
+  ],
+  "pPQ": [
+    "blue"
+  ],
+  "7LJ": [
+    "blue"
+  ],
+  "rEF": [
+    "blue"
+  ],
+  "eX-": [
+    "blue"
+  ],
+  "YTk": [
+    "blue"
+  ],
+  "iIR": [
+    "blue"
+  ],
+  "dWT": [
+    "blue"
+  ],
+  "8k6": [
+    "white"
+  ],
+  "NUN": [
+    "black"
+  ],
+  "FYE": [
+    "black"
+  ],
+  "ptR": [
+    "pink"
+  ],
+  "CnE": [
+    "brown"
+  ],
+  "fvW": [
+    "black"
+  ],
+  "eUi": [
+    "black"
+  ],
+  "iwD": [
+    "yellow"
+  ],
+  "yrU": [
+    "purple"
+  ],
+  "luq": [
+    "red"
+  ],
+  "ghD": [
+    "pink"
+  ],
+  "F-W": [
+    "orange"
+  ],
+  "LqU": [
+    "brown"
+  ],
+  "3W6": [
+    "brown"
+  ],
+  "L4R": [
+    "brown"
+  ],
+  "jVz": [
+    "brown"
+  ],
+  "_ar": [
+    "gray"
+  ],
+  "w3-": [
+    "pink"
+  ],
+  "_4h": [
+    "pink"
+  ],
+  "tXe": [
+    "blue"
+  ],
+  "5gj": [
+    "blue"
+  ],
+  "ubQ": [
+    "blue"
+  ],
+  "RZ8": [
+    "blue"
+  ],
+  "D5e": [
+    "multicolor"
+  ],
+  "pEm": [
+    "multicolor"
+  ],
+  "pm_": [
+    "yellow"
+  ],
+  "awL": [
+    "yellow"
+  ],
+  "RiR": [
+    "blue"
+  ],
+  "sIr": [
+    "brown"
+  ],
+  "0lN": [
+    "brown"
+  ],
+  "4Wr": [
+    "white"
+  ],
+  "VUZ": [
+    "white"
+  ],
+  "Rv8": [
+    "white"
+  ],
+  "N0m": [
+    "brown"
+  ],
+  "iGq": [
+    "brown"
+  ],
+  "NsD": [
+    "brown"
+  ],
+  "WN7": [
+    "brown"
+  ],
+  "IGT": [
+    "black"
+  ],
+  "d1X": [
+    "black"
+  ],
+  "23s": [
+    "purple"
+  ],
+  "GNm": [
+    "purple"
+  ],
+  "a7w": [
+    "purple"
+  ],
+  "DzZ": [
+    "orange"
+  ],
+  "dEW": [
+    "blue"
+  ],
+  "kd0": [
+    "blue"
+  ],
+  "sAd": [
+    "blue"
+  ],
+  "xPl": [
+    "yellow"
+  ],
+  "lL5": [
+    "yellow"
+  ],
+  "Tn1": [
+    "yellow"
+  ],
+  "DVV": [
+    "yellow"
+  ],
+  "LJ-": [
+    "yellow"
+  ],
+  "3CV": [
+    "purple"
+  ],
+  "Yu_": [
+    "purple"
+  ],
+  "Q6L": [
+    "purple"
+  ],
+  "qFg": [
+    "brown"
+  ],
+  "s7j": [
+    "brown"
+  ],
+  "lKD": [
+    "brown"
+  ],
+  "ALY": [
+    "brown"
+  ],
+  "0pi": [
+    "brown"
+  ],
+  "B-s": [
+    "pink"
+  ],
+  "IJt": [
+    "pink"
+  ],
+  "pcn": [
+    "pink"
+  ],
+  "RIX": [
+    "pink"
+  ],
+  "UYB": [
+    "orange"
+  ],
+  "HXh": [
+    "orange"
+  ],
+  "pv4": [
+    "orange"
+  ],
+  "SZd": [
+    "orange"
+  ],
+  "1m4": [
+    "gray"
+  ],
+  "QDD": [
+    "black"
+  ],
+  "fzL": [
+    "pink"
+  ],
+  "v6t": [
+    "blue"
+  ],
+  "E0y": [
+    "pink"
+  ],
+  "bxW": [
+    "blue"
+  ],
+  "73Z": [
+    "blue"
+  ],
+  "xTh": [
+    "yellow"
+  ],
+  "BJr": [
+    "yellow"
+  ],
+  "AGD": [
+    "black"
+  ],
+  "t-s": [
+    "gray"
+  ],
+  "R68": [
+    "gray"
+  ],
+  "gVS": [
+    "gray"
+  ],
+  "B5I": [
+    "gray"
+  ],
+  "jab": [
+    "gray"
+  ],
+  "IiX": [
+    "gray"
+  ],
+  "woT": [
+    "gray"
+  ],
+  "GiW": [
+    "gray"
+  ],
+  "5B7": [
+    "gray"
+  ],
+  "3Jf": [
+    "black"
+  ],
+  "5ui": [
+    "gray"
+  ],
+  "v5z": [
+    "gray"
+  ],
+  "P4Z": [
+    "brown"
+  ],
+  "Rnv": [
+    "blue"
+  ],
+  "SS5": [
+    "blue"
+  ],
+  "yj7": [
+    "blue"
+  ],
+  "b0J": [
+    "blue"
+  ],
+  "Isl": [
+    "blue"
+  ],
+  "7yN": [
+    "blue"
+  ],
+  "A_E": [
+    "blue"
+  ],
+  "SbF": [
+    "pink"
+  ],
+  "I95": [
+    "pink"
+  ],
+  "sML": [
+    "pink"
+  ],
+  "rR7": [
+    "black"
+  ],
+  "oJQ": [
+    "black"
+  ],
+  "_Sp": [
+    "purple"
+  ],
+  "GJQ": [
+    "black"
+  ],
+  "bxU": [
+    "black"
+  ],
+  "oeg": [
+    "gray"
+  ],
+  "BN_": [
+    "gray"
+  ],
+  "oZc": [
+    "gray"
+  ],
+  "1DB": [
+    "gray"
+  ],
+  "6D4": [
+    "gray"
+  ],
+  "FCM": [
+    "pink"
+  ],
+  "5RV": [
+    "pink"
+  ],
+  "iUu": [
+    "pink"
+  ],
+  "CLr": [
+    "pink"
+  ],
+  "mHh": [
+    "pink"
+  ],
+  "6yQ": [
+    "pink"
+  ],
+  "BE4": [
+    "pink"
+  ],
+  "B0l": [
+    "black"
+  ],
+  "QuL": [
+    "black"
+  ],
+  "_Tw": [
+    "brown"
+  ],
+  "kUq": [
+    "black"
+  ],
+  "LeF": [
+    "gray"
+  ],
+  "Hg5": [
+    "pink"
+  ],
+  "SdN": [
+    "pink"
+  ],
+  "cLC": [
+    "pink"
+  ],
+  "Sqo": [
+    "pink"
+  ],
+  "jQR": [
+    "pink"
+  ],
+  "Cu1": [
+    "pink"
+  ],
+  "7tR": [
+    "gray"
+  ],
+  "-6H": [
+    "gray"
+  ],
+  "0eS": [
+    "gray"
+  ],
+  "ZKy": [
+    "pink"
+  ],
+  "Uyu": [
+    "pink"
+  ],
+  "Q2Y": [
+    "pink"
+  ],
+  "G1Q": [
+    "pink"
+  ],
+  "crH": [
+    "white"
+  ],
+  "0xb": [
+    "pink"
+  ],
+  "_bx": [
+    "pink"
+  ],
+  "AIs": [
+    "pink"
+  ],
+  "HJv": [
+    "pink"
+  ],
+  "I5b": [
+    "purple"
+  ],
+  "_mw": [
+    "purple"
+  ],
+  "rzP": [
+    "purple"
+  ],
+  "YVW": [
+    "brown"
+  ],
+  "Qmk": [
+    "purple"
+  ],
+  "H16": [
+    "purple"
+  ],
+  "pO2": [
+    "purple"
+  ],
+  "UI7": [
+    "purple"
+  ],
+  "fpR": [
+    "purple"
+  ],
+  "LhO": [
+    "brown"
+  ],
+  "XOO": [
+    "brown"
+  ],
+  "vsT": [
+    "yellow"
+  ],
+  "qr0": [
+    "gray"
+  ],
+  "fQ2": [
+    "gray"
+  ],
+  "CBL": [
+    "black"
+  ],
+  "9Mg": [
+    "pink"
+  ],
+  "OaT": [
+    "pink"
+  ],
+  "Z-s": [
+    "pink"
+  ],
+  "jja": [
+    "yellow"
+  ],
+  "EKM": [
+    "yellow"
+  ],
+  "_Mc": [
+    "yellow"
+  ],
+  "h4K": [
+    "pink"
+  ],
+  "rug": [
+    "pink"
+  ],
+  "qMP": [
+    "pink"
+  ],
+  "saY": [
+    "pink"
+  ],
+  "0AU": [
+    "pink"
+  ],
+  "X-0": [
+    "pink"
+  ],
+  "qxr": [
+    "purple"
+  ],
+  "Xss": [
+    "white"
+  ],
+  "x6Z": [
+    "white"
+  ],
+  "r6U": [
+    "pink"
+  ],
+  "Sw2": [
+    "pink"
+  ],
+  "o1g": [
+    "pink"
+  ],
+  "rh-": [
+    "white"
+  ],
+  "ujW": [
+    "white"
+  ],
+  "xsB": [
+    "blue"
+  ],
+  "7H0": [
+    "white"
+  ],
+  "o5k": [
+    "blue"
+  ],
+  "XSw": [
+    "brown"
+  ],
+  "tQL": [
+    "brown"
+  ],
+  "b0W": [
+    "pink"
+  ],
+  "vOx": [
+    "green"
+  ],
+  "cHj": [
+    "green"
+  ],
+  "jdh": [
+    "green"
+  ],
+  "tPB": [
+    "black"
+  ],
+  "W2g": [
+    "black"
+  ],
+  "RSC": [
+    "purple"
+  ],
+  "hmc": [
+    "purple"
+  ],
+  "J1M": [
+    "purple"
+  ],
+  "cW7": [
+    "purple"
+  ],
+  "X2t": [
+    "purple"
+  ],
+  "1Od": [
+    "purple"
+  ],
+  "Os5": [
+    "white"
+  ],
+  "Mg3": [
+    "gray"
+  ],
+  "LhN": [
+    "orange"
+  ],
+  "RS6": [
+    "orange"
+  ],
+  "kma": [
+    "orange"
+  ],
+  "JpE": [
+    "black"
+  ],
+  "dFr": [
+    "black"
+  ],
+  "cu8": [
+    "brown"
+  ],
+  "r7V": [
+    "brown"
+  ],
+  "MD5": [
+    "gray"
+  ],
+  "uXY": [
+    "gray"
+  ],
+  "M0v": [
+    "blue"
+  ],
+  "uh3": [
+    "blue"
+  ],
+  "UOo": [
+    "orange"
+  ],
+  "Lbo": [
+    "blue"
+  ],
+  "o-D": [
+    "blue"
+  ],
+  "jO0": [
+    "gray"
+  ],
+  "IsH": [
+    "gray"
+  ],
+  "AtB": [
+    "brown"
+  ],
+  "heU": [
+    "pink"
+  ],
+  "8Xk": [
+    "pink"
+  ],
+  "WB8": [
+    "pink"
+  ],
+  "X96": [
+    "pink"
+  ],
+  "TUP": [
+    "pink"
+  ],
+  "wLU": [
+    "pink"
+  ],
+  "LZh": [
+    "brown"
+  ],
+  "iIh": [
+    "brown"
+  ],
+  "r_w": [
+    "brown"
+  ],
+  "bZG": [
+    "pink"
+  ],
+  "rpQ": [
+    "pink"
+  ],
+  "2s9": [
+    "pink"
+  ],
+  "4wK": [
+    "pink"
+  ],
+  "KE9": [
+    "pink"
+  ],
+  "NX_": [
+    "pink"
+  ],
+  "MIr": [
+    "pink"
+  ],
+  "4uT": [
+    "blue"
+  ],
+  "mi1": [
+    "blue"
+  ],
+  "9ff": [
+    "blue"
+  ],
+  "vvC": [
+    "gray"
+  ],
+  "P6U": [
+    "gray"
+  ],
+  "_sS": [
+    "gray"
+  ],
+  "h9k": [
+    "pink"
+  ],
+  "Jtn": [
+    "pink"
+  ],
+  "qDx": [
+    "pink"
+  ],
+  "d60": [
+    "multicolor"
+  ],
+  "Z5A": [
+    "multicolor"
+  ],
+  "mln": [
+    "black"
+  ],
+  "Tf-": [
+    "blue"
+  ],
+  "jVG": [
+    "white"
+  ],
+  "nOE": [
+    "white"
+  ],
+  "s1L": [
+    "white"
+  ],
+  "NuY": [
+    "black"
+  ],
+  "ASd": [
+    "pink"
+  ],
+  "h2V": [
+    "pink"
+  ],
+  "aSC": [
+    "brown"
+  ],
+  "Lga": [
+    "brown"
+  ],
+  "bWn": [
+    "blue"
+  ],
+  "bm9": [
+    "white"
+  ],
+  "8jg": [
+    "white"
+  ],
+  "nzW": [
+    "white"
+  ],
+  "L2C": [
+    "white"
+  ],
+  "GTR": [
+    "white"
+  ],
+  "u-y": [
+    "white"
+  ],
+  "MPe": [
+    "pink"
+  ],
+  "D_X": [
+    "pink"
+  ],
+  "t-T": [
+    "pink"
+  ],
+  "ZJV": [
+    "pink"
+  ],
+  "5R6": [
+    "pink"
+  ],
+  "Jss": [
+    "brown"
+  ],
+  "suq": [
+    "brown"
+  ],
+  "tru": [
+    "pink"
+  ],
+  "6YT": [
+    "pink"
+  ],
+  "5wA": [
+    "pink"
+  ],
+  "cwM": [
+    "purple"
+  ],
+  "1As": [
+    "purple"
+  ],
+  "FSQ": [
+    "pink"
+  ],
+  "Hnh": [
+    "pink"
+  ],
+  "d1g": [
+    "pink"
+  ],
+  "F0i": [
+    "pink"
+  ],
+  "fAs": [
+    "purple"
+  ],
+  "y-m": [
+    "purple"
+  ],
+  "Kr7": [
+    "purple"
+  ],
+  "SD-": [
+    "purple"
+  ],
+  "k4X": [
+    "purple"
+  ],
+  "WSX": [
+    "purple"
+  ],
+  "O9B": [
+    "purple"
+  ],
+  "Cqg": [
+    "purple"
+  ],
+  "k4s": [
+    "yellow"
+  ],
+  "VX0": [
+    "yellow"
+  ],
+  "sZu": [
+    "brown"
+  ],
+  "iLE": [
+    "brown"
+  ],
+  "KFR": [
+    "brown"
+  ],
+  "PsH": [
+    "brown"
+  ],
+  "hqr": [
+    "brown"
+  ],
+  "KaX": [
+    "brown"
+  ],
+  "q_9": [
+    "brown"
+  ],
+  "OML": [
+    "orange"
+  ],
+  "C5d": [
+    "brown"
+  ],
+  "HRE": [
+    "brown"
+  ],
+  "O6t": [
+    "pink"
+  ],
+  "I9R": [
+    "pink"
+  ],
+  "rRB": [
+    "pink"
+  ],
+  "APL": [
+    "pink"
+  ],
+  "NlD": [
+    "pink"
+  ],
+  "9ST": [
+    "brown"
+  ],
+  "XbA": [
+    "brown"
+  ],
+  "np0": [
+    "white"
+  ],
+  "WrB": [
+    "white"
+  ],
+  "HH-": [
+    "gray"
+  ],
+  "nwl": [
+    "gray"
+  ],
+  "hsu": [
+    "gray"
+  ],
+  "E_t": [
+    "gray"
+  ],
+  "cM4": [
+    "white"
+  ],
+  "6UK": [
+    "pink"
+  ],
+  "Xdz": [
+    "pink"
+  ],
+  "-Lm": [
+    "pink"
+  ],
+  "dtT": [
+    "pink"
+  ],
+  "zb4": [
+    "pink"
+  ],
+  "m-z": [
+    "purple"
+  ],
+  "Dy2": [
+    "purple"
+  ],
+  "zBO": [
+    "purple"
+  ],
+  "095": [
+    "purple"
+  ],
+  "z3G": [
+    "blue"
+  ],
+  "vH2": [
+    "blue"
+  ],
+  "Hpv": [
+    "blue"
+  ],
+  "WIg": [
+    "gray"
+  ],
+  "00P": [
+    "gray"
+  ],
+  "j4K": [
+    "brown"
+  ],
+  "Dlr": [
+    "brown"
+  ],
+  "PC7": [
+    "pink"
+  ],
+  "9dA": [
+    "brown"
+  ],
+  "hSa": [
+    "gray"
+  ],
+  "pTT": [
+    "gray"
+  ],
+  "tqV": [
+    "blue"
+  ],
+  "ovs": [
+    "blue"
+  ],
+  "oYX": [
+    "brown"
+  ],
+  "_U1": [
+    "yellow"
+  ],
+  "QAH": [
+    "yellow"
+  ],
+  "COG": [
+    "blue"
+  ],
+  "ZHh": [
+    "blue"
+  ],
+  "_y9": [
+    "blue"
+  ],
+  "J9Q": [
+    "blue"
+  ],
+  "5nE": [
+    "blue"
+  ],
+  "0j3": [
+    "blue"
+  ],
+  "8Aq": [
+    "blue"
+  ],
+  "Oyr": [
+    "blue"
+  ],
+  "CnW": [
+    "blue"
+  ],
+  "S7z": [
+    "blue"
+  ],
+  "VvN": [
+    "blue"
+  ],
+  "Vy9": [
+    "blue"
+  ],
+  "mF2": [
+    "blue"
+  ],
+  "x0v": [
+    "blue"
+  ],
+  "5ss": [
+    "blue"
+  ],
+  "sSO": [
+    "white"
+  ],
+  "jqE": [
+    "white"
+  ],
+  "FF9": [
+    "white"
+  ],
+  "aum": [
+    "white"
+  ],
+  "fZi": [
+    "blue"
+  ],
+  "Tpk": [
+    "white"
+  ],
+  "4sb": [
+    "white"
+  ],
+  "mN5": [
+    "blue"
+  ],
+  "Hd1": [
+    "blue"
+  ],
+  "S2f": [
+    "blue"
+  ],
+  "0ku": [
+    "pink"
+  ],
+  "w2S": [
+    "pink"
+  ],
+  "Kpw": [
+    "pink"
+  ],
+  "-sU": [
+    "gray"
+  ],
+  "LdV": [
+    "gray"
+  ],
+  "u_J": [
+    "blue"
+  ],
+  "P62": [
+    "blue"
+  ],
+  "bNJ": [
+    "blue"
+  ],
+  "aln": [
+    "pink"
+  ],
+  "mhu": [
+    "pink"
+  ],
+  "wKg": [
+    "pink"
+  ],
+  "c9u": [
+    "pink"
+  ],
+  "Hqb": [
+    "pink"
+  ],
+  "IF9": [
+    "pink"
+  ],
+  "S4K": [
+    "pink"
+  ],
+  "zIn": [
+    "pink"
+  ],
+  "O49": [
+    "pink"
+  ],
+  "HmW": [
+    "pink"
+  ],
+  "6d3": [
+    "pink"
+  ],
+  "R8h": [
+    "pink"
+  ],
+  "mUF": [
+    "pink"
+  ],
+  "OoE": [
+    "pink"
+  ],
+  "CM9": [
+    "pink"
+  ],
+  "_In": [
+    "pink"
+  ],
+  "Gs9": [
+    "pink"
+  ],
+  "XUB": [
+    "pink"
+  ],
+  "JS5": [
+    "pink"
+  ],
+  "__H": [
+    "pink"
+  ],
+  "Ye2": [
+    "pink"
+  ],
+  "b5w": [
+    "pink"
+  ],
+  "boI": [
+    "pink"
+  ],
+  "1Fy": [
+    "pink"
+  ],
+  "Lrf": [
+    "purple"
+  ],
+  "iRL": [
+    "purple"
+  ],
+  "iJ4": [
+    "pink"
+  ],
+  "bXZ": [
+    "purple"
+  ],
+  "VvC": [
+    "orange"
+  ],
+  "I0q": [
+    "orange"
+  ],
+  "MMP": [
+    "purple"
+  ],
+  "mcV": [
+    "purple"
+  ],
+  "BRt": [
+    "purple"
+  ],
+  "mny": [
+    "brown"
+  ],
+  "PXg": [
+    "brown"
+  ],
+  "XeP": [
+    "brown"
+  ],
+  "iqJ": [
+    "purple"
+  ],
+  "X4t": [
+    "blue"
+  ],
+  "xfV": [
+    "blue"
+  ],
+  "gpm": [
+    "blue"
+  ],
+  "Hhs": [
+    "blue"
+  ],
+  "exz": [
+    "blue"
+  ],
+  "OD2": [
+    "blue"
+  ],
+  "DAD": [
+    "blue"
+  ],
+  "uDd": [
+    "blue"
+  ],
+  "fxl": [
+    "blue"
+  ],
+  "t58": [
+    "blue"
+  ],
+  "RO_": [
+    "pink"
+  ],
+  "6KE": [
+    "pink"
+  ],
+  "y8l": [
+    "multicolor"
+  ],
+  "0Ia": [
+    "multicolor"
+  ],
+  "x_p": [
+    "orange"
+  ],
+  "v-w": [
+    "multicolor"
+  ],
+  "64S": [
+    "multicolor"
+  ],
+  "TX3": [
+    "multicolor"
+  ],
+  "AOh": [
+    "gray"
+  ],
+  "CdS": [
+    "gray"
+  ],
+  "zLA": [
+    "gray"
+  ],
+  "EHK": [
+    "gray"
+  ],
+  "N-T": [
+    "brown"
+  ],
+  "CVh": [
+    "brown"
+  ],
+  "R4A": [
+    "brown"
+  ],
+  "X1J": [
+    "brown"
+  ],
+  "JCl": [
+    "brown"
+  ],
+  "99e": [
+    "brown"
+  ],
+  "weU": [
+    "orange"
+  ],
+  "G39": [
+    "orange"
+  ],
+  "X1T": [
+    "blue"
+  ],
+  "UZa": [
+    "blue"
+  ],
+  "tZU": [
+    "blue"
+  ],
+  "bUX": [
+    "blue"
+  ],
+  "Cge": [
+    "blue"
+  ],
+  "57s": [
+    "blue"
+  ],
+  "zLL": [
+    "blue"
+  ],
+  "tKM": [
+    "blue"
+  ],
+  "JrB": [
+    "blue"
+  ],
+  "rjt": [
+    "purple"
+  ],
+  "bW1": [
+    "purple"
+  ],
+  "W2D": [
+    "white"
+  ],
+  "yD1": [
+    "white"
+  ],
+  "ICF": [
+    "blue"
+  ],
+  "aM7": [
+    "blue"
+  ],
+  "kMR": [
+    "blue"
+  ],
+  "bh1": [
+    "blue"
+  ],
+  "1wm": [
+    "blue"
+  ],
+  "Ghj": [
+    "pink"
+  ],
+  "UP9": [
+    "pink"
+  ],
+  "JSz": [
+    "pink"
+  ],
+  "k0d": [
+    "pink"
+  ],
+  "EPH": [
+    "pink"
+  ],
+  "cFR": [
+    "pink"
+  ],
+  "ST6": [
+    "pink"
+  ],
+  "gjg": [
+    "pink"
+  ],
+  "Jaw": [
+    "pink"
+  ],
+  "p_7": [
+    "pink"
+  ],
+  "30G": [
+    "pink"
+  ],
+  "ofP": [
+    "pink"
+  ],
+  "WhQ": [
+    "purple"
+  ],
+  "_rC": [
+    "purple"
+  ],
+  "Mlw": [
+    "purple"
+  ],
+  "Gee": [
+    "purple"
+  ],
+  "WE8": [
+    "purple"
+  ],
+  "l3n": [
+    "purple"
+  ],
+  "YGw": [
+    "pink"
+  ],
+  "efF": [
+    "pink"
+  ],
+  "Mhh": [
+    "pink"
+  ],
+  "6J7": [
+    "gray"
+  ],
+  "yWk": [
+    "gray"
+  ],
+  "kb4": [
+    "pink"
+  ],
+  "edG": [
+    "pink"
+  ],
+  "2Sp": [
+    "brown"
+  ],
+  "9ng": [
+    "brown"
+  ],
+  "cil": [
+    "red"
+  ],
+  "rqd": [
+    "red"
+  ],
+  "Vzo": [
+    "blue"
+  ],
+  "QhM": [
+    "blue"
+  ],
+  "Bon": [
+    "blue"
+  ],
+  "rIG": [
+    "blue"
+  ],
+  "Py1": [
+    "blue"
+  ],
+  "f3M": [
+    "blue"
+  ],
+  "e8y": [
+    "blue"
+  ],
+  "syF": [
+    "gray"
+  ],
+  "1EH": [
+    "gray"
+  ],
+  "qLM": [
+    "gray"
+  ],
+  "HGB": [
+    "gray"
+  ],
+  "i3W": [
+    "gray"
+  ],
+  "zxk": [
+    "pink"
+  ],
+  "09l": [
+    "pink"
+  ],
+  "Pb2": [
+    "pink"
+  ],
+  "dG-": [
+    "pink"
+  ],
+  "m7q": [
+    "gray"
+  ],
+  "Qz6": [
+    "gray"
+  ],
+  "ALt": [
+    "gray"
+  ],
+  "KxH": [
+    "multicolor"
+  ],
+  "Jti": [
+    "multicolor"
+  ],
+  "c8e": [
+    "multicolor"
+  ],
+  "6L0": [
+    "multicolor"
+  ],
+  "-V2": [
+    "multicolor"
+  ],
+  "usX": [
+    "white"
+  ],
+  "Vlg": [
+    "white"
+  ],
+  "b1y": [
+    "brown"
+  ],
+  "TtS": [
+    "brown"
+  ],
+  "frA": [
+    "orange"
+  ],
+  "NyR": [
+    "orange"
+  ],
+  "wwn": [
+    "orange"
+  ],
+  "gCK": [
+    "orange"
+  ],
+  "2ia": [
+    "orange"
+  ],
+  "4D6": [
+    "blue"
+  ],
+  "io6": [
+    "blue"
+  ],
+  "VvH": [
+    "blue"
+  ],
+  "qG5": [
+    "blue"
+  ],
+  "Fz6": [
+    "blue"
+  ],
+  "jwU": [
+    "blue"
+  ],
+  "nSR": [
+    "purple"
+  ],
+  "lut": [
+    "purple"
+  ],
+  "f59": [
+    "purple"
+  ],
+  "OQM": [
+    "purple"
+  ],
+  "eXh": [
+    "green"
+  ],
+  "DCd": [
+    "green"
+  ],
+  "Rrl": [
+    "green"
+  ],
+  "_V1": [
+    "green"
+  ],
+  "aCq": [
+    "green"
+  ],
+  "xM-": [
+    "green"
+  ],
+  "3ax": [
+    "green"
+  ],
+  "uWC": [
+    "green"
+  ],
+  "MRY": [
+    "green"
+  ],
+  "AZm": [
+    "green"
+  ],
+  "8l3": [
+    "green"
+  ],
+  "HYy": [
+    "brown"
+  ],
+  "zdI": [
+    "brown"
+  ],
+  "Esw": [
+    "brown"
+  ],
+  "5-V": [
+    "brown"
+  ],
+  "UI6": [
+    "brown"
+  ],
+  "ggo": [
+    "brown"
+  ],
+  "Ex6": [
+    "brown"
+  ],
+  "3P1": [
+    "brown"
+  ],
+  "Ja2": [
+    "brown"
+  ],
+  "y5M": [
+    "brown"
+  ],
+  "sVb": [
+    "brown"
+  ],
+  "Bja": [
+    "blue"
+  ],
+  "I7Q": [
+    "blue"
+  ],
+  "FLw": [
+    "blue"
+  ],
+  "Hhi": [
+    "blue"
+  ],
+  "3UK": [
+    "blue"
+  ],
+  "LeW": [
+    "blue"
+  ],
+  "4ZY": [
+    "blue"
+  ],
+  "DiP": [
+    "blue"
+  ],
+  "GBp": [
+    "blue"
+  ],
+  "wDL": [
+    "blue"
+  ],
+  "xWf": [
+    "blue"
+  ],
+  "NUR": [
+    "blue"
+  ],
+  "23u": [
+    "blue"
+  ],
+  "TsD": [
+    "blue"
+  ],
+  "G2g": [
+    "blue"
+  ],
+  "y1X": [
+    "blue"
+  ],
+  "RGD": [
+    "blue"
+  ],
+  "YYT": [
+    "blue"
+  ],
+  "kIx": [
+    "orange"
+  ],
+  "Rug": [
+    "orange"
+  ],
+  "bx1": [
+    "orange"
+  ],
+  "puK": [
+    "orange"
+  ],
+  "oi7": [
+    "orange"
+  ],
+  "Cck": [
+    "orange"
+  ],
+  "4pf": [
+    "orange"
+  ],
+  "UPJ": [
+    "orange"
+  ],
+  "Ttu": [
+    "orange"
+  ],
+  "eEt": [
+    "yellow"
+  ],
+  "lmr": [
+    "pink"
+  ],
+  "ibH": [
+    "pink"
+  ],
+  "xex": [
+    "pink"
+  ],
+  "M8Z": [
+    "pink"
+  ],
+  "74B": [
+    "pink"
+  ],
+  "ynE": [
+    "pink"
+  ],
+  "4bB": [
+    "pink"
+  ],
+  "oOd": [
+    "pink"
+  ],
+  "jo6": [
+    "pink"
+  ],
+  "j7F": [
+    "pink"
+  ],
+  "bPo": [
+    "pink"
+  ],
+  "w3A": [
+    "pink"
+  ],
+  "YlE": [
+    "pink"
+  ],
+  "r0Z": [
+    "pink"
+  ],
+  "MRG": [
+    "pink"
+  ],
+  "Z2D": [
+    "pink"
+  ],
+  "cVy": [
+    "pink"
+  ],
+  "SsB": [
+    "pink"
+  ],
+  "V86": [
+    "pink"
+  ],
+  "9V9": [
+    "pink"
+  ],
+  "gNN": [
+    "pink"
+  ],
+  "t64": [
+    "pink"
+  ],
+  "RZ-": [
+    "pink"
+  ],
+  "ToE": [
+    "pink"
+  ],
+  "kiL": [
+    "pink"
+  ],
+  "vML": [
+    "pink"
+  ],
+  "gIA": [
+    "pink"
+  ],
+  "-Lo": [
+    "pink"
+  ],
+  "gF1": [
+    "pink"
+  ],
+  "z-c": [
+    "pink"
+  ],
+  "6TH": [
+    "pink"
+  ],
+  "igz": [
+    "pink"
+  ],
+  "qNK": [
+    "pink"
+  ],
+  "do5": [
+    "purple"
+  ],
+  "rYQ": [
+    "purple"
+  ],
+  "ym_": [
+    "purple"
+  ],
+  "emJ": [
+    "purple"
+  ],
+  "upx": [
+    "green"
+  ],
+  "IAY": [
+    "green"
+  ],
+  "b9i": [
+    "green"
+  ],
+  "BMw": [
+    "green"
+  ],
+  "OKH": [
+    "green"
+  ],
+  "gGj": [
+    "green"
+  ],
+  "3iy": [
+    "green"
+  ],
+  "uw4": [
+    "green"
+  ],
+  "UEM": [
+    "green"
+  ],
+  "HwG": [
+    "green"
+  ],
+  "Y4J": [
+    "purple"
+  ],
+  "F6s": [
+    "purple"
+  ],
+  "Kqg": [
+    "purple"
+  ],
+  "XxH": [
+    "pink"
+  ],
+  "vSw": [
+    "pink"
+  ],
+  "4mJ": [
+    "pink"
+  ],
+  "rNF": [
+    "pink"
+  ],
+  "oDI": [
+    "pink"
+  ],
+  "lXv": [
+    "pink"
+  ],
+  "jiQ": [
+    "pink"
+  ],
+  "ukI": [
+    "pink"
+  ],
+  "D6E": [
+    "pink"
+  ],
+  "w3m": [
+    "pink"
+  ],
+  "Yiz": [
+    "pink"
+  ],
+  "1rU": [
+    "pink"
+  ],
+  "psz": [
+    "pink"
+  ],
+  "dBo": [
+    "pink"
+  ],
+  "FrB": [
+    "pink"
+  ],
+  "_NI": [
+    "purple"
+  ],
+  "I6G": [
+    "blue"
+  ],
+  "Z7e": [
+    "blue"
+  ],
+  "5i7": [
+    "blue"
+  ],
+  "eSV": [
+    "pink"
+  ],
+  "MmU": [
+    "gray"
+  ],
+  "5xQ": [
+    "gray"
+  ],
+  "3ZT": [
+    "gray"
+  ],
+  "Mjy": [
+    "gray"
+  ],
+  "NoX": [
+    "gray"
+  ],
+  "Gor": [
+    "gray"
+  ],
+  "XUb": [
+    "gray"
+  ],
+  "9-A": [
+    "orange"
+  ],
+  "ozW": [
+    "orange"
+  ],
+  "2UA": [
+    "orange"
+  ],
+  "PHS": [
+    "orange"
+  ],
+  "zvP": [
+    "orange"
+  ],
+  "G-R": [
+    "orange"
+  ],
+  "oj4": [
+    "blue"
+  ],
+  "L6Z": [
+    "blue"
+  ],
+  "12Q": [
+    "blue"
+  ],
+  "Ghl": [
+    "blue"
+  ],
+  "cZl": [
+    "blue"
+  ],
+  "ugE": [
+    "blue"
+  ],
+  "VFE": [
+    "blue"
+  ],
+  "_Jo": [
+    "blue"
+  ],
+  "a3B": [
+    "blue"
+  ],
+  "6CS": [
+    "blue"
+  ],
+  "nse": [
+    "blue"
+  ],
+  "h3G": [
+    "purple"
+  ],
+  "OZY": [
+    "purple"
+  ],
+  "CBY": [
+    "purple"
+  ],
+  "z-8": [
+    "purple"
+  ],
+  "OXZ": [
+    "purple"
+  ],
+  "Xj6": [
+    "purple"
+  ],
+  "FVK": [
+    "purple"
+  ],
+  "n2J": [
+    "purple"
+  ],
+  "gls": [
+    "orange"
+  ],
+  "w40": [
+    "orange"
+  ],
+  "Re3": [
+    "blue"
+  ],
+  "rLT": [
+    "blue"
+  ],
+  "l5f": [
+    "blue"
+  ],
+  "XzU": [
+    "white"
+  ],
+  "zk2": [
+    "white"
+  ],
+  "gRr": [
+    "purple"
+  ],
+  "ye-": [
+    "purple"
+  ],
+  "LV5": [
+    "purple"
+  ],
+  "dOo": [
+    "purple"
+  ],
+  "4jv": [
+    "purple"
+  ],
+  "jK7": [
+    "purple"
+  ],
+  "Oqs": [
+    "purple"
+  ],
+  "KwM": [
+    "purple"
+  ],
+  "07q": [
+    "purple"
+  ],
+  "4YV": [
+    "purple"
+  ],
+  "90t": [
+    "purple"
+  ],
+  "GZD": [
+    "orange"
+  ],
+  "P2T": [
+    "orange"
+  ],
+  "A93": [
+    "gray"
+  ],
+  "c8O": [
+    "gray"
+  ],
+  "Xgq": [
+    "pink"
+  ],
+  "Ety": [
+    "pink"
+  ],
+  "4hy": [
+    "pink"
+  ],
+  "E9N": [
+    "pink"
+  ],
+  "6kX": [
+    "pink"
+  ],
+  "3Jw": [
+    "pink"
+  ],
+  "iBL": [
+    "pink"
+  ],
+  "Z3s": [
+    "pink"
+  ],
+  "w7s": [
+    "orange"
+  ],
+  "quv": [
+    "orange"
+  ],
+  "iIk": [
+    "orange"
+  ],
+  "sJy": [
+    "orange"
+  ],
+  "3GQ": [
+    "orange"
+  ],
+  "hIW": [
+    "purple"
+  ],
+  "wch": [
+    "brown"
+  ],
+  "Lbj": [
+    "blue"
+  ],
+  "0TN": [
+    "blue"
+  ],
+  "_vD": [
+    "white"
+  ],
+  "SZq": [
+    "gray"
+  ],
+  "nBS": [
+    "white"
+  ],
+  "-Wf": [
+    "white"
+  ],
+  "OX1": [
+    "white"
+  ],
+  "Jbv": [
+    "white"
+  ],
+  "9Gm": [
+    "gray"
+  ],
+  "nGa": [
+    "orange"
+  ],
+  "cfg": [
+    "purple"
+  ],
+  "d97": [
+    "blue"
+  ],
+  "WKt": [
+    "blue"
+  ],
+  "3eH": [
+    "blue"
+  ],
+  "MFP": [
+    "blue"
+  ],
+  "yo0": [
+    "blue"
+  ],
+  "XUp": [
+    "blue"
+  ],
+  "4Xs": [
+    "blue"
+  ],
+  "NkH": [
+    "blue"
+  ],
+  "Fbw": [
+    "blue"
+  ],
+  "96v": [
+    "multicolor"
+  ],
+  "Zf4": [
+    "multicolor"
+  ],
+  "7ZM": [
+    "pink"
+  ],
+  "f66": [
+    "pink"
+  ],
+  "0mh": [
+    "pink"
+  ],
+  "yXb": [
+    "multicolor"
+  ],
+  "Nc5": [
+    "blue"
+  ],
+  "hBU": [
+    "blue"
+  ],
+  "7it": [
+    "gray"
+  ],
+  "fRO": [
+    "gray"
+  ],
+  "PLU": [
+    "gray"
+  ],
+  "2mP": [
+    "gray"
+  ],
+  "4hn": [
+    "white"
+  ],
+  "K4b": [
+    "green"
+  ],
+  "l-u": [
+    "green"
+  ],
+  "y8S": [
+    "green"
+  ],
+  "-zD": [
+    "green"
+  ],
+  "MfN": [
+    "gray"
+  ],
+  "RS7": [
+    "gray"
+  ],
+  "Gpm": [
+    "gray"
+  ],
+  "ILd": [
+    "gray"
+  ],
+  "O68": [
+    "gray"
+  ],
+  "poc": [
+    "gray"
+  ],
+  "-8e": [
+    "pink"
+  ],
+  "PMS": [
+    "pink"
+  ],
+  "oBj": [
+    "blue"
+  ],
+  "OJg": [
+    "blue"
+  ],
+  "IV7": [
+    "blue"
+  ],
+  "hbd": [
+    "blue"
+  ],
+  "4t5": [
+    "blue"
+  ],
+  "sA-": [
+    "blue"
+  ],
+  "m_2": [
+    "blue"
+  ],
+  "fyO": [
+    "gray"
+  ],
+  "_mu": [
+    "gray"
+  ],
+  "-Ah": [
+    "pink"
+  ],
+  "TSb": [
+    "pink"
+  ],
+  "SFA": [
+    "pink"
+  ],
+  "Cgq": [
+    "pink"
+  ],
+  "w59": [
+    "gray"
+  ],
+  "IcH": [
+    "gray"
+  ],
+  "xaT": [
+    "gray"
+  ],
+  "eRD": [
+    "gray"
+  ],
+  "1v6": [
+    "brown"
+  ],
+  "P8L": [
+    "blue"
+  ],
+  "eGs": [
+    "blue"
+  ],
+  "cjU": [
+    "blue"
+  ],
+  "M6X": [
+    "blue"
+  ],
+  "TgG": [
+    "blue"
+  ],
+  "Zj6": [
+    "blue"
+  ],
+  "ITj": [
+    "blue"
+  ],
+  "Lgn": [
+    "blue"
+  ],
+  "rPu": [
+    "blue"
+  ],
+  "TQZ": [
+    "blue"
+  ],
+  "3Ei": [
+    "blue"
+  ],
+  "ETA": [
+    "green"
+  ],
+  "zen": [
+    "green"
+  ],
+  "gbv": [
+    "green"
+  ],
+  "Kxr": [
+    "green"
+  ],
+  "xgd": [
+    "green"
+  ],
+  "bR7": [
+    "green"
+  ],
+  "Lst": [
+    "green"
+  ],
+  "hap": [
+    "green"
+  ],
+  "_Vl": [
+    "green"
+  ],
+  "I43": [
+    "green"
+  ],
+  "kcZ": [
+    "green"
+  ],
+  "iAD": [
+    "green"
+  ],
+  "Osy": [
+    "green"
+  ],
+  "7cE": [
+    "green"
+  ],
+  "uCE": [
+    "green"
+  ],
+  "23l": [
+    "green"
+  ],
+  "x6x": [
+    "green"
+  ],
+  "q62": [
+    "green"
+  ],
+  "TV6": [
+    "green"
+  ],
+  "Dlw": [
+    "green"
+  ],
+  "EBq": [
+    "green"
+  ],
+  "mLt": [
+    "white"
+  ],
+  "L6H": [
+    "white"
+  ],
+  "RP9": [
+    "gray"
+  ],
+  "MW8": [
+    "gray"
+  ],
+  "2b8": [
+    "white"
+  ],
+  "-Oo": [
+    "white"
+  ],
+  "kbD": [
+    "blue"
+  ],
+  "aUY": [
+    "blue"
+  ],
+  "9P1": [
+    "blue"
+  ],
+  "dXH": [
+    "white"
+  ],
+  "y6w": [
+    "white"
+  ],
+  "yhj": [
+    "white"
+  ],
+  "upJ": [
+    "gray"
+  ],
+  "zE7": [
+    "gray"
+  ],
+  "e99": [
+    "purple"
+  ],
+  "mas": [
+    "purple"
+  ],
+  "ZY5": [
+    "purple"
+  ],
+  "-ll": [
+    "purple"
+  ],
+  "1I0": [
+    "purple"
+  ],
+  "rmX": [
+    "purple"
+  ],
+  "KXn": [
+    "purple"
+  ],
+  "3_L": [
+    "purple"
+  ],
+  "DOt": [
+    "purple"
+  ],
+  "CGj": [
+    "purple"
+  ],
+  "lYI": [
+    "purple"
+  ],
+  "PLG": [
+    "purple"
+  ],
+  "4Pl": [
+    "purple"
+  ],
+  "vuM": [
+    "purple"
+  ],
+  "FWV": [
+    "purple"
+  ],
+  "bBP": [
+    "purple"
+  ],
+  "SqC": [
+    "purple"
+  ],
+  "lle": [
+    "purple"
+  ],
+  "ghO": [
+    "purple"
+  ],
+  "wJA": [
+    "purple"
+  ],
+  "jnb": [
+    "purple"
+  ],
+  "7RP": [
+    "purple"
+  ],
+  "NdK": [
+    "purple"
+  ],
+  "TE2": [
+    "purple"
+  ],
+  "pOO": [
+    "brown"
+  ],
+  "JfE": [
+    "brown"
+  ],
+  "eVx": [
+    "brown"
+  ],
+  "F14": [
+    "brown"
+  ],
+  "vcv": [
+    "brown"
+  ],
+  "VtE": [
+    "green"
+  ],
+  "Nzk": [
+    "green"
+  ],
+  "-Pj": [
+    "green"
+  ],
+  "0ax": [
+    "green"
+  ],
+  "Qoy": [
+    "green"
+  ],
+  "uMu": [
+    "white"
+  ],
+  "qog": [
+    "white"
+  ],
+  "jLw": [
+    "white"
+  ],
+  "1FJ": [
+    "white"
+  ],
+  "n_m": [
+    "green"
+  ],
+  "pqM": [
+    "green"
+  ],
+  "MYe": [
+    "green"
+  ],
+  "v-x": [
+    "green"
+  ],
+  "OJc": [
+    "green"
+  ],
+  "tK3": [
+    "green"
+  ],
+  "Uvj": [
+    "green"
+  ],
+  "rn2": [
+    "green"
+  ],
+  "VlG": [
+    "green"
+  ],
+  "w6x": [
+    "blue"
+  ],
+  "aK1": [
+    "blue"
+  ],
+  "lOF": [
+    "blue"
+  ],
+  "6_U": [
+    "blue"
+  ],
+  "Pt0": [
+    "blue"
+  ],
+  "wff": [
+    "blue"
+  ],
+  "vpc": [
+    "blue"
+  ],
+  "IuF": [
+    "blue"
+  ],
+  "3oS": [
+    "blue"
+  ],
+  "aGg": [
+    "blue"
+  ],
+  "WD0": [
+    "blue"
+  ],
+  "9_3": [
+    "gray"
+  ],
+  "-dq": [
+    "gray"
+  ],
+  "TkH": [
+    "blue"
+  ],
+  "AIy": [
+    "blue"
+  ],
+  "v9h": [
+    "blue"
+  ],
+  "kvP": [
+    "blue"
+  ],
+  "Evh": [
+    "blue"
+  ],
+  "CXv": [
+    "blue"
+  ],
+  "mgH": [
+    "blue"
+  ],
+  "kWJ": [
+    "green"
+  ],
+  "ewk": [
+    "green"
+  ],
+  "ru4": [
+    "green"
+  ],
+  "x6X": [
+    "green"
+  ],
+  "jUn": [
+    "green"
+  ],
+  "vx-": [
+    "orange"
+  ],
+  "rnj": [
+    "orange"
+  ],
+  "4ms": [
+    "orange"
+  ],
+  "NeZ": [
+    "orange"
+  ],
+  "8bq": [
+    "orange"
+  ],
+  "HCY": [
+    "orange"
+  ],
+  "86i": [
+    "orange"
+  ],
+  "f0B": [
+    "orange"
+  ],
+  "5v4": [
+    "orange"
+  ],
+  "9Ao": [
+    "orange"
+  ],
+  "zj6": [
+    "orange"
+  ],
+  "mjI": [
+    "purple"
+  ],
+  "V6j": [
+    "purple"
+  ],
+  "8io": [
+    "pink"
+  ],
+  "l8C": [
+    "pink"
+  ],
+  "D7d": [
+    "green"
+  ],
+  "OF3": [
+    "green"
+  ],
+  "lei": [
+    "blue"
+  ],
+  "S3v": [
+    "blue"
+  ],
+  "3FU": [
+    "blue"
+  ],
+  "t84": [
+    "blue"
+  ],
+  "1_O": [
+    "green"
+  ],
+  "Jg0": [
+    "green"
+  ],
+  "kdc": [
+    "green"
+  ],
+  "aJC": [
+    "green"
+  ],
+  "YIr": [
+    "green"
+  ],
+  "Vl-": [
+    "white"
+  ],
+  "wqP": [
+    "white"
+  ],
+  "wNY": [
+    "white"
+  ],
+  "iuq": [
+    "white"
+  ],
+  "s1U": [
+    "yellow"
+  ],
+  "grC": [
+    "yellow"
+  ],
+  "ns-": [
+    "yellow"
+  ],
+  "bH-": [
+    "yellow"
+  ],
+  "Pi8": [
+    "yellow"
+  ],
+  "RtS": [
+    "yellow"
+  ],
+  "Ong": [
+    "yellow"
+  ],
+  "_94": [
+    "yellow"
+  ],
+  "MvH": [
+    "yellow"
+  ],
+  "Xpk": [
+    "purple"
+  ],
+  "3Yl": [
+    "purple"
+  ],
+  "IPE": [
+    "blue"
+  ],
+  "CN9": [
+    "blue"
+  ],
+  "3EL": [
+    "blue"
+  ],
+  "uV2": [
+    "blue"
+  ],
+  "4I9": [
+    "multicolor"
+  ],
+  "Zjl": [
+    "multicolor"
+  ],
+  "maU": [
+    "multicolor"
+  ],
+  "P0U": [
+    "multicolor"
+  ],
+  "ZaA": [
+    "multicolor"
+  ],
+  "gWz": [
+    "multicolor"
+  ],
+  "Zw7": [
+    "multicolor"
+  ],
+  "eN8": [
+    "multicolor"
+  ],
+  "Vuc": [
+    "multicolor"
+  ],
+  "vGP": [
+    "multicolor"
+  ],
+  "Cwu": [
+    "purple"
+  ],
+  "7vj": [
+    "purple"
+  ],
+  "zcA": [
+    "orange"
+  ],
+  "g2z": [
+    "yellow"
+  ],
+  "8jN": [
+    "yellow"
+  ],
+  "zMr": [
+    "yellow"
+  ],
+  "NBg": [
+    "yellow"
+  ],
+  "aOH": [
+    "multicolor"
+  ],
+  "6zb": [
+    "green"
+  ],
+  "pjV": [
+    "green"
+  ],
+  "wAV": [
+    "yellow"
+  ],
+  "HSA": [
+    "yellow"
+  ],
+  "-JZ": [
+    "pink"
+  ],
+  "vYo": [
+    "pink"
+  ],
+  "YPZ": [
+    "blue"
+  ],
+  "j8c": [
+    "blue"
+  ],
+  "rdd": [
+    "blue"
+  ],
+  "Cy7": [
+    "blue"
+  ],
+  "zEu": [
+    "pink"
+  ],
+  "MAC": [
+    "pink"
+  ],
+  "_8l": [
+    "purple"
+  ],
+  "LRU": [
+    "purple"
+  ],
+  "QKK": [
+    "blue"
+  ],
+  "YVz": [
+    "blue"
+  ],
+  "isi": [
+    "blue"
+  ],
+  "-66": [
+    "blue"
+  ],
+  "9Bf": [
+    "orange"
+  ],
+  "6xn": [
+    "orange"
+  ],
+  "ox3": [
+    "orange"
+  ],
+  "J0p": [
+    "orange"
+  ],
+  "FEE": [
+    "orange"
+  ],
+  "3Oz": [
+    "orange"
+  ],
+  "eX0": [
+    "green"
+  ],
+  "rx9": [
+    "green"
+  ],
+  "t3g": [
+    "green"
+  ],
+  "qAt": [
+    "green"
+  ],
+  "co2": [
+    "multicolor"
+  ],
+  "aFJ": [
+    "white"
+  ],
+  "xsK": [
+    "white"
+  ],
+  "csN": [
+    "brown"
+  ],
+  "S8K": [
+    "brown"
+  ],
+  "s-6": [
+    "yellow"
+  ],
+  "GMz": [
+    "yellow"
+  ],
+  "-qE": [
+    "yellow"
+  ],
+  "OYk": [
+    "yellow"
+  ],
+  "zB0": [
+    "yellow"
+  ],
+  "d_2": [
+    "white"
+  ],
+  "Trm": [
+    "green"
+  ],
+  "ySQ": [
+    "green"
+  ],
+  "map": [
+    "green"
+  ],
+  "_MH": [
+    "green"
+  ],
+  "0Bu": [
+    "green"
+  ],
+  "9WU": [
+    "green"
+  ],
+  "rud": [
+    "green"
+  ],
+  "9z1": [
+    "multicolor"
+  ],
+  "4g-": [
+    "multicolor"
+  ],
+  "dKX": [
+    "multicolor"
+  ],
+  "bz7": [
+    "multicolor"
+  ],
+  "ONL": [
+    "pink"
+  ],
+  "JuV": [
+    "pink"
+  ],
+  "018": [
+    "pink"
+  ],
+  "t3d": [
+    "pink"
+  ],
+  "AMf": [
+    "pink"
+  ],
+  "yTD": [
+    "pink"
+  ],
+  "T4l": [
+    "pink"
+  ],
+  "0Pj": [
+    "white"
+  ],
+  "pYt": [
+    "white"
+  ],
+  "Y9y": [
+    "white"
+  ],
+  "K1u": [
+    "white"
+  ],
+  "cem": [
+    "white"
+  ],
+  "nBp": [
+    "white"
+  ],
+  "MqY": [
+    "white"
+  ],
+  "zTf": [
+    "white"
+  ],
+  "n0X": [
+    "white"
+  ],
+  "50Y": [
+    "black"
+  ],
+  "SDY": [
+    "black"
+  ],
+  "7NC": [
+    "black"
+  ],
+  "KtA": [
+    "white"
+  ],
+  "J7N": [
+    "gray"
+  ],
+  "gvT": [
+    "gray"
+  ],
+  "GKY": [
+    "orange"
+  ],
+  "Mfa": [
+    "orange"
+  ],
+  "2Kg": [
+    "orange"
+  ],
+  "5dv": [
+    "orange"
+  ],
+  "zRo": [
+    "orange"
+  ],
+  "UEC": [
+    "orange"
+  ],
+  "dKI": [
+    "gray"
+  ],
+  "hIp": [
+    "gray"
+  ],
+  "WH6": [
+    "gray"
+  ],
+  "VWY": [
+    "gray"
+  ],
+  "V53": [
+    "orange"
+  ],
+  "AXI": [
+    "orange"
+  ],
+  "YTm": [
+    "orange"
+  ],
+  "Ix_": [
+    "orange"
+  ],
+  "XMK": [
+    "orange"
+  ],
+  "YE7": [
+    "orange"
+  ],
+  "mi0": [
+    "orange"
+  ],
+  "PDO": [
+    "orange"
+  ],
+  "X92": [
+    "orange"
+  ],
+  "BXN": [
+    "orange"
+  ],
+  "0T5": [
+    "orange"
+  ],
+  "K3k": [
+    "orange"
+  ],
+  "sBL": [
+    "orange"
+  ],
+  "s-u": [
+    "orange"
+  ],
+  "31q": [
+    "orange"
+  ],
+  "XZX": [
+    "orange"
+  ],
+  "haU": [
+    "orange"
+  ],
+  "l7G": [
+    "orange"
+  ],
+  "JP7": [
+    "orange"
+  ],
+  "W9V": [
+    "orange"
+  ],
+  "jsg": [
+    "orange"
+  ],
+  "7nc": [
+    "orange"
+  ],
+  "1lD": [
+    "orange"
+  ],
+  "Ero": [
+    "orange"
+  ],
+  "_xO": [
+    "orange"
+  ],
+  "nzB": [
+    "orange"
+  ],
+  "gyE": [
+    "orange"
+  ],
+  "ey-": [
+    "orange"
+  ],
+  "nlT": [
+    "yellow"
+  ],
+  "QUe": [
+    "yellow"
+  ],
+  "Lk7": [
+    "multicolor"
+  ],
+  "w35": [
+    "gray"
+  ],
+  "hZL": [
+    "gray"
+  ],
+  "H6-": [
+    "green"
+  ],
+  "LFQ": [
+    "green"
+  ],
+  "gzB": [
+    "green"
+  ],
+  "LtU": [
+    "green"
+  ],
+  "9N7": [
+    "green"
+  ],
+  "LY9": [
+    "blue"
+  ],
+  "OYp": [
+    "blue"
+  ],
+  "THw": [
+    "blue"
+  ],
+  "wie": [
+    "blue"
+  ],
+  "QA-": [
+    "blue"
+  ],
+  "HND": [
+    "blue"
+  ],
+  "iyz": [
+    "blue"
+  ],
+  "v-u": [
+    "blue"
+  ],
+  "EPv": [
+    "blue"
+  ],
+  "COi": [
+    "blue"
+  ],
+  "kxN": [
+    "blue"
+  ],
+  "hb7": [
+    "blue"
+  ],
+  "_Fh": [
+    "blue"
+  ],
+  "Fmd": [
+    "blue"
+  ],
+  "es-": [
+    "blue"
+  ],
+  "zzz": [
+    "blue"
+  ],
+  "Gza": [
+    "blue"
+  ],
+  "Usx": [
+    "blue"
+  ],
+  "nWV": [
+    "blue"
+  ],
+  "O0c": [
+    "blue"
+  ],
+  "RLH": [
+    "yellow"
+  ],
+  "kG7": [
+    "yellow"
+  ],
+  "f3w": [
+    "orange"
+  ],
+  "lRK": [
+    "orange"
+  ],
+  "10S": [
+    "green"
+  ],
+  "p7p": [
+    "green"
+  ],
+  "mde": [
+    "green"
+  ],
+  "Ey3": [
+    "green"
+  ],
+  "zCV": [
+    "green"
+  ],
+  "XNr": [
+    "green"
+  ],
+  "4p5": [
+    "green"
+  ],
+  "juF": [
+    "green"
+  ],
+  "KNG": [
+    "green"
+  ],
+  "bab": [
+    "green"
+  ],
+  "kvl": [
+    "green"
+  ],
+  "wna": [
+    "green"
+  ],
+  "ldK": [
+    "orange"
+  ],
+  "L1U": [
+    "orange"
+  ],
+  "52S": [
+    "green"
+  ],
+  "ty2": [
+    "green"
+  ],
+  "5Bw": [
+    "green"
+  ],
+  "JlR": [
+    "green"
+  ],
+  "O4Y": [
+    "green"
+  ],
+  "w30": [
+    "green"
+  ],
+  "Z7N": [
+    "green"
+  ],
+  "CLj": [
+    "green"
+  ],
+  "UsW": [
+    "green"
+  ],
+  "8Mj": [
+    "green"
+  ],
+  "K6j": [
+    "green"
+  ],
+  "Pgt": [
+    "green"
+  ],
+  "Jym": [
+    "green"
+  ],
+  "wFE": [
+    "green"
+  ],
+  "WZZ": [
+    "green"
+  ],
+  "SOi": [
+    "green"
+  ],
+  "sLz": [
+    "green"
+  ],
+  "Hyg": [
+    "green"
+  ],
+  "JIp": [
+    "orange"
+  ],
+  "FFv": [
+    "orange"
+  ],
+  "1xk": [
+    "orange"
+  ],
+  "uVD": [
+    "orange"
+  ],
+  "0tJ": [
+    "orange"
+  ],
+  "7R8": [
+    "orange"
+  ],
+  "DcT": [
+    "orange"
+  ],
+  "Z3u": [
+    "orange"
+  ],
+  "RxM": [
+    "orange"
+  ],
+  "k0Z": [
+    "orange"
+  ],
+  "XsK": [
+    "pink"
+  ],
+  "GLU": [
+    "pink"
+  ],
+  "L0I": [
+    "pink"
+  ],
+  "h_M": [
+    "green"
+  ],
+  "qnm": [
+    "blue"
+  ],
+  "Q7F": [
+    "blue"
+  ],
+  "NvU": [
+    "pink"
+  ],
+  "yCT": [
+    "pink"
+  ],
+  "Iwl": [
+    "pink"
+  ],
+  "Vj2": [
+    "pink"
+  ],
+  "AzN": [
+    "pink"
+  ],
+  "_ad": [
+    "pink"
+  ],
+  "wQj": [
+    "pink"
+  ],
+  "cn5": [
+    "pink"
+  ],
+  "3Wk": [
+    "pink"
+  ],
+  "wcO": [
+    "pink"
+  ],
+  "0xB": [
+    "blue"
+  ],
+  "TkX": [
+    "blue"
+  ],
+  "Q7x": [
+    "blue"
+  ],
+  "lPi": [
+    "blue"
+  ],
+  "yh3": [
+    "blue"
+  ],
+  "kFB": [
+    "blue"
+  ],
+  "XkJ": [
+    "blue"
+  ],
+  "5UE": [
+    "purple"
+  ],
+  "dq7": [
+    "purple"
+  ],
+  "Dn5": [
+    "pink"
+  ],
+  "mae": [
+    "pink"
+  ],
+  "iuc": [
+    "pink"
+  ],
+  "033": [
+    "pink"
+  ],
+  "7Yp": [
+    "pink"
+  ],
+  "Y3S": [
+    "pink"
+  ],
+  "xvn": [
+    "pink"
+  ],
+  "Qol": [
+    "pink"
+  ],
+  "m7O": [
+    "pink"
+  ],
+  "46v": [
+    "pink"
+  ],
+  "Lbt": [
+    "pink"
+  ],
+  "11r": [
+    "pink"
+  ],
+  "uN_": [
+    "pink"
+  ],
+  "Yeu": [
+    "pink"
+  ],
+  "s3_": [
+    "pink"
+  ],
+  "tLv": [
+    "pink"
+  ],
+  "0Kc": [
+    "pink"
+  ],
+  "XaL": [
+    "gray"
+  ],
+  "ssC": [
+    "gray"
+  ],
+  "0IS": [
+    "yellow"
+  ],
+  "bmV": [
+    "yellow"
+  ],
+  "Ay-": [
+    "brown"
+  ],
+  "U7A": [
+    "brown"
+  ],
+  "wo_": [
+    "green"
+  ],
+  "puf": [
+    "green"
+  ],
+  "Ss5": [
+    "green"
+  ],
+  "kdS": [
+    "green"
+  ],
+  "cq6": [
+    "green"
+  ],
+  "nb7": [
+    "green"
+  ],
+  "kic": [
+    "green"
+  ],
+  "3h0": [
+    "green"
+  ],
+  "iyj": [
+    "green"
+  ],
+  "IbJ": [
+    "green"
+  ],
+  "xgq": [
+    "green"
+  ],
+  "k_P": [
+    "green"
+  ],
+  "ski": [
+    "green"
+  ],
+  "uFE": [
+    "green"
+  ],
+  "lnV": [
+    "green"
+  ],
+  "hy1": [
+    "blue"
+  ],
+  "bam": [
+    "blue"
+  ],
+  "WcY": [
+    "blue"
+  ],
+  "xCG": [
+    "blue"
+  ],
+  "1iv": [
+    "blue"
+  ],
+  "l1p": [
+    "blue"
+  ],
+  "3qS": [
+    "blue"
+  ],
+  "Iy-": [
+    "blue"
+  ],
+  "ZiY": [
+    "blue"
+  ],
+  "bzm": [
+    "blue"
+  ],
+  "fHx": [
+    "blue"
+  ],
+  "-1P": [
+    "blue"
+  ],
+  "xO_": [
+    "blue"
+  ],
+  "aMI": [
+    "blue"
+  ],
+  "bYO": [
+    "blue"
+  ],
+  "yuN": [
+    "blue"
+  ],
+  "mDn": [
+    "blue"
+  ],
+  "dpN": [
+    "blue"
+  ],
+  "-NW": [
+    "blue"
+  ],
+  "uBQ": [
+    "blue"
+  ],
+  "2KQ": [
+    "blue"
+  ],
+  "_od": [
+    "green"
+  ],
+  "fRL": [
+    "green"
+  ],
+  "jQv": [
+    "green"
+  ],
+  "AiF": [
+    "green"
+  ],
+  "PD7": [
+    "purple"
+  ],
+  "shT": [
+    "purple"
+  ],
+  "XlL": [
+    "white"
+  ],
+  "12r": [
+    "white"
+  ],
+  "e8M": [
+    "white"
+  ],
+  "ZRM": [
+    "white"
+  ],
+  "tzH": [
+    "white"
+  ],
+  "hW-": [
+    "blue"
+  ],
+  "R6P": [
+    "blue"
+  ],
+  "oys": [
+    "blue"
+  ],
+  "GZo": [
+    "blue"
+  ],
+  "Lun": [
+    "blue"
+  ],
+  "2Zi": [
+    "white"
+  ],
+  "0H3": [
+    "white"
+  ],
+  "4F8": [
+    "green"
+  ],
+  "aSf": [
+    "green"
+  ],
+  "p8k": [
+    "green"
+  ],
+  "lOm": [
+    "green"
+  ],
+  "VnJ": [
+    "green"
+  ],
+  "g0s": [
+    "green"
+  ],
+  "_iL": [
+    "purple"
+  ],
+  "P6N": [
+    "purple"
+  ],
+  "daP": [
+    "purple"
+  ],
+  "bS1": [
+    "purple"
+  ],
+  "5CR": [
+    "purple"
+  ],
+  "BZ2": [
+    "purple"
+  ],
+  "oLJ": [
+    "purple"
+  ],
+  "YKG": [
+    "purple"
+  ],
+  "Qub": [
+    "purple"
+  ],
+  "hSU": [
+    "purple"
+  ],
+  "aeh": [
+    "purple"
+  ],
+  "5bu": [
+    "pink"
+  ],
+  "NNu": [
+    "pink"
+  ],
+  "x9o": [
+    "pink"
+  ],
+  "L3N": [
+    "pink"
+  ],
+  "dDq": [
+    "pink"
+  ],
+  "M6A": [
+    "pink"
+  ],
+  "F8Z": [
+    "pink"
+  ],
+  "UHs": [
+    "pink"
+  ],
+  "A5t": [
+    "pink"
+  ],
+  "Som": [
+    "pink"
+  ],
+  "3iV": [
+    "pink"
+  ],
+  "pDo": [
+    "pink"
+  ],
+  "oFz": [
+    "pink"
+  ],
+  "rZj": [
+    "pink"
+  ],
+  "N7h": [
+    "red"
+  ],
+  "0KH": [
+    "red"
+  ],
+  "Rme": [
+    "black"
+  ],
+  "dyk": [
+    "gray"
+  ],
+  "-iw": [
+    "gray"
+  ],
+  "gyX": [
+    "gray"
+  ],
+  "cmw": [
+    "gray"
+  ],
+  "YHv": [
+    "gray"
+  ],
+  "8Xr": [
+    "gray"
+  ],
+  "PEL": [
+    "gray"
+  ],
+  "6wT": [
+    "gray"
+  ],
+  "as2": [
+    "blue"
+  ],
+  "mQe": [
+    "blue"
+  ],
+  "toF": [
+    "blue"
+  ],
+  "8vx": [
+    "blue"
+  ],
+  "b3f": [
+    "blue"
+  ],
+  "CaZ": [
+    "blue"
+  ],
+  "x7R": [
+    "blue"
+  ],
+  "7Z1": [
+    "blue"
+  ],
+  "ROu": [
+    "blue"
+  ],
+  "0p6": [
+    "blue"
+  ],
+  "2S5": [
+    "blue"
+  ],
+  "VbZ": [
+    "green"
+  ],
+  "o_q": [
+    "green"
+  ],
+  "FnB": [
+    "green"
+  ],
+  "iTI": [
+    "green"
+  ],
+  "n_V": [
+    "green"
+  ],
+  "p7N": [
+    "green"
+  ],
+  "avH": [
+    "green"
+  ],
+  "Sxw": [
+    "green"
+  ],
+  "BqV": [
+    "green"
+  ],
+  "6VZ": [
+    "gray"
+  ],
+  "DL_": [
+    "gray"
+  ],
+  "i7Q": [
+    "gray"
+  ],
+  "Xln": [
+    "gray"
+  ],
+  "ucN": [
+    "gray"
+  ],
+  "QUw": [
+    "gray"
+  ],
+  "fkq": [
+    "gray"
+  ],
+  "OhW": [
+    "gray"
+  ],
+  "kCi": [
+    "gray"
+  ],
+  "VJW": [
+    "gray"
+  ],
+  "OAv": [
+    "gray"
+  ],
+  "Wtn": [
+    "gray"
+  ],
+  "NrT": [
+    "pink"
+  ],
+  "wVH": [
+    "pink"
+  ],
+  "XLm": [
+    "pink"
+  ],
+  "1tM": [
+    "pink"
+  ],
+  "qXF": [
+    "pink"
+  ],
+  "JC0": [
+    "white"
+  ],
+  "Pbr": [
+    "pink"
+  ],
+  "zrj": [
+    "pink"
+  ],
+  "i-L": [
+    "pink"
+  ],
+  "Kc4": [
+    "pink"
+  ],
+  "pW2": [
+    "brown"
+  ],
+  "RDO": [
+    "brown"
+  ],
+  "fV7": [
+    "yellow"
+  ],
+  "Dwy": [
+    "yellow"
+  ],
+  "0HA": [
+    "gray"
+  ],
+  "xak": [
+    "yellow"
+  ],
+  "2Eh": [
+    "yellow"
+  ],
+  "1bC": [
+    "yellow"
+  ],
+  "F84": [
+    "yellow"
+  ],
+  "XX8": [
+    "yellow"
+  ],
+  "idv": [
+    "yellow"
+  ],
+  "hl5": [
+    "yellow"
+  ],
+  "nwv": [
+    "yellow"
+  ],
+  "NlE": [
+    "yellow"
+  ],
+  "KbM": [
+    "white"
+  ],
+  "7AL": [
+    "white"
+  ],
+  "8B6": [
+    "green"
+  ],
+  "Wkp": [
+    "green"
+  ],
+  "rEr": [
+    "green"
+  ],
+  "xRW": [
+    "green"
+  ],
+  "ZO-": [
+    "green"
+  ],
+  "pFf": [
+    "green"
+  ],
+  "zz-": [
+    "green"
+  ],
+  "GGt": [
+    "green"
+  ],
+  "kg8": [
+    "green"
+  ],
+  "kLE": [
+    "green"
+  ],
+  "H0q": [
+    "green"
+  ],
+  "ZAn": [
+    "green"
+  ],
+  "FlX": [
+    "yellow"
+  ],
+  "IRv": [
+    "brown"
+  ],
+  "G4i": [
+    "orange"
+  ],
+  "Buv": [
+    "pink"
+  ],
+  "2O5": [
+    "brown"
+  ],
+  "eUl": [
+    "gray"
+  ],
+  "sHg": [
+    "gray"
+  ],
+  "9TZ": [
+    "gray"
+  ],
+  "lgQ": [
+    "pink"
+  ],
+  "AEn": [
+    "pink"
+  ],
+  "zmP": [
+    "pink"
+  ],
+  "3Lj": [
+    "pink"
+  ],
+  "nBA": [
+    "pink"
+  ],
+  "hev": [
+    "green"
+  ],
+  "7vr": [
+    "green"
+  ],
+  "THL": [
+    "green"
+  ],
+  "JXY": [
+    "purple"
+  ],
+  "gHq": [
+    "purple"
+  ],
+  "MwM": [
+    "purple"
+  ],
+  "yrT": [
+    "purple"
+  ],
+  "ik7": [
+    "purple"
+  ],
+  "Fl0": [
+    "purple"
+  ],
+  "los": [
+    "purple"
+  ],
+  "3hD": [
+    "purple"
+  ],
+  "9UC": [
+    "purple"
+  ],
+  "zgE": [
+    "purple"
+  ],
+  "7Te": [
+    "white"
+  ],
+  "QFs": [
+    "white"
+  ],
+  "sWl": [
+    "yellow"
+  ],
+  "zS_": [
+    "yellow"
+  ],
+  "C_8": [
+    "yellow"
+  ],
+  "tFA": [
+    "yellow"
+  ],
+  "raE": [
+    "yellow"
+  ],
+  "h4B": [
+    "yellow"
+  ],
+  "Ntg": [
+    "yellow"
+  ],
+  "Kqt": [
+    "yellow"
+  ],
+  "3a6": [
+    "yellow"
+  ],
+  "z_f": [
+    "brown"
+  ],
+  "tBh": [
+    "green"
+  ],
+  "Rc9": [
+    "pink"
+  ],
+  "gOZ": [
+    "blue"
+  ],
+  "Q4B": [
+    "purple"
+  ],
+  "ZYU": [
+    "purple"
+  ],
+  "4l6": [
+    "purple"
+  ],
+  "F4B": [
+    "purple"
+  ],
+  "cX3": [
+    "purple"
+  ],
+  "grv": [
+    "purple"
+  ],
+  "LQR": [
+    "purple"
+  ],
+  "sJB": [
+    "purple"
+  ],
+  "Jnz": [
+    "purple"
+  ],
+  "e47": [
+    "purple"
+  ],
+  "F4n": [
+    "purple"
+  ],
+  "i2i": [
+    "blue"
+  ],
+  "pNs": [
+    "blue"
+  ],
+  "kjh": [
+    "blue"
+  ],
+  "hWr": [
+    "pink"
+  ],
+  "mBK": [
+    "pink"
+  ],
+  "pU8": [
+    "white"
+  ],
+  "gTL": [
+    "white"
+  ],
+  "kd8": [
+    "yellow"
+  ],
+  "A3B": [
+    "yellow"
+  ],
+  "Eun": [
+    "yellow"
+  ],
+  "nnN": [
+    "yellow"
+  ],
+  "iDz": [
+    "multicolor"
+  ],
+  "wXK": [
+    "multicolor"
+  ],
+  "KUc": [
+    "blue"
+  ],
+  "BCE": [
+    "blue"
+  ],
+  "_RG": [
+    "blue"
+  ],
+  "gVH": [
+    "blue"
+  ],
+  "SAI": [
+    "blue"
+  ],
+  "8H7": [
+    "blue"
+  ],
+  "Hvq": [
+    "purple"
+  ],
+  "But": [
+    "purple"
+  ],
+  "drf": [
+    "purple"
+  ],
+  "fry": [
+    "purple"
+  ],
+  "Rx5": [
+    "purple"
+  ],
+  "fMz": [
+    "purple"
+  ],
+  "ZPF": [
+    "purple"
+  ],
+  "hl8": [
+    "purple"
+  ],
+  "77y": [
+    "purple"
+  ],
+  "x28": [
+    "purple"
+  ],
+  "A9b": [
+    "purple"
+  ],
+  "eqO": [
+    "purple"
+  ],
+  "LKX": [
+    "purple"
+  ],
+  "pCP": [
+    "purple"
+  ],
+  "JHw": [
+    "purple"
+  ],
+  "sdm": [
+    "purple"
+  ],
+  "MpQ": [
+    "purple"
+  ],
+  "MaH": [
+    "gray"
+  ],
+  "xAD": [
+    "gray"
+  ],
+  "EPn": [
+    "gray"
+  ],
+  "gom": [
+    "gray"
+  ],
+  "a5s": [
+    "gray"
+  ],
+  "Ozh": [
+    "gray"
+  ],
+  "C_i": [
+    "gray"
+  ],
+  "fl0": [
+    "gray"
+  ],
+  "XJk": [
+    "gray"
+  ],
+  "eZJ": [
+    "gray"
+  ],
+  "Cur": [
+    "gray"
+  ],
+  "w68": [
+    "gray"
+  ],
+  "OTI": [
+    "gray"
+  ],
+  "u3U": [
+    "yellow"
+  ],
+  "egB": [
+    "yellow"
+  ],
+  "MXq": [
+    "green"
+  ],
+  "Sld": [
+    "green"
+  ],
+  "jim": [
+    "green"
+  ],
+  "JRa": [
+    "green"
+  ],
+  "lQP": [
+    "green"
+  ],
+  "g3o": [
+    "green"
+  ],
+  "_AM": [
+    "green"
+  ],
+  "ow5": [
+    "green"
+  ],
+  "AKP": [
+    "green"
+  ],
+  "eOh": [
+    "green"
+  ],
+  "Jmb": [
+    "green"
+  ],
+  "N0a": [
+    "green"
+  ],
+  "a4S": [
+    "green"
+  ],
+  "cY3": [
+    "green"
+  ],
+  "S9J": [
+    "green"
+  ],
+  "PtB": [
+    "green"
+  ],
+  "g_w": [
+    "green"
+  ],
+  "9a0": [
+    "green"
+  ],
+  "ZfT": [
+    "green"
+  ],
+  "_j1": [
+    "green"
+  ],
+  "b3F": [
+    "green"
+  ],
+  "0YL": [
+    "green"
+  ],
+  "N1l": [
+    "green"
+  ],
+  "ELZ": [
+    "green"
+  ],
+  "bLW": [
+    "green"
+  ],
+  "c9a": [
+    "green"
+  ],
+  "jye": [
+    "green"
+  ],
+  "zFm": [
+    "yellow"
+  ],
+  "ijE": [
+    "yellow"
+  ],
+  "AhT": [
+    "yellow"
+  ],
+  "QD8": [
+    "yellow"
+  ],
+  "Knp": [
+    "purple"
+  ],
+  "nHI": [
+    "purple"
+  ],
+  "MIy": [
+    "purple"
+  ],
+  "1eu": [
+    "purple"
+  ],
+  "U_e": [
+    "white"
+  ],
+  "3AL": [
+    "white"
+  ],
+  "_e8": [
+    "yellow"
+  ],
+  "pkp": [
+    "yellow"
+  ],
+  "61k": [
+    "yellow"
+  ],
+  "Ylr": [
+    "white"
+  ],
+  "4Ma": [
+    "white"
+  ],
+  "nTX": [
+    "white"
+  ],
+  "csG": [
+    "white"
+  ],
+  "FRl": [
+    "white"
+  ],
+  "oAC": [
+    "white"
+  ],
+  "lyc": [
+    "gray"
+  ],
+  "yj9": [
+    "gray"
+  ],
+  "qXq": [
+    "gray"
+  ],
+  "Sdg": [
+    "gray"
+  ],
+  "hHZ": [
+    "yellow"
+  ],
+  "GJR": [
+    "yellow"
+  ],
+  "ocd": [
+    "brown"
+  ],
+  "YkG": [
+    "brown"
+  ],
+  "fdE": [
+    "brown"
+  ],
+  "IfN": [
+    "brown"
+  ],
+  "vtC": [
+    "brown"
+  ],
+  "UO1": [
+    "brown"
+  ],
+  "Oep": [
+    "brown"
+  ],
+  "tqy": [
+    "brown"
+  ],
+  "ZkF": [
+    "green"
+  ],
+  "Tpn": [
+    "green"
+  ],
+  "XM_": [
+    "green"
+  ],
+  "BGN": [
+    "green"
+  ],
+  "EyC": [
+    "green"
+  ],
+  "K4f": [
+    "green"
+  ],
+  "Hoy": [
+    "green"
+  ],
+  "dEc": [
+    "green"
+  ],
+  "ab4": [
+    "green"
+  ],
+  "NX-": [
+    "green"
+  ],
+  "qT4": [
+    "green"
+  ],
+  "y5O": [
+    "purple"
+  ],
+  "FtV": [
+    "purple"
+  ],
+  "Q9d": [
+    "purple"
+  ],
+  "0fU": [
+    "purple"
+  ],
+  "I72": [
+    "purple"
+  ],
+  "Chk": [
+    "purple"
+  ],
+  "Oow": [
+    "purple"
+  ],
+  "s2n": [
+    "purple"
+  ],
+  "guN": [
+    "purple"
+  ],
+  "wNC": [
+    "purple"
+  ],
+  "6mK": [
+    "purple"
+  ],
+  "QjJ": [
+    "purple"
+  ],
+  "ULs": [
+    "purple"
+  ],
+  "4js": [
+    "purple"
+  ],
+  "Ho6": [
+    "purple"
+  ],
+  "iz6": [
+    "purple"
+  ],
+  "RFl": [
+    "purple"
+  ],
+  "B1t": [
+    "purple"
+  ],
+  "wAO": [
+    "purple"
+  ],
+  "D7M": [
+    "purple"
+  ],
+  "FtK": [
+    "purple"
+  ],
+  "Wt0": [
+    "purple"
+  ],
+  "e7Y": [
+    "purple"
+  ],
+  "6qI": [
+    "purple"
+  ],
+  "Lch": [
+    "purple"
+  ],
+  "OQR": [
+    "purple"
+  ],
+  "QHF": [
+    "purple"
+  ],
+  "GYa": [
+    "purple"
+  ],
+  "Er_": [
+    "gray"
+  ],
+  "gzH": [
+    "gray"
+  ],
+  "kYb": [
+    "gray"
+  ],
+  "ZGJ": [
+    "gray"
+  ],
+  "TVJ": [
+    "gray"
+  ],
+  "xCt": [
+    "gray"
+  ],
+  "qn9": [
+    "gray"
+  ],
+  "OI3": [
+    "gray"
+  ],
+  "iNp": [
+    "gray"
+  ],
+  "WKK": [
+    "gray"
+  ],
+  "9Q0": [
+    "gray"
+  ],
+  "ja6": [
+    "green"
+  ],
+  "cJK": [
+    "green"
+  ],
+  "mFp": [
+    "green"
+  ],
+  "uFF": [
+    "green"
+  ],
+  "CkK": [
+    "green"
+  ],
+  "eYM": [
+    "green"
+  ],
+  "Qa9": [
+    "green"
+  ],
+  "T2e": [
+    "green"
+  ],
+  "e7R": [
+    "green"
+  ],
+  "eom": [
+    "green"
+  ],
+  "Cgy": [
+    "green"
+  ],
+  "ujF": [
+    "green"
+  ],
+  "RTs": [
+    "green"
+  ],
+  "Ugp": [
+    "green"
+  ],
+  "YWm": [
+    "green"
+  ],
+  "eq5": [
+    "green"
+  ],
+  "bh-": [
+    "green"
+  ],
+  "HTH": [
+    "green"
+  ],
+  "Lso": [
+    "green"
+  ],
+  "fsu": [
+    "green"
+  ],
+  "48B": [
+    "green"
+  ],
+  "Xdt": [
+    "green"
+  ],
+  "-tl": [
+    "green"
+  ],
+  "JvA": [
+    "green"
+  ],
+  "QfZ": [
+    "green"
+  ],
+  "iKn": [
+    "green"
+  ],
+  "FXY": [
+    "green"
+  ],
+  "iWp": [
+    "green"
+  ],
+  "SnA": [
+    "green"
+  ],
+  "RJM": [
+    "green"
+  ],
+  "2C8": [
+    "green"
+  ],
+  "HQQ": [
+    "green"
+  ],
+  "ucg": [
+    "multicolor"
+  ],
+  "AzA": [
+    "multicolor"
+  ],
+  "Tj-": [
+    "multicolor"
+  ],
+  "dd0": [
+    "multicolor"
+  ],
+  "r-m": [
+    "multicolor"
+  ],
+  "5Xo": [
+    "multicolor"
+  ],
+  "vQi": [
+    "multicolor"
+  ],
+  "S1W": [
+    "multicolor"
+  ],
+  "zLX": [
+    "multicolor"
+  ],
+  "cqS": [
+    "multicolor"
+  ],
+  "p4T": [
+    "multicolor"
+  ],
+  "WN_": [
+    "multicolor"
+  ],
+  "jNn": [
+    "multicolor"
+  ],
+  "KK4": [
+    "multicolor"
+  ],
+  "YKE": [
+    "multicolor"
+  ],
+  "X3k": [
+    "multicolor"
+  ],
+  "AsK": [
+    "multicolor"
+  ],
+  "Fkr": [
+    "multicolor"
+  ],
+  "KTz": [
+    "green"
+  ],
+  "Yqm": [
+    "green"
+  ],
+  "KjN": [
+    "green"
+  ],
+  "2oF": [
+    "green"
+  ],
+  "n2v": [
+    "yellow"
+  ],
+  "fnH": [
+    "yellow"
+  ],
+  "qBG": [
+    "green"
+  ],
+  "Qfm": [
+    "green"
+  ],
+  "gkT": [
+    "green"
+  ],
+  "UUw": [
+    "green"
+  ],
+  "6to": [
+    "green"
+  ],
+  "B3S": [
+    "purple"
+  ],
+  "Z8z": [
+    "orange"
+  ],
+  "GL3": [
+    "orange"
+  ],
+  "TmW": [
+    "orange"
+  ],
+  "4zp": [
+    "orange"
+  ],
+  "74r": [
+    "yellow"
+  ],
+  "z8E": [
+    "yellow"
+  ],
+  "-Bj": [
+    "purple"
+  ],
+  "XPz": [
+    "pink"
+  ],
+  "I04": [
+    "pink"
+  ],
+  "vTW": [
+    "pink"
+  ],
+  "lST": [
+    "yellow"
+  ],
+  "w_D": [
+    "purple"
+  ],
+  "f4V": [
+    "blue"
+  ],
+  "4J6": [
+    "gray"
+  ],
+  "9Gr": [
+    "gray"
+  ],
+  "YYy": [
+    "gray"
+  ],
+  "smq": [
+    "gray"
+  ],
+  "CUD": [
+    "gray"
+  ],
+  "GFK": [
+    "gray"
+  ],
+  "TKj": [
+    "gray"
+  ],
+  "qst": [
+    "gray"
+  ],
+  "PrX": [
+    "gray"
+  ],
+  "o2t": [
+    "green"
+  ],
+  "bjR": [
+    "green"
+  ],
+  "e0U": [
+    "green"
+  ],
+  "0cp": [
+    "green"
+  ],
+  "g4G": [
+    "green"
+  ],
+  "7Ga": [
+    "green"
+  ],
+  "0Me": [
+    "green"
+  ],
+  "0W1": [
+    "green"
+  ],
+  "Ddb": [
+    "green"
+  ],
+  "8dG": [
+    "green"
+  ],
+  "D-F": [
+    "green"
+  ],
+  "5A8": [
+    "green"
+  ],
+  "UzL": [
+    "brown"
+  ],
+  "MDk": [
+    "brown"
+  ],
+  "VpU": [
+    "brown"
+  ],
+  "UtJ": [
+    "brown"
+  ],
+  "yBr": [
+    "brown"
+  ],
+  "G81": [
+    "brown"
+  ],
+  "VSw": [
+    "brown"
+  ],
+  "F8s": [
+    "brown"
+  ],
+  "Mdc": [
+    "brown"
+  ],
+  "35a": [
+    "brown"
+  ],
+  "J_u": [
+    "brown"
+  ],
+  "TUz": [
+    "brown"
+  ],
+  "r90": [
+    "brown"
+  ],
+  "TPF": [
+    "brown"
+  ],
+  "Zlm": [
+    "brown"
+  ],
+  "vMr": [
+    "brown"
+  ],
+  "FOs": [
+    "brown"
+  ],
+  "y6o": [
+    "brown"
+  ],
+  "XcT": [
+    "brown"
+  ],
+  "cyB": [
+    "brown"
+  ],
+  "exn": [
+    "brown"
+  ],
+  "h8p": [
+    "brown"
+  ],
+  "R1S": [
+    "brown"
+  ],
+  "WVZ": [
+    "brown"
+  ],
+  "I0W": [
+    "brown"
+  ],
+  "NrG": [
+    "green"
+  ],
+  "6ma": [
+    "green"
+  ],
+  "AEp": [
+    "green"
+  ],
+  "vCT": [
+    "green"
+  ],
+  "Fa2": [
+    "green"
+  ],
+  "hCN": [
+    "green"
+  ],
+  "MCH": [
+    "green"
+  ],
+  "pzD": [
+    "pink"
+  ],
+  "UMg": [
+    "pink"
+  ],
+  "_lg": [
+    "pink"
+  ],
+  "Vzi": [
+    "pink"
+  ],
+  "9b1": [
+    "pink"
+  ],
+  "-bt": [
+    "pink"
+  ],
+  "W3g": [
+    "pink"
+  ],
+  "l4u": [
+    "pink"
+  ],
+  "yxe": [
+    "pink"
+  ],
+  "W21": [
+    "pink"
+  ],
+  "Gg_": [
+    "green"
+  ],
+  "mdr": [
+    "green"
+  ],
+  "I_a": [
+    "green"
+  ],
+  "K6N": [
+    "green"
+  ],
+  "CEr": [
+    "green"
+  ],
+  "QXx": [
+    "green"
+  ],
+  "K7a": [
+    "green"
+  ],
+  "-p6": [
+    "green"
+  ],
+  "lAk": [
+    "green"
+  ],
+  "3Zh": [
+    "green"
+  ],
+  "AkT": [
+    "green"
+  ],
+  "7zG": [
+    "green"
+  ],
+  "FPr": [
+    "green"
+  ],
+  "Dfn": [
+    "green"
+  ],
+  "Ycg": [
+    "green"
+  ],
+  "Dg6": [
+    "green"
+  ],
+  "_Nk": [
+    "green"
+  ],
+  "uy3": [
+    "green"
+  ],
+  "_m8": [
+    "green"
+  ],
+  "DCB": [
+    "green"
+  ],
+  "xGj": [
+    "brown"
+  ],
+  "eIE": [
+    "brown"
+  ],
+  "P9K": [
+    "brown"
+  ],
+  "3Ia": [
+    "brown"
+  ],
+  "Eh8": [
+    "brown"
+  ],
+  "Wgk": [
+    "white"
+  ],
+  "gJe": [
+    "white"
+  ],
+  "0AS": [
+    "white"
+  ],
+  "jtl": [
+    "white"
+  ],
+  "enw": [
+    "white"
+  ],
+  "s9e": [
+    "white"
+  ],
+  "_58": [
+    "white"
+  ],
+  "aqb": [
+    "white"
+  ],
+  "Ggb": [
+    "white"
+  ],
+  "qbv": [
+    "white"
+  ],
+  "e9J": [
+    "white"
+  ],
+  "Nr5": [
+    "multicolor"
+  ],
+  "0E3": [
+    "multicolor"
+  ],
+  "h_v": [
+    "multicolor"
+  ],
+  "1-y": [
+    "multicolor"
+  ],
+  "vRk": [
+    "multicolor"
+  ],
+  "Oqt": [
+    "multicolor"
+  ],
+  "jSY": [
+    "multicolor"
+  ],
+  "CS-": [
+    "multicolor"
+  ],
+  "Dgh": [
+    "multicolor"
+  ],
+  "pDu": [
+    "multicolor"
+  ],
+  "Gg1": [
+    "green"
+  ],
+  "jpE": [
+    "green"
+  ],
+  "MKq": [
+    "green"
+  ],
+  "3ja": [
+    "green"
+  ],
+  "Eub": [
+    "green"
+  ],
+  "afU": [
+    "green"
+  ],
+  "FHu": [
+    "green"
+  ],
+  "bGC": [
+    "green"
+  ],
+  "LmQ": [
+    "green"
+  ],
+  "Yvr": [
+    "green"
+  ],
+  "PAg": [
+    "green"
+  ],
+  "LI7": [
+    "green"
+  ],
+  "vDZ": [
+    "green"
+  ],
+  "fK9": [
+    "green"
+  ],
+  "xv6": [
+    "green"
+  ],
+  "Fi6": [
+    "green"
+  ],
+  "_4H": [
+    "green"
+  ],
+  "zUf": [
+    "green"
+  ],
+  "lAz": [
+    "green"
+  ],
+  "IU4": [
+    "green"
+  ],
+  "oO4": [
+    "green"
+  ],
+  "Nex": [
+    "green"
+  ],
+  "nkS": [
+    "green"
+  ],
+  "DYI": [
+    "green"
+  ],
+  "x5x": [
+    "green"
+  ],
+  "M0j": [
+    "green"
+  ],
+  "Se0": [
+    "green"
+  ],
+  "_S0": [
+    "green"
+  ],
+  "RNl": [
+    "green"
+  ],
+  "sNB": [
+    "green"
+  ],
+  "6II": [
+    "purple"
+  ],
+  "rUd": [
+    "purple"
+  ],
+  "Gcu": [
+    "purple"
+  ],
+  "tm5": [
+    "purple"
+  ],
+  "1n9": [
+    "purple"
+  ],
+  "oAn": [
+    "yellow"
+  ],
+  "lSR": [
+    "yellow"
+  ],
+  "Jdw": [
+    "purple"
+  ],
+  "S47": [
+    "purple"
+  ],
+  "0BZ": [
+    "purple"
+  ],
+  "jD0": [
+    "purple"
+  ],
+  "YBy": [
+    "purple"
+  ],
+  "1C2": [
+    "purple"
+  ],
+  "DWd": [
+    "green"
+  ],
+  "SyK": [
+    "green"
+  ],
+  "-i9": [
+    "green"
+  ],
+  "zaI": [
+    "green"
+  ],
+  "pHR": [
+    "green"
+  ],
+  "ZfR": [
+    "green"
+  ],
+  "yl3": [
+    "green"
+  ],
+  "_Yh": [
+    "green"
+  ],
+  "IbG": [
+    "green"
+  ],
+  "Hol": [
+    "yellow"
+  ],
+  "4OE": [
+    "yellow"
+  ],
+  "Khr": [
+    "white"
+  ],
+  "7kS": [
+    "white"
+  ],
+  "9W6": [
+    "gray"
+  ],
+  "PfY": [
+    "gray"
+  ],
+  "CRa": [
+    "brown"
+  ],
+  "Sfw": [
+    "brown"
+  ],
+  "a6s": [
+    "brown"
+  ],
+  "coV": [
+    "brown"
+  ],
+  "qAx": [
+    "brown"
+  ],
+  "90I": [
+    "green"
+  ],
+  "Kwg": [
+    "green"
+  ],
+  "70-": [
+    "green"
+  ],
+  "Yul": [
+    "green"
+  ],
+  "qc7": [
+    "green"
+  ],
+  "Rd5": [
+    "green"
+  ],
+  "cZv": [
+    "purple"
+  ],
+  "TE7": [
+    "purple"
+  ],
+  "Htm": [
+    "purple"
+  ],
+  "-0t": [
+    "purple"
+  ],
+  "FLj": [
+    "purple"
+  ],
+  "M3I": [
+    "purple"
+  ],
+  "aXL": [
+    "purple"
+  ],
+  "BmR": [
+    "purple"
+  ],
+  "K4i": [
+    "pink"
+  ],
+  "mKe": [
+    "pink"
+  ],
+  "vnx": [
+    "pink"
+  ],
+  "0Kh": [
+    "pink"
+  ],
+  "CcI": [
+    "pink"
+  ],
+  "KSF": [
+    "pink"
+  ],
+  "Y1Y": [
+    "pink"
+  ],
+  "fpw": [
+    "pink"
+  ],
+  "f8r": [
+    "pink"
+  ],
+  "Dmm": [
+    "gray"
+  ],
+  "AG0": [
+    "gray"
+  ],
+  "2SM": [
+    "gray"
+  ],
+  "fRY": [
+    "gray"
+  ],
+  "GXY": [
+    "gray"
+  ],
+  "3dl": [
+    "purple"
+  ],
+  "w-J": [
+    "purple"
+  ],
+  "Dt8": [
+    "black"
+  ],
+  "bLY": [
+    "pink"
+  ],
+  "IXN": [
+    "pink"
+  ],
+  "z4b": [
+    "orange"
+  ],
+  "TD4": [
+    "orange"
+  ],
+  "ON-": [
+    "orange"
+  ],
+  "Xqd": [
+    "white"
+  ],
+  "MUZ": [
+    "white"
+  ],
+  "FOG": [
+    "blue"
+  ],
+  "aDR": [
+    "blue"
+  ],
+  "blf": [
+    "blue"
+  ],
+  "GUf": [
+    "blue"
+  ],
+  "7OH": [
+    "blue"
+  ],
+  "5nH": [
+    "blue"
+  ],
+  "JRp": [
+    "blue"
+  ],
+  "_I1": [
+    "blue"
+  ],
+  "PBg": [
+    "blue"
+  ],
+  "o7M": [
+    "blue"
+  ],
+  "CfS": [
+    "green"
+  ],
+  "egn": [
+    "green"
+  ],
+  "5XS": [
+    "blue"
+  ],
+  "Gpn": [
+    "blue"
+  ],
+  "kee": [
+    "blue"
+  ],
+  "G-Q": [
+    "blue"
+  ],
+  "78K": [
+    "blue"
+  ],
+  "SGt": [
+    "blue"
+  ],
+  "R03": [
+    "blue"
+  ],
+  "LEK": [
+    "blue"
+  ],
+  "tky": [
+    "blue"
+  ],
+  "4MS": [
+    "blue"
+  ],
+  "jWd": [
+    "blue"
+  ],
+  "zHJ": [
+    "blue"
+  ],
+  "r6B": [
+    "blue"
+  ],
+  "hnS": [
+    "blue"
+  ],
+  "hWD": [
+    "blue"
+  ],
+  "NOm": [
+    "blue"
+  ],
+  "2qf": [
+    "blue"
+  ],
+  "YKS": [
+    "blue"
+  ],
+  "Ctq": [
+    "blue"
+  ],
+  "mEx": [
+    "white"
+  ],
+  "UKo": [
+    "white"
+  ],
+  "a11": [
+    "white"
+  ],
+  "9Eb": [
+    "white"
+  ],
+  "_bi": [
+    "white"
+  ],
+  "BQd": [
+    "white"
+  ],
+  "f9s": [
+    "white"
+  ],
+  "fS0": [
+    "white"
+  ],
+  "Zhg": [
+    "red"
+  ],
+  "mYk": [
+    "red"
+  ],
+  "c5A": [
+    "red"
+  ],
+  "jZz": [
+    "red"
+  ],
+  "1vo": [
+    "red"
+  ],
+  "PZM": [
+    "red"
+  ],
+  "p9q": [
+    "red"
+  ],
+  "8TW": [
+    "red"
+  ],
+  "TAP": [
+    "blue"
+  ],
+  "C0M": [
+    "blue"
+  ],
+  "3pC": [
+    "blue"
+  ],
+  "99g": [
+    "blue"
+  ],
+  "ngx": [
+    "blue"
+  ],
+  "tmi": [
+    "blue"
+  ],
+  "Qjd": [
+    "blue"
+  ],
+  "wh7": [
+    "blue"
+  ],
+  "u6w": [
+    "blue"
+  ],
+  "ZRv": [
+    "blue"
+  ],
+  "clT": [
+    "blue"
+  ],
+  "SWF": [
+    "blue"
+  ],
+  "IsT": [
+    "blue"
+  ],
+  "USP": [
+    "pink"
+  ],
+  "AFC": [
+    "pink"
+  ],
+  "eRH": [
+    "pink"
+  ],
+  "Lct": [
+    "pink"
+  ],
+  "BJ3": [
+    "pink"
+  ],
+  "eRq": [
+    "blue"
+  ],
+  "Zjr": [
+    "blue"
+  ],
+  "OVe": [
+    "blue"
+  ],
+  "qYQ": [
+    "blue"
+  ],
+  "ehH": [
+    "blue"
+  ],
+  "R-G": [
+    "blue"
+  ],
+  "6Dk": [
+    "blue"
+  ],
+  "NmK": [
+    "blue"
+  ],
+  "ma5": [
+    "blue"
+  ],
+  "bqq": [
+    "blue"
+  ],
+  "AGr": [
+    "blue"
+  ],
+  "tIS": [
+    "blue"
+  ],
+  "gR-": [
+    "blue"
+  ],
+  "jgD": [
+    "white"
+  ],
+  "ifh": [
+    "white"
+  ],
+  "KjH": [
+    "white"
+  ],
+  "xLz": [
+    "white"
+  ],
+  "cdK": [
+    "white"
+  ],
+  "-YE": [
+    "white"
+  ],
+  "LDU": [
+    "white"
+  ],
+  "ltG": [
+    "white"
+  ],
+  "IR2": [
+    "white"
+  ],
+  "pa5": [
+    "green"
+  ],
+  "YH4": [
+    "green"
+  ],
+  "nSo": [
+    "green"
+  ],
+  "oO7": [
+    "green"
+  ],
+  "BWl": [
+    "green"
+  ],
+  "eS0": [
+    "green"
+  ],
+  "N-Y": [
+    "green"
+  ],
+  "pwn": [
+    "green"
+  ],
+  "fw1": [
+    "green"
+  ],
+  "UvT": [
+    "blue"
+  ],
+  "Eh7": [
+    "blue"
+  ],
+  "L-s": [
+    "blue"
+  ],
+  "cb7": [
+    "blue"
+  ],
+  "RXW": [
+    "blue"
+  ],
+  "Sba": [
+    "blue"
+  ],
+  "TzT": [
+    "blue"
+  ],
+  "liA": [
+    "blue"
+  ],
+  "7Nm": [
+    "blue"
+  ],
+  "nyh": [
+    "blue"
+  ],
+  "Mri": [
+    "purple"
+  ],
+  "LRa": [
+    "purple"
+  ],
+  "8Cm": [
+    "purple"
+  ],
+  "gCg": [
+    "purple"
+  ],
+  "llR": [
+    "purple"
+  ],
+  "BNv": [
+    "purple"
+  ],
+  "UXs": [
+    "orange"
+  ],
+  "uf3": [
+    "orange"
+  ],
+  "gb6": [
+    "orange"
+  ],
+  "FIP": [
+    "orange"
+  ],
+  "ppb": [
+    "orange"
+  ],
+  "Iyh": [
+    "orange"
+  ],
+  "lxU": [
+    "orange"
+  ],
+  "1RJ": [
+    "orange"
+  ],
+  "g0_": [
+    "orange"
+  ],
+  "OFB": [
+    "orange"
+  ],
+  "0QX": [
+    "orange"
+  ],
+  "jU8": [
+    "yellow"
+  ],
+  "q_T": [
+    "yellow"
+  ],
+  "Dgz": [
+    "yellow"
+  ],
+  "zgF": [
+    "yellow"
+  ],
+  "vrz": [
+    "yellow"
+  ],
+  "hTi": [
+    "yellow"
+  ],
+  "EIT": [
+    "yellow"
+  ],
+  "Vki": [
+    "yellow"
+  ],
+  "wym": [
+    "yellow"
+  ],
+  "E_L": [
+    "yellow"
+  ],
+  "81W": [
+    "yellow"
+  ],
+  "NZ-": [
+    "yellow"
+  ],
+  "bUP": [
+    "yellow"
+  ],
+  "_Yq": [
+    "yellow"
+  ],
+  "ssy": [
+    "yellow"
+  ],
+  "xuZ": [
+    "yellow"
+  ],
+  "OTF": [
+    "yellow"
+  ],
+  "NdO": [
+    "yellow"
+  ],
+  "-K4": [
+    "yellow"
+  ],
+  "fEJ": [
+    "yellow"
+  ],
+  "Q6k": [
+    "yellow"
+  ],
+  "Pzm": [
+    "yellow"
+  ],
+  "XV9": [
+    "yellow"
+  ],
+  "R2G": [
+    "yellow"
+  ],
+  "ii-": [
+    "yellow"
+  ],
+  "fpu": [
+    "yellow"
+  ],
+  "dKZ": [
+    "yellow"
+  ],
+  "IC7": [
+    "yellow"
+  ],
+  "HA2": [
+    "yellow"
+  ],
+  "K2Q": [
+    "yellow"
+  ],
+  "A3i": [
+    "yellow"
+  ],
+  "mG2": [
+    "green"
+  ],
+  "gA8": [
+    "green"
+  ],
+  "30u": [
+    "green"
+  ],
+  "FOE": [
+    "green"
+  ],
+  "uGj": [
+    "yellow"
+  ],
+  "uq0": [
+    "yellow"
+  ],
+  "d_H": [
+    "green"
+  ],
+  "wmY": [
+    "green"
+  ],
+  "9Ox": [
+    "green"
+  ],
+  "NsT": [
+    "green"
+  ],
+  "dkF": [
+    "green"
+  ],
+  "MvW": [
+    "green"
+  ],
+  "VDx": [
+    "green"
+  ],
+  "jyB": [
+    "white"
+  ],
+  "QUC": [
+    "white"
+  ],
+  "uPk": [
+    "white"
+  ],
+  "Rv_": [
+    "white"
+  ],
+  "S3S": [
+    "white"
+  ],
+  "z7m": [
+    "yellow"
+  ],
+  "IBK": [
+    "yellow"
+  ],
+  "vF8": [
+    "yellow"
+  ],
+  "KVR": [
+    "yellow"
+  ],
+  "JWN": [
+    "yellow"
+  ],
+  "Vwi": [
+    "yellow"
+  ],
+  "qqr": [
+    "yellow"
+  ],
+  "047": [
+    "yellow"
+  ],
+  "NL3": [
+    "yellow"
+  ],
+  "Shg": [
+    "yellow"
+  ],
+  "8gS": [
+    "yellow"
+  ],
+  "QJS": [
+    "yellow"
+  ],
+  "a--": [
+    "yellow"
+  ],
+  "kiz": [
+    "yellow"
+  ],
+  "7b5": [
+    "yellow"
+  ],
+  "fpP": [
+    "yellow"
+  ],
+  "9CP": [
+    "yellow"
+  ],
+  "hcu": [
+    "yellow"
+  ],
+  "dc_": [
+    "yellow"
+  ],
+  "Cvj": [
+    "yellow"
+  ],
+  "EVE": [
+    "yellow"
+  ],
+  "tE6": [
+    "yellow"
+  ],
+  "D39": [
+    "yellow"
+  ],
+  "8XF": [
+    "yellow"
+  ],
+  "hmq": [
+    "yellow"
+  ],
+  "15J": [
+    "yellow"
+  ],
+  "4C6": [
+    "yellow"
+  ],
+  "Cg6": [
+    "yellow"
+  ],
+  "qhb": [
+    "yellow"
+  ],
+  "wQA": [
+    "multicolor"
+  ],
+  "BJ5": [
+    "multicolor"
+  ],
+  "EUV": [
+    "multicolor"
+  ],
+  "5tZ": [
+    "multicolor"
+  ],
+  "iJl": [
+    "multicolor"
+  ],
+  "xUK": [
+    "multicolor"
+  ],
+  "qWt": [
+    "multicolor"
+  ],
+  "jtC": [
+    "multicolor"
+  ],
+  "Coh": [
+    "multicolor"
+  ],
+  "nZT": [
+    "multicolor"
+  ],
+  "eD1": [
+    "multicolor"
+  ],
+  "1ft": [
+    "green"
+  ],
+  "Ldh": [
+    "green"
+  ],
+  "a_s": [
+    "green"
+  ],
+  "6GP": [
+    "green"
+  ],
+  "yv5": [
+    "yellow"
+  ],
+  "Z9u": [
+    "yellow"
+  ],
+  "b0o": [
+    "pink"
+  ],
+  "k3v": [
+    "pink"
+  ],
+  "Huc": [
+    "pink"
+  ],
+  "R21": [
+    "pink"
+  ],
+  "CO2": [
+    "pink"
+  ],
+  "wey": [
+    "pink"
+  ],
+  "PAD": [
+    "pink"
+  ],
+  "hP2": [
+    "pink"
+  ],
+  "X7i": [
+    "pink"
+  ],
+  "vCP": [
+    "pink"
+  ],
+  "L-P": [
+    "green"
+  ],
+  "QaU": [
+    "green"
+  ],
+  "OTY": [
+    "yellow"
+  ],
+  "Q_b": [
+    "yellow"
+  ],
+  "7Hv": [
+    "yellow"
+  ],
+  "kem": [
+    "yellow"
+  ],
+  "4LV": [
+    "yellow"
+  ],
+  "OfQ": [
+    "yellow"
+  ],
+  "_B5": [
+    "yellow"
+  ],
+  "ZFR": [
+    "yellow"
+  ],
+  "AOJ": [
+    "yellow"
+  ],
+  "il2": [
+    "yellow"
+  ],
+  "y-Q": [
+    "green"
+  ],
+  "tyZ": [
+    "green"
+  ],
+  "dgQ": [
+    "green"
+  ],
+  "Enc": [
+    "green"
+  ],
+  "T_f": [
+    "green"
+  ],
+  "XAz": [
+    "green"
+  ],
+  "5C5": [
+    "green"
+  ],
+  "7uN": [
+    "green"
+  ],
+  "ruD": [
+    "green"
+  ],
+  "f6L": [
+    "green"
+  ],
+  "01t": [
+    "green"
+  ],
+  "Vdw": [
+    "green"
+  ],
+  "eek": [
+    "green"
+  ],
+  "yFF": [
+    "green"
+  ],
+  "1ub": [
+    "green"
+  ],
+  "cC9": [
+    "purple"
+  ],
+  "G5f": [
+    "purple"
+  ],
+  "7kE": [
+    "purple"
+  ],
+  "JyX": [
+    "purple"
+  ],
+  "Fu8": [
+    "purple"
+  ],
+  "AT1": [
+    "purple"
+  ],
+  "3CR": [
+    "purple"
+  ],
+  "mVf": [
+    "purple"
+  ],
+  "7YP": [
+    "purple"
+  ],
+  "oxV": [
+    "purple"
+  ],
+  "Hoh": [
+    "purple"
+  ],
+  "iEb": [
+    "purple"
+  ],
+  "PiH": [
+    "purple"
+  ],
+  "RrK": [
+    "purple"
+  ],
+  "WDp": [
+    "purple"
+  ],
+  "-r_": [
+    "purple"
+  ],
+  "3iF": [
+    "purple"
+  ],
+  "J2-": [
+    "orange"
+  ],
+  "5C-": [
+    "orange"
+  ],
+  "AkP": [
+    "orange"
+  ],
+  "1mh": [
+    "orange"
+  ],
+  "2Kr": [
+    "orange"
+  ],
+  "xiC": [
+    "white"
+  ],
+  "i9p": [
+    "white"
+  ],
+  "rS0": [
+    "white"
+  ],
+  "rfc": [
+    "multicolor"
+  ],
+  "I0A": [
+    "multicolor"
+  ],
+  "pi4": [
+    "multicolor"
+  ],
+  "Ltf": [
+    "multicolor"
+  ],
+  "eew": [
+    "multicolor"
+  ],
+  "1Rh": [
+    "brown"
+  ],
+  "ppW": [
+    "brown"
+  ],
+  "oob": [
+    "brown"
+  ],
+  "9bD": [
+    "green"
+  ],
+  "xda": [
+    "green"
+  ],
+  "4Ch": [
+    "brown"
+  ],
+  "yN1": [
+    "brown"
+  ],
+  "aeW": [
+    "brown"
+  ],
+  "XE2": [
+    "brown"
+  ],
+  "KhI": [
+    "brown"
+  ],
+  "yzx": [
+    "brown"
+  ],
+  "gIR": [
+    "brown"
+  ],
+  "Wah": [
+    "purple"
+  ],
+  "vAP": [
+    "purple"
+  ],
+  "46f": [
+    "purple"
+  ],
+  "Vp1": [
+    "purple"
+  ],
+  "WOk": [
+    "purple"
+  ],
+  "hX2": [
+    "purple"
+  ],
+  "JuZ": [
+    "purple"
+  ],
+  "Xuw": [
+    "purple"
+  ],
+  "Qlw": [
+    "purple"
+  ],
+  "HHz": [
+    "purple"
+  ],
+  "LOI": [
+    "purple"
+  ],
+  "9CS": [
+    "white"
+  ],
+  "BWk": [
+    "white"
+  ],
+  "g_k": [
+    "white"
+  ],
+  "2Xj": [
+    "white"
+  ],
+  "sJY": [
+    "orange"
+  ],
+  "Jtz": [
+    "orange"
+  ],
+  "YvO": [
+    "orange"
+  ],
+  "WAy": [
+    "orange"
+  ],
+  "Ezp": [
+    "green"
+  ],
+  "FnX": [
+    "green"
+  ],
+  "N3d": [
+    "green"
+  ],
+  "L0L": [
+    "green"
+  ],
+  "KS-": [
+    "green"
+  ],
+  "_Qj": [
+    "brown"
+  ],
+  "i0o": [
+    "brown"
+  ],
+  "mpL": [
+    "brown"
+  ],
+  "crp": [
+    "brown"
+  ],
+  "G00": [
+    "orange"
+  ],
+  "Ura": [
+    "orange"
+  ],
+  "T4v": [
+    "blue"
+  ],
+  "1Uv": [
+    "blue"
+  ],
+  "nw5": [
+    "blue"
+  ],
+  "Ru2": [
+    "blue"
+  ],
+  "_7w": [
+    "blue"
+  ],
+  "PUu": [
+    "yellow"
+  ],
+  "w-v": [
+    "yellow"
+  ],
+  "TLm": [
+    "yellow"
+  ],
+  "QYx": [
+    "yellow"
+  ],
+  "Zkg": [
+    "yellow"
+  ],
+  "pP8": [
+    "yellow"
+  ],
+  "qxZ": [
+    "yellow"
+  ],
+  "sux": [
+    "yellow"
+  ],
+  "83Z": [
+    "green"
+  ],
+  "UMx": [
+    "green"
+  ],
+  "-L8": [
+    "green"
+  ],
+  "sUK": [
+    "green"
+  ],
+  "Asy": [
+    "purple"
+  ],
+  "dGV": [
+    "purple"
+  ],
+  "PZ0": [
+    "purple"
+  ],
+  "E0t": [
+    "purple"
+  ],
+  "j3H": [
+    "yellow"
+  ],
+  "QlZ": [
+    "yellow"
+  ],
+  "Jim": [
+    "yellow"
+  ],
+  "PWb": [
+    "yellow"
+  ],
+  "JJC": [
+    "yellow"
+  ],
+  "rhw": [
+    "yellow"
+  ],
+  "i8-": [
+    "yellow"
+  ],
+  "8mo": [
+    "pink"
+  ],
+  "bWU": [
+    "pink"
+  ],
+  "URp": [
+    "pink"
+  ],
+  "iux": [
+    "pink"
+  ],
+  "Gq2": [
+    "pink"
+  ],
+  "9_s": [
+    "pink"
+  ],
+  "Kk2": [
+    "pink"
+  ],
+  "tyX": [
+    "pink"
+  ],
+  "OYX": [
+    "pink"
+  ],
+  "Kgc": [
+    "pink"
+  ],
+  "NqU": [
+    "pink"
+  ],
+  "gBg": [
+    "pink"
+  ],
+  "bpV": [
+    "green"
+  ],
+  "Y7e": [
+    "green"
+  ],
+  "5MO": [
+    "green"
+  ],
+  "Su8": [
+    "green"
+  ],
+  "W_n": [
+    "green"
+  ],
+  "JpQ": [
+    "green"
+  ],
+  "8pb": [
+    "green"
+  ],
+  "1cT": [
+    "green"
+  ],
+  "KEw": [
+    "green"
+  ],
+  "R-6": [
+    "green"
+  ],
+  "vLS": [
+    "white"
+  ],
+  "QBQ": [
+    "white"
+  ],
+  "BVn": [
+    "purple"
+  ],
+  "e5t": [
+    "purple"
+  ],
+  "Ean": [
+    "purple"
+  ],
+  "hWf": [
+    "purple"
+  ],
+  "loF": [
+    "purple"
+  ],
+  "3fl": [
+    "purple"
+  ],
+  "xqu": [
+    "purple"
+  ],
+  "K-A": [
+    "purple"
+  ],
+  "j0f": [
+    "blue"
+  ],
+  "LbZ": [
+    "blue"
+  ],
+  "KgA": [
+    "blue"
+  ],
+  "rSg": [
+    "blue"
+  ],
+  "6t_": [
+    "blue"
+  ],
+  "qXI": [
+    "blue"
+  ],
+  "Up8": [
+    "blue"
+  ],
+  "Aqu": [
+    "blue"
+  ],
+  "U_i": [
+    "blue"
+  ],
+  "plz": [
+    "blue"
+  ],
+  "_UW": [
+    "black"
+  ],
+  "ArL": [
+    "black"
+  ],
+  "U-v": [
+    "blue"
+  ],
+  "OuT": [
+    "blue"
+  ],
+  "-Q2": [
+    "orange"
+  ],
+  "r75": [
+    "purple"
+  ],
+  "HRt": [
+    "purple"
+  ],
+  "4Va": [
+    "purple"
+  ],
+  "PRn": [
+    "brown"
+  ],
+  "bbm": [
+    "brown"
+  ],
+  "iUR": [
+    "brown"
   ]
 }

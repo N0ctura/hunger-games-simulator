@@ -60,6 +60,8 @@ interface WolvesvilleContextType {
   setSearchTerm: (term: string) => void;
   selectedRarity: WovRarity | "ALL";
   setSelectedRarity: (rarity: WovRarity | "ALL") => void;
+  genderMode: "MALE" | "FEMALE"; // New Gender Mode
+  setGenderMode: (mode: "MALE" | "FEMALE") => void;
   gridColumns: number;
   setGridColumns: (cols: number) => void;
   sortBy: "DEFAULT" | "LEGENDARY";
@@ -192,6 +194,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   // Filter Settings
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
+  const [genderMode, setGenderMode] = useState<"MALE" | "FEMALE">("FEMALE");
   const [gridColumns, setGridColumns] = useState(4);
   const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
 
@@ -267,14 +270,55 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
 
         setCalendars(Array.isArray(calendarsRaw) ? calendarsRaw : []);
 
+        // Helper to safely extract sets from any container (Offer, Bundle, etc.)
+        const safeExtractSets = (source: any, sourceName: string): WovAvatarSet[] => {
+          const extracted: WovAvatarSet[] = [];
+
+          // 1. Check for nested avatarItemSets
+          if (source.avatarItemSets && Array.isArray(source.avatarItemSets)) {
+            source.avatarItemSets.forEach((s: any, idx: number) => {
+              // Skip if s is just a string ID (we can't reconstruct the set without data)
+              if (typeof s !== 'object' || s === null) return;
+
+              extracted.push({
+                ...s,
+                // Ensure ID exists (synthetic if missing)
+                id: s.id || `${source.id}-set-${idx}`,
+                // Fallback name
+                name: s.name || source.name || `${sourceName} ${source.id}`,
+                // Propagate promo image from container if missing in set
+                promoImageUrl: s.promoImageUrl || source.promoImageUrl,
+                // Ensure arrays exist
+                items: Array.isArray(s.items) ? s.items : [],
+                avatarItemIds: Array.isArray(s.avatarItemIds) ? s.avatarItemIds : []
+              });
+            });
+          }
+
+          // 2. Check if source itself is a set (has items but no nested sets extracted yet)
+          // Note: A source could have BOTH nested sets AND loose items, so we check loose items regardless.
+
+          const hasLooseItems = source.items && Array.isArray(source.items) && source.items.length > 0;
+          const hasLooseIds = source.avatarItemIds && Array.isArray(source.avatarItemIds) && source.avatarItemIds.length > 0;
+
+          if (hasLooseItems || hasLooseIds) {
+            extracted.push({
+              id: source.id,
+              name: source.name || (source as any).title || `${sourceName} ${source.id}`,
+              promoImageUrl: source.promoImageUrl,
+              items: hasLooseItems ? source.items : [],
+              avatarItemIds: hasLooseIds ? source.avatarItemIds : []
+            });
+          }
+
+          return extracted;
+        };
+
         // Extract Sets from Offers
         const offerSets: WovAvatarSet[] = [];
         if (Array.isArray(offersRaw)) {
           offersRaw.forEach(offer => {
-            if (offer.avatarItemSets && Array.isArray(offer.avatarItemSets)) {
-              offerSets.push(...offer.avatarItemSets);
-            }
-            // Check for other potential set locations in offer structure if needed
+            offerSets.push(...safeExtractSets(offer, "Offer"));
           });
         }
 
@@ -282,10 +326,18 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         // Calendars usually give items daily, might need more complex parsing if they contain full set objects.
         // For now, let's assume they might contain references.
 
-        // Merge sets and bundles and offerSets
+        // Extract Sets from Bundles (including Role Icon Bundles which have nested avatarItemSets)
+        const bundleSets: WovAvatarSet[] = [];
+        if (Array.isArray(bundlesRaw)) {
+          bundlesRaw.forEach(bundle => {
+            bundleSets.push(...safeExtractSets(bundle, "Bundle"));
+          });
+        }
+
+        // Merge sets and flattened bundles and offerSets
         const combinedSets = [
           ...(Array.isArray(setsRaw) ? setsRaw : []),
-          ...(Array.isArray(bundlesRaw) ? bundlesRaw : []),
+          ...bundleSets,
           ...offerSets
         ];
         // Deduplicate sets by ID just in case
@@ -462,9 +514,6 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const equipSet = useCallback((set: WovAvatarSet) => {
     setEquippedItems((prev) => {
       // Logic "O quel set o l'altro" (Exclusive Set Logic)
-      // 1. Start with a clean slate, BUT preserve essential body parts (Skin, Eyes, Mouth)
-      //    to avoid the avatar disappearing if the set is partial (e.g. just clothes).
-      //    Everything else (Mask, Hat, Shirt, etc.) is removed.
       const next: Record<string, WovAvatarItem> = {};
 
       if (prev["SKIN"]) next["SKIN"] = prev["SKIN"];
@@ -472,47 +521,55 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
       if (prev["MOUTH"]) next["MOUTH"] = prev["MOUTH"];
 
       // Helper to find full item details
-      // We search in the already loaded 'items' array which contains enriched data
       const findItem = (id: string) => items.find(i => i.id === id);
 
-      const processItem = (item: WovAvatarItem) => {
-        // Resolve full details if possible
-        let fullItem = findItem(item.id);
+      const candidates: WovAvatarItem[] = [];
 
-        // If not found in global list, try to use the item data from the set itself
-        if (!fullItem) {
-          const enriched = enrichAndResolve([item])[0];
-          fullItem = enriched;
+      // Collect all potential items from the set
+      const collect = (itemOrId: WovAvatarItem | string) => {
+        let fullItem: WovAvatarItem | undefined;
+        if (typeof itemOrId === 'string') {
+          fullItem = findItem(itemOrId);
+        } else {
+          // We need to handle object items that might not be in the global list
+          fullItem = findItem(itemOrId.id);
+          if (!fullItem) {
+            // If not found globally, enrich the local object
+            // Note: enrichAndResolve returns an array, we take the first
+            fullItem = enrichAndResolve([itemOrId])[0];
+          }
         }
-
-        if (fullItem && fullItem.type && fullItem.type !== "SET") {
-          next[fullItem.type] = fullItem;
-        }
+        if (fullItem) candidates.push(fullItem);
       };
 
-      // Handle 'items' array (objects)
       if (set.items && Array.isArray(set.items)) {
-        set.items.forEach(processItem);
+        set.items.forEach(collect);
+      }
+      if (set.avatarItemIds && Array.isArray(set.avatarItemIds)) {
+        set.avatarItemIds.forEach(collect);
       }
 
-      // Handle 'avatarItemIds' array (strings)
-      if (set.avatarItemIds && Array.isArray(set.avatarItemIds)) {
-        set.avatarItemIds.forEach(id => {
-          const found = findItem(id);
-          if (found) {
-            next[found.type] = found;
-          } else {
-            // Fallback if we only have ID: we can't do much without fetching, 
-            // but we can try to enrich a stub
-            // However, 'items' should contain everything.
-            console.warn(`[WovContext] Item ID ${id} from set not found in global items.`);
-          }
-        });
-      }
+      // Group by Type
+      const byType: Record<string, WovAvatarItem[]> = {};
+      candidates.forEach(c => {
+        if (!c.type || c.type === "SET") return;
+        if (!byType[c.type]) byType[c.type] = [];
+        byType[c.type].push(c);
+      });
+
+      // Select best candidate for each type based on Gender Mode
+      Object.entries(byType).forEach(([type, list]) => {
+        // Preference: Match Gender > Unisex (undefined) > First Available
+        const best = list.find(i => i.gender === genderMode) ||
+          list.find(i => !i.gender) ||
+          list[0];
+
+        if (best) next[type] = best;
+      });
 
       return next;
     });
-  }, [items]);
+  }, [items, genderMode]);
 
   const unequipItem = useCallback((type: string) => {
     setEquippedItems((prev) => {
@@ -598,6 +655,8 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         setSearchTerm,
         selectedRarity,
         setSelectedRarity,
+        genderMode,
+        setGenderMode,
         gridColumns,
         setGridColumns,
         sortBy,
