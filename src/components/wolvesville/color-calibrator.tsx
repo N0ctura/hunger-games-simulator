@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { WovAvatarItem } from "@/lib/wolvesville-types";
+import colorCalibrationData from "@/data/color-calibration.json";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Wrench, Download, Check, ChevronLeft, ChevronRight, Search, Eye, EyeOff } from "lucide-react";
@@ -20,7 +21,7 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeColor, setActiveColor] = useState<string>(COLORS[0]);
   const [hiddenColors, setHiddenColors] = useState<string[]>([]);
-  const [calibratedData, setCalibratedData] = useState<Record<string, string[]>>({});
+  const [calibratedData, setCalibratedData] = useState<Record<string, string[]>>(colorCalibrationData as Record<string, string[]>);
   const [page, setPage] = useState(0);
   const ITEMS_PER_PAGE = 50;
   const [searchTerm, setSearchTerm] = useState("");

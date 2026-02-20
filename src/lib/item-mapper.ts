@@ -1,4 +1,5 @@
 import { WovAvatarItem } from "./wolvesville-types";
+import colorCalibrationData from "@/data/color-calibration.json";
 
 // Manual mapping for items where API metadata might be incomplete or specific overrides are needed
 // This acts as a fallback database for categories and specific CDN URLs

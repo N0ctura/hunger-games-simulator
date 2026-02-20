@@ -28,6 +28,11 @@ const CALIBRATION_CATEGORIES: WovCategory[] = [
   "BODY", "HEAD"
 ];
 
+const FILTER_COLORS = [
+  "Black", "Blue", "Brown", "Gray", "Green", "Multicolor",
+  "Orange", "Pink", "Purple", "Red", "White", "Yellow"
+];
+
 export function Wardrobe() {
   const {
     equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration,
@@ -578,8 +583,32 @@ export function Wardrobe() {
                       );
                     })}
                   </div>
-                  <p className="text-[9px] text-muted-foreground/50 italic px-1">
-                    *Filtri limitati: Bundle, Calendar e Clan Quest sono supportati. Colori e altri filtri non sono disponibili via API pubblica.
+
+                  {/* Color Filters */}
+                  <div className="flex justify-between items-center mt-2 pt-2 border-t border-white/10">
+                    <label className="text-[10px] text-muted-foreground uppercase font-bold">Colore (Beta)</label>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                    {FILTER_COLORS.map((color) => {
+                      const tag = `color:${color.toLowerCase()}`;
+                      const isActive = activeFilterTag === tag;
+                      return (
+                        <button
+                          key={color}
+                          onClick={() => isActive ? resetTagFilter() : applyTagFilter(tag)}
+                          className={`text-[10px] px-2 py-1 rounded-full border transition-all whitespace-nowrap ${isActive
+                            ? "bg-primary text-primary-foreground border-primary font-bold"
+                            : "bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10 hover:text-white"
+                            }`}
+                        >
+                          {color}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <p className="text-[9px] text-muted-foreground/50 italic px-1 mt-1">
+                    *Filtri limitati: Bundle, Calendar, Clan Quest e Colori (da calibrazione locale) sono supportati.
                   </p>
                 </div>
 

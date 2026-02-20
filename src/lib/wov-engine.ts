@@ -10,6 +10,7 @@ import {
   WovPlayerLeaderboardEntry,
   WovPlayerProfile
 } from "./wolvesville-types";
+import colorCalibrationData from "@/data/color-calibration.json";
 import {
   FALLBACK_ROLES,
   FALLBACK_AVATAR_SETS,
@@ -222,8 +223,16 @@ export const WovEngine = {
       if (originIds.size > 0) {
         filtered = allItems.filter(item => originIds.has(item.id));
       }
+    } else if (filterType === "color") {
+      // Color filtering using local calibration data
+      const targetColor = filterValue.toLowerCase();
+      const calibrationMap = colorCalibrationData as Record<string, string[]>;
+
+      filtered = allItems.filter(item => {
+        const itemColors = calibrationMap[item.id];
+        return itemColors && itemColors.includes(targetColor);
+      });
     }
-    // Color filtering is currently not supported due to missing metadata in public API
 
     return filtered.map(item => {
       const enriched = enrichItem(item);
