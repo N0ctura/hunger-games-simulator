@@ -2,6 +2,7 @@
 
 import { useWolvesville } from "@/context/wolvesville-context";
 import { WovAvatarItem, WovCategory, DEFAULT_CALIBRATION, WovDensity, CalibrationMap, WovRarity } from "@/lib/wolvesville-types";
+import { ColorCalibrator } from "./color-calibrator";
 import { WovEngine } from "@/lib/wov-engine";
 import { Loader2, Trash2, Download, X, GripHorizontal, Wrench, Save, RotateCcw, Monitor, Plus, Minus, Wand2, ImageDown, Settings, SlidersHorizontal, Search, Check, ChevronRight, ImagePlus } from "lucide-react";
 import Image from "next/image";
@@ -30,12 +31,14 @@ const CALIBRATION_CATEGORIES: WovCategory[] = [
 export function Wardrobe() {
   const {
     equippedItems, unequipItem, clearWardrobe, calibrationMap, updateCalibration,
-    resetCalibration, batchUpdateCalibration, items, equipItem,
+    resetCalibration, batchUpdateCalibration, items, allItems, equipItem,
     // Filters
     searchTerm, setSearchTerm, selectedRarity, setSelectedRarity,
     gridColumns: columns, setGridColumns: setColumns, sortBy, setSortBy,
     // Recent Items
-    recentItems, addToRecents
+    recentItems, addToRecents,
+    // Advanced Filters
+    activeFilterTag, isFilterLoading, applyTagFilter, resetTagFilter
   } = useWolvesville();
 
   const [downloading, setDownloading] = useState(false);
@@ -440,7 +443,8 @@ export function Wardrobe() {
           </div>
 
           {/* Options Button */}
-          <div className="w-10 flex justify-end relative">
+          <div className="w-10 flex justify-end relative items-center gap-2">
+            <ColorCalibrator allItems={allItems} />
             <button
               onClick={() => setShowOptions(!showOptions)}
               className={`p-2 rounded-lg border transition-all tap-target shrink-0 ${showOptions
@@ -535,6 +539,60 @@ export function Wardrobe() {
                     <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 rotate-90 text-muted-foreground pointer-events-none" size={14} />
                   </div>
                 </div>
+
+                {/* 3. Advanced Filters - Origins */}
+                <div className="space-y-2 pt-2 border-t border-white/10">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] text-muted-foreground uppercase font-bold">
+                      Filtra per Origine
+                      {isFilterLoading && <Loader2 size={10} className="animate-spin text-primary ml-2 inline" />}
+                    </label>
+                    {activeFilterTag && (
+                      <span className="text-[9px] text-primary font-mono bg-primary/10 px-1.5 rounded">
+                        {items.length} risultati
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                    {[
+                      { id: "bundle", label: "Bundle" },
+                      { id: "calendar", label: "Calendar" },
+                      { id: "clan_quest", label: "Clan Quest (All)" },
+                      { id: "clan_quest:gem", label: "CQ (Gem)" },
+                      { id: "clan_quest:gold", label: "CQ (Gold)" },
+                    ].map((origin) => {
+                      const tag = `origin:${origin.id}`;
+                      const isActive = activeFilterTag === tag;
+                      return (
+                        <button
+                          key={origin.id}
+                          onClick={() => isActive ? resetTagFilter() : applyTagFilter(tag)}
+                          className={`text-[10px] px-2 py-1 rounded-full border transition-all whitespace-nowrap ${isActive
+                            ? "bg-primary text-primary-foreground border-primary font-bold"
+                            : "bg-white/5 text-muted-foreground border-white/10 hover:bg-white/10 hover:text-white"
+                            }`}
+                        >
+                          {origin.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[9px] text-muted-foreground/50 italic px-1">
+                    *Filtri limitati: Bundle, Calendar e Clan Quest sono supportati. Colori e altri filtri non sono disponibili via API pubblica.
+                  </p>
+                </div>
+
+                {/* Reset Filters Button */}
+                {activeFilterTag && (
+                  <button
+                    onClick={resetTagFilter}
+                    className="w-full py-2 bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 hover:text-red-300 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2"
+                  >
+                    <RotateCcw size={12} />
+                    Reset Filtri Avanzati
+                  </button>
+                )}
 
                 {/* 3. Columns */}
                 <div className="space-y-1.5">

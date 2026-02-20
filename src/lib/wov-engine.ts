@@ -21,6 +21,7 @@ import { getCdnUrl, WOV_MANUAL_MAPPING } from "./wov-mapping";
 import { getCategoryFromId, enrichItem, DEFAULT_SKINS } from "./item-mapper";
 
 const BASE_URL = "https://api.wolvesville.com";
+const CORE_URL = "https://core.api-wolvesville.com";
 const API_KEY = process.env.NEXT_PUBLIC_WOLVESVILLE_API_KEY;
 const BOT_ID = process.env.NEXT_PUBLIC_WOLVESVILLE_BOT_ID;
 
@@ -64,7 +65,8 @@ export const WovEngine = {
     while (attempt < MAX_RETRIES) {
       try {
         // 3. Fetch Data
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
+        const url = endpoint.startsWith("https") ? endpoint : `${BASE_URL}${endpoint}`;
+        const response = await fetch(url, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -124,6 +126,111 @@ export const WovEngine = {
   /**
    * Specific Data Methods
    */
+
+  /**
+   * Helper: Get Item IDs for specific origins
+   */
+  async getOriginItemIds(origin: string): Promise<Set<string>> {
+    const ids = new Set<string>();
+    const originKey = origin.toLowerCase();
+
+    try {
+      if (originKey.startsWith("clan_quest")) {
+        const quests = await this.fetch<any[]>("/clans/quests/all", [], { suppressErrors: true });
+        if (quests && Array.isArray(quests)) {
+          quests.forEach(quest => {
+            // Filter by sub-type if specified
+            const isGem = quest.purchasableWithGems === true;
+
+            // LOGGING for debug
+            // if (originKey.includes("clan_quest")) {
+            //  console.log(`[CQ Check] ${quest.name} (gem: ${quest.purchasableWithGems}) -> isGem: ${isGem}`);
+            // }
+
+            if (originKey === "clan_quest:gem" && !isGem) return;
+            if (originKey === "clan_quest:gold" && isGem) return;
+
+            if (Array.isArray(quest.rewards)) {
+              quest.rewards.forEach((r: any) => {
+                if (r.type === "AVATAR_ITEM" && r.avatarItemId) ids.add(r.avatarItemId);
+              });
+            }
+          });
+        }
+      }
+      else if (originKey === "calendar") {
+        const calendars = await this.fetch<any[]>("/items/calendars", [], { suppressErrors: true });
+        if (calendars && Array.isArray(calendars)) {
+          calendars.forEach(cal => {
+            if (Array.isArray(cal.rewards)) {
+              cal.rewards.forEach((r: any) => {
+                if (r.type === "AVATAR_ITEM" && r.avatarItemId) ids.add(r.avatarItemId);
+              });
+            }
+          });
+        }
+      }
+      else if (originKey === "bundle") {
+        const bundles = await this.fetch<any[]>("/items/bundles", [], { suppressErrors: true });
+        if (bundles && Array.isArray(bundles)) {
+          bundles.forEach(bundle => {
+            if (Array.isArray(bundle.avatarItemSets)) {
+              bundle.avatarItemSets.forEach((set: any) => {
+                if (Array.isArray(set.avatarItemIds)) {
+                  set.avatarItemIds.forEach((id: string) => ids.add(id));
+                }
+              });
+            }
+          });
+        }
+      }
+      // Other origins (Events, Lootboxes, Role Cards) are restricted/not available via public API
+    } catch (e) {
+      console.warn(`[WovEngine] Failed to fetch origin data for ${origin}`, e);
+    }
+
+    return ids;
+  },
+
+  /**
+   * Fetch Avatar Items by Tag (Color or Origin)
+   * Uses local filtering strategy as API endpoints are restricted
+   */
+  async getAvatarItemsByTag(tag: string): Promise<WovAvatarItem[]> {
+    // 1. Ensure we have the main list of items
+    let allItems = cache["/items/avatarItems"]?.data as WovAvatarItem[];
+    if (!allItems) {
+      allItems = await this.fetch<WovAvatarItem[]>("/items/avatarItems", []);
+    }
+
+    if (!allItems || allItems.length === 0) return [];
+
+    // Parse tag: "type:value"
+    // Handle cases where value itself contains a colon (e.g. "origin:clan_quest:gem")
+    const firstColonIndex = tag.indexOf(":");
+    if (firstColonIndex === -1) return [];
+
+    const filterType = tag.substring(0, firstColonIndex);
+    const filterValue = tag.substring(firstColonIndex + 1);
+
+    if (!filterType || !filterValue) return [];
+
+    let filtered: WovAvatarItem[] = [];
+
+    if (filterType === "origin") {
+      const originIds = await this.getOriginItemIds(filterValue);
+      if (originIds.size > 0) {
+        filtered = allItems.filter(item => originIds.has(item.id));
+      }
+    }
+    // Color filtering is currently not supported due to missing metadata in public API
+
+    return filtered.map(item => {
+      const enriched = enrichItem(item);
+      enriched.imageUrl = this.resolveImageUrl(enriched.id, "avatar", enriched.imageUrl, enriched.type);
+      return enriched;
+    });
+  },
 
   async getRoles(): Promise<WovRole[]> {
     const response = await this.fetch<any>("/roles", { roles: FALLBACK_ROLES });

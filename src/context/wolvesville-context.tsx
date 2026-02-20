@@ -25,6 +25,7 @@ const DEFAULT_CALIBRATION_MAP: CalibrationMap = {
 interface WolvesvilleContextType {
   roles: WovRole[];
   items: WovAvatarItem[];
+  allItems: WovAvatarItem[]; // Expose full list for calibration
   sets: WovAvatarSet[];
   backgrounds: WovBackground[];
   activeOffers: WovShopOffer[];
@@ -68,6 +69,12 @@ interface WolvesvilleContextType {
   recentItems: WovAvatarItem[];
   addToRecents: (item: WovAvatarItem) => void;
   clearRecents: () => void;
+
+  // Advanced Filters (Tags)
+  activeFilterTag: string | null;
+  isFilterLoading: boolean;
+  applyTagFilter: (tag: string) => Promise<void>;
+  resetTagFilter: () => void;
 }
 
 const WolvesvilleContext = createContext<WolvesvilleContextType | undefined>(undefined);
@@ -164,6 +171,7 @@ function enrichAndResolve(items: WovAvatarItem[]): WovAvatarItem[] {
 export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<WovRole[]>([]);
   const [items, setItems] = useState<WovAvatarItem[]>([]);
+  const [allItems, setAllItems] = useState<WovAvatarItem[]>([]); // Backup for reset
   const [sets, setSets] = useState<WovAvatarSet[]>([]);
   const [backgrounds, setBackgrounds] = useState<WovBackground[]>([]);
   const [activeOffers, setActiveOffers] = useState<WovShopOffer[]>([]);
@@ -186,6 +194,10 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
   const [selectedRarity, setSelectedRarity] = useState<WovRarity | "ALL">("ALL");
   const [gridColumns, setGridColumns] = useState(4);
   const [sortBy, setSortBy] = useState<"DEFAULT" | "LEGENDARY">("DEFAULT");
+
+  // Advanced Filters
+  const [activeFilterTag, setActiveFilterTag] = useState<string | null>(null);
+  const [isFilterLoading, setIsFilterLoading] = useState(false);
 
   // ── Data Fetch ────────────────────────────────────────────
   useEffect(() => {
@@ -307,6 +319,7 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         console.log(`[WovContext] 🎯 Total items ready for grid: ${finalItems.length}`);
         const withoutSkin = finalItems.filter(i => i.type !== "SKIN");
         setItems(withoutSkin);
+        setAllItems(withoutSkin);
       } catch (e) {
         if (!cancelled) {
           const msg = e instanceof Error ? e.message : String(e);
@@ -516,11 +529,36 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
     [equippedItems]
   );
 
+  const resetTagFilter = useCallback(() => {
+    setActiveFilterTag(null);
+    setItems(allItems);
+  }, [allItems]);
+
+  const applyTagFilter = useCallback(async (tag: string) => {
+    if (tag === activeFilterTag) return;
+
+    try {
+      setIsFilterLoading(true);
+      setActiveFilterTag(tag);
+
+      const filteredItems = await WovEngine.getAvatarItemsByTag(tag);
+      const validItems = filteredItems.filter(i => i.type !== "SKIN");
+
+      setItems(validItems);
+    } catch (err) {
+      console.error("Failed to filter items by tag:", err);
+      setItems([]);
+    } finally {
+      setIsFilterLoading(false);
+    }
+  }, [activeFilterTag]);
+
   return (
     <WolvesvilleContext.Provider
       value={{
         roles,
         items,
+        allItems,
         sets,
         backgrounds,
         activeOffers,
@@ -563,7 +601,13 @@ export function WolvesvilleProvider({ children }: { children: ReactNode }) {
         gridColumns,
         setGridColumns,
         sortBy,
-        setSortBy
+        setSortBy,
+
+        // Advanced Filters
+        activeFilterTag,
+        isFilterLoading,
+        applyTagFilter,
+        resetTagFilter
       }}
     >
       {children}
