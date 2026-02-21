@@ -1,5 +1,6 @@
 {
   "files.readonlyInclude": {
     "**/*": true
-  }
+  },
+  "git.ignoreLimitWarning": true
 }

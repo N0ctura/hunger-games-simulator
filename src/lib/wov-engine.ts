@@ -10,7 +10,7 @@ import {
   WovPlayerLeaderboardEntry,
   WovPlayerProfile
 } from "./wolvesville-types";
-import colorCalibrationData from "@/data/color-calibration.json";
+import colorCalibrationData from "../data/color-calibration.json";
 import allAvatarItemsSnapshot from "@/data/all-avatar-items.json"; // Import the local snapshot
 import {
   FALLBACK_ROLES,
