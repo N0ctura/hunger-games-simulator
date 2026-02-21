@@ -110,44 +110,26 @@ function getAvatarItemUrl(url: string): string {
   if (!url) return "";
   if (!url.includes("wolvesville.com")) return url;
 
-  // Convert .store to .avatar-large
-  // Example: .../clothes-1.store.png -> .../clothes-1.avatar-large@2x.png
-  // Example: .../clothes-1.store@2x.png -> .../clothes-1.avatar-large@2x.png
-
   let newUrl = url;
 
+  // 1. Convert .store to .avatar-large (needed for high res assets)
   if (newUrl.includes(".store")) {
     newUrl = newUrl.replace(".store", ".avatar-large");
   }
 
-  // Ensure @2x resolution for consistency with offsets.json (density: 2)
-  // If it doesn't have @2x or @3x, add @2x
-  if (!newUrl.includes("@")) {
-    newUrl = newUrl.replace(".png", "@2x.png");
-  } else if (newUrl.includes("@3x")) {
-    // Optional: Force @2x if we think offsets are for @2x? 
-    // But body/head are @3x. Let's leave @3x if it's there, but default to @2x if replacing store.
-    // Actually, store icons usually don't have @ suffix in the basic URL, or might have @2x.
-    // If we replaced .store with .avatar-large, we might need to add @2x.
-  }
+  // 2. Force @3x resolution (Requested: "solo item @3")
+  // Remove existing density suffixes if present
+  newUrl = newUrl.replace("@2x", "").replace("@3x", "");
 
-  // Fix: Ensure .avatar-large is followed by @2x if not present
-  if (newUrl.includes(".avatar-large") && !newUrl.includes("@")) {
-    newUrl = newUrl.replace(".png", "@2x.png");
+  // Ensure it ends with @3x.png
+  if (newUrl.endsWith(".png")) {
+    newUrl = newUrl.replace(".png", "@3x.png");
+  } else {
+    newUrl = newUrl + "@3x.png";
   }
-
-  // FORCE @2x for non-body parts to ensure alignment if they were @3x?
-  // User says: "some shirts/hair align, others don't".
-  // div.tx shows head/body @3x, but items @2x.
-  // Let's try to respect what the URL is, but maybe force @2x for standard items if they are not body/head?
 
   return newUrl;
 }
-
-
-// ─────────────────────────────────────────────
-//  COMPONENT
-// ─────────────────────────────────────────────
 
 interface AvatarCanvasProps {
   className?: string;
@@ -161,30 +143,28 @@ interface AvatarCanvasProps {
   scale?: number; // Custom scale prop
 }
 
-// Helper Component for Hybrid Loading (Local -> Remote)
+// Helper Component for Hybrid Loading (Remote @3x -> Fallback)
 const CanvasLayerImage = ({ src: remoteSrc, itemId, alt, style }: { src: string, itemId?: string, alt: string, style: React.CSSProperties }) => {
-  const [currentSrc, setCurrentSrc] = React.useState<string>(() => {
-    // 1. Try Local Asset first if we have an ID and it's a standard item
-    if (itemId && !remoteSrc.startsWith('color:') && !remoteSrc.includes('bodyPaints')) {
-      return `/assets/items/${itemId}.png`;
-    }
-    return remoteSrc;
-  });
+  // Start with the remote @3x URL as requested
+  const [currentSrc, setCurrentSrc] = React.useState<string>(remoteSrc);
 
   const handleError = () => {
-    // 2. Fallback to Remote API if local fails
-    if (currentSrc !== remoteSrc) {
-      setCurrentSrc(remoteSrc);
+    // If @3x fails, try @2x as fallback
+    if (currentSrc.includes("@3x")) {
+      setCurrentSrc(currentSrc.replace("@3x", "@2x"));
+    }
+    // If @2x fails or we were already on something else, maybe try local or just fail silently
+    else if (currentSrc.includes("@2x")) {
+      // Optional: Try local fallback if remote fails completely?
+      // But user asked for API usage. Let's stick to API variants.
+      // Could try removing suffix for standard resolution?
+      setCurrentSrc(currentSrc.replace("@2x", ""));
     }
   };
 
   // Reset when item changes
   React.useEffect(() => {
-    if (itemId && !remoteSrc.startsWith('color:') && !remoteSrc.includes('bodyPaints')) {
-      setCurrentSrc(`/assets/items/${itemId}.png`);
-    } else {
-      setCurrentSrc(remoteSrc);
-    }
+    setCurrentSrc(remoteSrc);
   }, [remoteSrc, itemId]);
 
   return (

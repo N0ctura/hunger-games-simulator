@@ -5,7 +5,8 @@ import { WovAvatarItem } from "@/lib/wolvesville-types";
 import colorCalibrationData from "../../data/color-calibration.json";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Wrench, Download, Check, ChevronLeft, ChevronRight, Search, Eye, EyeOff } from "lucide-react";
+import { Wrench, Download, Check, ChevronLeft, ChevronRight, Search, Eye, EyeOff, Menu, X, GripHorizontal, LayoutGrid } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 
 interface ColorCalibratorProps {
@@ -23,7 +24,9 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
   const [hiddenColors, setHiddenColors] = useState<string[]>([]);
   const [calibratedData, setCalibratedData] = useState<Record<string, string[]>>(colorCalibrationData as Record<string, string[]>);
   const [page, setPage] = useState(0);
-  const ITEMS_PER_PAGE = 50;
+  const [itemsPerPage, setItemsPerPage] = useState(50);
+  const [gridCols, setGridCols] = useState(6);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open on desktop
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredItems = useMemo(() => {
@@ -46,11 +49,11 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
   }, [allItems, searchTerm, hiddenColors, calibratedData]);
 
   const pageItems = useMemo(() => {
-    const start = page * ITEMS_PER_PAGE;
-    return filteredItems.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredItems, page]);
+    const start = page * itemsPerPage;
+    return filteredItems.slice(start, start + itemsPerPage);
+  }, [filteredItems, page, itemsPerPage]);
 
-  const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   const toggleItemColor = (itemId: string) => {
     setCalibratedData(prev => {
@@ -115,10 +118,22 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-1 overflow-hidden bg-slate-950 text-slate-100">
-          {/* Sidebar: Color Selection */}
-          <div className="w-56 border-r border-slate-800 p-4 bg-slate-900/50 space-y-2 overflow-y-auto flex flex-col">
-            <h3 className="text-xs font-bold uppercase text-slate-400 mb-4">Seleziona Colore</h3>
+        <div className="flex flex-1 overflow-hidden bg-slate-950 text-slate-100 relative">
+
+          {/* Mobile Toggle Button */}
+          <button
+            className="md:hidden absolute top-4 left-4 z-50 p-2 bg-slate-800 rounded-full shadow-lg border border-slate-700 text-white"
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          >
+            {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+
+          {/* Sidebar: Color Selection - Collapsible */}
+          <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform absolute md:relative z-40 h-full w-64 md:w-56 border-r border-slate-800 p-4 bg-slate-900/95 md:bg-slate-900/50 backdrop-blur-sm space-y-2 overflow-y-auto flex flex-col shadow-2xl md:shadow-none`}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xs font-bold uppercase text-slate-400">Seleziona Colore</h3>
+              <button onClick={() => setIsSidebarOpen(false)} className="md:hidden text-slate-400"><X size={16} /></button>
+            </div>
 
             {COLORS.map(color => {
               const isHidden = hiddenColors.includes(color);
@@ -127,7 +142,10 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
               return (
                 <div key={color} className="flex gap-1 items-center">
                   <button
-                    onClick={() => setActiveColor(color)}
+                    onClick={() => {
+                      setActiveColor(color);
+                      if (window.innerWidth < 768) setIsSidebarOpen(false); // Auto close on mobile selection
+                    }}
                     className={`flex-1 text-left px-3 py-2 rounded-md text-sm flex items-center justify-between transition-colors ${isSelected
                       ? "bg-primary text-primary-foreground font-medium"
                       : "hover:bg-slate-800 bg-slate-900/40 text-slate-300"
@@ -167,21 +185,54 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
           </div>
 
           {/* Main Area: Item Grid */}
-          <div className="flex-1 flex flex-col p-4 overflow-hidden bg-slate-950">
+          <div className="flex-1 flex flex-col p-4 overflow-hidden bg-slate-950 w-full">
             {/* Search & Pagination Controls */}
-            <div className="flex gap-4 mb-4 items-center">
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-slate-500" />
+            <div className="flex flex-col md:flex-row gap-4 mb-4 items-start md:items-center">
+              <div className="relative flex-1 w-full md:max-w-sm pl-12 md:pl-0">
+                <Search className="absolute left-14 md:left-2 top-2.5 h-4 w-4 text-slate-500" />
                 <Input
                   placeholder="Cerca item..."
                   value={searchTerm}
                   onChange={(e) => { setSearchTerm(e.target.value); setPage(0); }}
-                  className="pl-8 bg-slate-900 border-slate-800 text-slate-100 placeholder:text-slate-600 focus:ring-primary focus:border-primary"
+                  className="pl-8 bg-slate-900 border-slate-800 text-slate-100 placeholder:text-slate-600 focus:ring-primary focus:border-primary w-full"
                 />
               </div>
-              <div className="flex items-center gap-2 ml-auto">
-                <span className="text-sm text-slate-400">
-                  Pagina {page + 1} di {totalPages || 1}
+
+              {/* Grid Controls */}
+              <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end bg-slate-900/50 p-2 rounded-lg border border-slate-800">
+                <div className="flex items-center gap-2">
+                  <LayoutGrid size={16} className="text-slate-400" />
+                  <div className="flex flex-col w-24">
+                    <span className="text-[10px] text-slate-500">Colonne: {gridCols}</span>
+                    <Slider
+                      value={[gridCols]}
+                      min={2}
+                      max={12}
+                      step={1}
+                      onValueChange={(v) => setGridCols(v[0])}
+                      className="h-4"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 border-l border-slate-700 pl-4">
+                  <div className="flex flex-col w-24">
+                    <span className="text-[10px] text-slate-500">Item/Pag: {itemsPerPage}</span>
+                    <Slider
+                      value={[itemsPerPage]}
+                      min={10}
+                      max={200}
+                      step={10}
+                      onValueChange={(v) => { setItemsPerPage(v[0]); setPage(0); }}
+                      className="h-4"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 ml-auto shrink-0">
+                <span className="text-sm text-slate-400 whitespace-nowrap">
+                  Pag {page + 1}/{totalPages || 1}
                 </span>
                 <Button
                   variant="outline"
@@ -205,7 +256,10 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
             </div>
 
             {/* Grid */}
-            <div className="flex-1 overflow-y-auto grid grid-cols-4 md:grid-cols-8 lg:grid-cols-10 gap-2 content-start pr-2">
+            <div
+              className="flex-1 overflow-y-auto grid gap-2 content-start pr-2 pb-20 md:pb-0"
+              style={{ gridTemplateColumns: `repeat(${gridCols}, minmax(0, 1fr))` }}
+            >
               {pageItems.map(item => {
                 const itemColors = calibratedData[item.id] || [];
                 const isSelected = itemColors.includes(activeColor);
@@ -222,23 +276,23 @@ export function ColorCalibrator({ allItems }: ColorCalibratorProps) {
                     <img
                       src={item.imageUrl}
                       alt={item.id}
-                      className="w-full h-full object-contain p-2"
+                      className="w-full h-full object-contain p-1"
                       loading="lazy"
                     />
                     {isSelected && (
-                      <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5 shadow-sm">
+                      <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5 shadow-sm z-10">
                         <Check size={10} strokeWidth={4} />
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-[8px] text-white p-0.5 truncate opacity-0 group-hover:opacity-100 transition-opacity text-center">
+                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 text-[8px] text-white p-0.5 truncate opacity-0 group-hover:opacity-100 transition-opacity text-center z-10">
                       {item.id}
                     </div>
                     {/* Show small dots for other assigned colors */}
-                    <div className="absolute bottom-1 left-1 flex gap-0.5 flex-wrap max-w-full">
+                    <div className="absolute bottom-1 left-1 flex gap-0.5 flex-wrap max-w-full z-10 pointer-events-none">
                       {itemColors.filter(c => c !== activeColor).map(c => (
                         <div
                           key={c}
-                          className="w-1.5 h-1.5 rounded-full border border-white/30"
+                          className="w-1.5 h-1.5 rounded-full border border-white/30 shadow-sm"
                           style={{
                             backgroundColor: c === 'multicolor' ? 'transparent' : c,
                             background: c === 'multicolor' ? 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)' : undefined
